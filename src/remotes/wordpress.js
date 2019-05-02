@@ -1,11 +1,15 @@
-import { transformSchema, RenameTypes, RenameRootFields, FilterRootFields } from 'graphql-tools';
-import { createRemoteSchema } from './util';
+import { transformSchema, FilterRootFields } from 'graphql-tools';
+import {makeRemoteExecutableSchema, introspectSchema} from 'graphql-tools';
+import { HttpLink } from 'apollo-link-http';
+import fetch from 'node-fetch';
 
-export default async (type, url) => {
-    const schema = await createRemoteSchema(url);
-    return transformSchema(schema, [
-        new RenameTypes((name) => `${type}_${name}`),
-        new FilterRootFields((operation, name) => name == 'posts'),
-        new RenameRootFields(() => type.toLowerCase())
-    ]);
+export const createWordpressSchema = async (uri) => {
+    const link = new HttpLink({ uri, fetch });
+    const schema = await introspectSchema(link);
+    return transformSchema(
+        makeRemoteExecutableSchema({ schema, link }),
+        [
+            new FilterRootFields((operation, name) => (name == 'post' || name == 'posts')),
+        ]
+    );
 }
