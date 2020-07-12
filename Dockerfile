@@ -1,9 +1,13 @@
-FROM node:11
-WORKDIR /app
-COPY package-lock.json package.json .babelrc ./
-COPY src/ ./src
-RUN npm install
-RUN npm run build
+FROM node:alpine
 
-CMD [ "node", "dist/index.js" ]
-EXPOSE 4000
+RUN mkdir /app
+WORKDIR /app
+
+COPY package.json /app
+COPY yarn.lock /app
+RUN yarn install
+
+COPY src /app/src
+RUN yarn run build
+
+CMD yarn run start
