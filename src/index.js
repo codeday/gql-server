@@ -1,8 +1,4 @@
-import "@babel/polyfill";
-import run from './server.js'
-
-try {
-  run();
-} catch (e) {
-  console.log(e, e.message, e.stack);
-}
+/* eslint-disable global-require */
+require('@babel/polyfill');
+require('dotenv').config();
+require('./server.js').default();

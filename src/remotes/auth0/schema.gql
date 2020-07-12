@@ -1,0 +1,36 @@
+type User {
+  id: ID!
+  blocked: Boolean!
+  email: String
+  username: String
+  picture: String
+  givenName: String
+  familyName: String
+  name: String
+  phoneNumber: String
+  pronoun: String
+  roles: [UserRole]
+}
+
+type UserRole {
+  id: ID!
+  name: String!
+  description: String
+}
+
+input UserSingleInput {
+  id: ID
+  username: String
+  email: String
+}
+
+input UserSearch {
+  givenName: String
+  familyName: String
+  name: String
+}
+
+type Query {
+  getUser(where: UserSingleInput): User
+  searchUsers(where: UserSearch): [User]
+}

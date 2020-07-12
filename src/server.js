@@ -1,65 +1,31 @@
-import { ApolloServer } from 'apollo-server'
-import { weaveSchemas } from 'graphql-weaver'
-import { createPrismicSchema } from './remotes/prismic'
-import { createWordpressSchema } from './remotes/wordpress';
+import { ApolloServer } from 'apollo-server';
+import createWordpressSchema from './remotes/wordpress';
+import createContentfulSchema from './remotes/contentful';
+import createAuth0Schema from './remotes/auth0';
+import { addAuthContext } from './auth';
+import { weave } from './schema';
 
 export default async () => {
-  const schema = await weaveSchemas({
-    endpoints: [
-      /* Wordpress post schemas */
-      {
-        namespace: 'newsroom',
-        typePrefix: 'Newsroom',
-        schema: createWordpressSchema('https://wp-newsroom.srnd.org/graphql')
-      },
-      {
-        namespace: 'blog',
-        typePrefix: 'Blog',
-        schema: createWordpressSchema('https://wp-blog.srnd.org/graphql')
-      },
+  const wordpress = await createWordpressSchema('https://wp.codeday.org/graphql');
+  const contentful = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
+  const auth0 = await createAuth0Schema(
+    process.env.AUTH0_DOMAIN,
+    process.env.AUTH0_CLIENT_ID,
+    process.env.AUTH0_CLIENT_SECRET
+  );
 
-
-      /* Prismic CMS Schemas */
-      {
-        namespace: 'help',
-        typePrefix: 'Help',
-        schema: createPrismicSchema('https://srnd-helpcenter.prismic.io/graphql')
-      },
-      {
-        namespace: 'globalConfig',
-        typePrefix: 'Global',
-        schema: createPrismicSchema('https://srnd-global.prismic.io/graphql')
-      },
-
-
-      /* Create the website layout schemas in a subsection to keep them more orderly. */
-      {
-        namespace: 'www',
-        typePrefix: 'WebLayout',
-        schema: weaveSchemas({
-          endpoints: [
-            {
-              namespace: 'wwwSrndOrg',
-              typePrefix: 'WwwSrndOrg',
-              schema: createPrismicSchema('http://srnd-www.prismic.io/graphql')
-            },
-            {
-              namespace: 'wwwCodeDayOrg',
-              typePrefix: 'wwwCodeDayOrg',
-              schema: createPrismicSchema('http://srnd-codeday.prismic.io/graphql')
-            },
-          ]
-        })
-      }
-    ]
-  })
+  const schema = weave({ account: auth0, blog: wordpress, cms: contentful });
 
   const server = new ApolloServer({
     schema,
     introspection: true,
+    context: ({ req }) => ({
+      ...addAuthContext(req || {}),
+    }),
   });
 
   server.listen().then(({ url }) => {
+    // eslint-disable-next-line no-console
     console.log(`🚀  Server ready at ${url}`);
   });
-}
+};
