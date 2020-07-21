@@ -4,7 +4,7 @@ import {
 } from '../../utils';
 import { scopes, requireScope, hasScope } from '../../auth';
 
-const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun'];
+const userPublicFields = ['user_id', 'username', 'name', 'picture', 'title'];
 const userPrivateFields = ['email', 'blocked', 'given_name', 'family_name', 'phone_number'];
 
 const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) => {
@@ -36,9 +36,17 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) =
     fields: [
       ...userPublicFields,
       ...(hasScope(ctx, scopes.readUsers) ? userPrivateFields : []),
+      'user_metadata',
     ],
   });
-  return users.map((user) => ({ ...objectSnakeToCamel(filterKeysRemove(user, ['user_id'])), id: user.user_id }));
+
+  return users
+    .map((user) => ({ ...filterKeysRemove(user, ['user_metadata']), ...user.user_metadata }))
+    .map((user) => filterKeysKeep(user, [
+      ...userPublicFields,
+      ...(hasScope(ctx, scopes.readUsers) ? user.userPrivateFields : []),
+    ]))
+    .map((user) => ({ ...objectSnakeToCamel(filterKeysRemove(user, ['user_id'])), id: user.user_id }));
 };
 
 const getRolesForUserFactory = (auth0) => async (id) => auth0.getUserRoles({ id });
