@@ -4,7 +4,7 @@ import {
 } from '../../utils';
 import { scopes, requireScope, hasScope } from '../../auth';
 
-const userPublicFields = ['user_id', 'username', 'name', 'picture', 'title'];
+const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title'];
 const userPrivateFields = ['email', 'blocked', 'given_name', 'family_name', 'phone_number'];
 
 const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) => {

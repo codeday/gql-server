@@ -16,7 +16,10 @@ export default async function createContentfulSchema(space, token) {
     schema,
     transforms: [
       new RenameObjectFields((_, fieldName) => {
-        const cleanedName = fieldName.replace(/Collection/g, 's').replace(/contentType(.+)/g, '$1');
+        const cleanedName = fieldName
+          .replace(/sCollection/g, 's')
+          .replace(/Collection/g, 's')
+          .replace(/contentType(.+)/g, '$1');
         return cleanedName[0].toLowerCase() + cleanedName.slice(1);
       }),
     ],
