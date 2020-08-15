@@ -23,6 +23,7 @@ input UserSingleInput {
   id: ID
   username: String
   email: String
+  discordId: String
 }
 
 input UserSearch {

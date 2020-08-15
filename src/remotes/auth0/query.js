@@ -1,4 +1,5 @@
 import { ManagementClient } from 'auth0';
+import LruCache from 'lru-cache';
 import {
   objectCamelToSnake, objectSnakeToCamel, filterNullOrUndefinedKeys, filterKeysKeep, filterKeysRemove,
 } from '../../utils';
@@ -6,6 +7,14 @@ import { scopes, requireScope, hasScope } from '../../auth';
 
 const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title'];
 const userPrivateFields = ['email', 'blocked', 'given_name', 'family_name', 'phone_number'];
+
+const cacheOutput = (lru, fn) => (...args) => {
+  const key = JSON.stringify(args);
+  if (!lru.has(key)) {
+    lru.set(key, fn(...args));
+  }
+  return lru.get(key);
+};
 
 const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) => {
   // Convert query to Auth0 field names
@@ -17,6 +26,10 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) =
 
   // Remove any query fields that aren't allowed (in theory GQL should do this for us anyway)
   const filteredQuery = filterKeysKeep(snakeQuery, [...userPublicFields, ...userPrivateFields]);
+
+  if (query.discordId) {
+    filteredQuery['user_metadata.discord_id'] = query.discordId;
+  }
 
   // Make sure the user has the proper scope to search by the specified fields
   if (Object.keys(filteredQuery).filter((k) => userPrivateFields.includes(k)).length > 0) {
@@ -59,8 +72,10 @@ export default function getResolvers(domain, clientId, clientSecret) {
     scope: 'read:users read:roles',
   });
 
+  const lru = new LruCache({ maxAge: 60 * 60 * 1000, max: 500 });
+
   return {
-    findUsers: findUsersFactory(auth0),
+    findUsers: cacheOutput(lru, findUsersFactory(auth0)),
     getRolesForUser: getRolesForUserFactory(auth0),
   };
 }
