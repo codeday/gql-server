@@ -1,7 +1,7 @@
 import { ManagementClient } from 'auth0';
 import LruCache from 'lru-cache';
 import {
-  objectCamelToSnake, objectSnakeToCamel, filterNullOrUndefinedKeys, filterKeysKeep, filterKeysRemove,
+  objectCamelToSnake, objectSnakeToCamel, filterNullOrUndefinedKeys, filterKeysKeep, filterKeysRemove, chunk,
 } from '../../utils';
 import { scopes, requireScope, hasScope } from '../../auth';
 
@@ -16,7 +16,7 @@ const cacheOutput = (lru, fn) => (...args) => {
   return lru.get(key);
 };
 
-const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) => {
+const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, escape = true) => {
   // Convert query to Auth0 field names
   const snakeQuery = objectCamelToSnake(filterNullOrUndefinedKeys(query));
   if ('id' in snakeQuery) {
@@ -41,9 +41,13 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) =
     throw new Error('Cannot search users with 0 parameters.');
   }
 
+  const renderedSearchTerms = escape
+    ? Object.keys(filteredQuery).map((k) => `${k}:"${filteredQuery[k].replace(/"/g, '\\"')}"`)
+    : Object.keys(filteredQuery).map((k) => `${k}:${filteredQuery[k]}`);
+
   const users = await auth0.getUsers({
     search_engine: 'v3',
-    q: Object.keys(filteredQuery).map((k) => `${k}:"${filteredQuery[k].replace(/"/g, '\\"')}"`).join(' AND '),
+    q: renderedSearchTerms.join(' AND '),
     per_page: perPage,
     page,
     fields: [
@@ -64,6 +68,18 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0) =
 
 const getRolesForUserFactory = (auth0) => async (id) => auth0.getUserRoles({ id });
 
+const findUsersByRoleFactory = (auth0) => async (roleId, ctx, perPage = 100, page = 0) => {
+  const users = await auth0.getUsersInRole({ id: roleId, per_page: perPage, page });
+
+  const searchStrings = chunk(users.map((u) => u.user_id), 25)
+    .map((ids) => `(${ids.map((id) => `"${id}"`).join(' ')})`);
+
+  const userChunks = await Promise.all(searchStrings.map(async (str) => (
+    findUsersFactory(auth0)({ id: str }, ctx, 25, 0, false))));
+
+  return userChunks.reduce((accum, c) => [...accum, ...c], []);
+};
+
 export default function getResolvers(domain, clientId, clientSecret) {
   const auth0 = new ManagementClient({
     domain,
@@ -76,6 +92,7 @@ export default function getResolvers(domain, clientId, clientSecret) {
 
   return {
     findUsers: cacheOutput(lru, findUsersFactory(auth0)),
+    findUsersByRole: cacheOutput(lru, findUsersByRoleFactory(auth0)),
     getRolesForUser: getRolesForUserFactory(auth0),
   };
 }
