@@ -8,6 +8,7 @@ type User {
   familyName: String
   name: String
   title: String
+  bio: String
   phoneNumber: String
   pronoun: String
   roles: [UserRole]
