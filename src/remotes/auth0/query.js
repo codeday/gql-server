@@ -5,7 +5,7 @@ import {
 } from '../../utils';
 import { scopes, requireScope, hasScope } from '../../auth';
 
-const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title'];
+const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title', 'bio'];
 const userPrivateFields = ['email', 'blocked', 'given_name', 'family_name', 'phone_number'];
 
 const cacheOutput = (lru, fn) => (...args) => {
