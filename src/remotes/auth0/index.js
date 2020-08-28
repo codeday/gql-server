@@ -17,6 +17,22 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
   };
   resolvers.User = {
     roles: async ({ id }, _, ctx) => requireScope(ctx, scopes.readUserRoles) && getRolesForUser(id),
+    picture: async ({ picture }, { transform }) => {
+      if (!transform || Object.keys(transform).length === 0) return picture;
+
+      if (picture.match(/gravatar\.com/)) {
+        const maxDimension = Math.max(transform.width || 0, transform.height || 0);
+        const sizelessUrl = picture.replace(/s=\d+/, '');
+        return `${sizelessUrl}${sizelessUrl.match(/\?/) ? '&' : '?'}s=${maxDimension}`;
+      }
+
+      const imgArgs = Object.keys(transform)
+        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(transform[key]).toLowerCase()}`)
+        .join(';');
+
+      return picture
+        .replace(/https:\/\/img.codeday.org\/[a-zA-Z0-9]+\//, `https://img.codeday.org/${imgArgs}/`);
+    },
   };
 
   const schema = makeExecutableSchema({
