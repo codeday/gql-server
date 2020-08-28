@@ -36,6 +36,7 @@ function getConnectionResolvers(prefix, schemas) {
 
           const qs = Object.keys(queryArgs)
             .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(queryArgs[key])}`)
+            .filter((str) => !['fit=fit'].includes(str))
             .join('&');
 
           // eslint-disable-next-line no-underscore-dangle
