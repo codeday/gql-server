@@ -44,7 +44,7 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
 
   // Make sure the user has the proper scope to search by the specified fields
   if (Object.keys(filteredQuery).filter((k) => userPrivateFields.includes(k)).length > 0) {
-    // requireScope(ctx, scopes.readUsers);
+    requireScope(ctx, scopes.readUsers);
   }
 
   // Make sure the user is searching for _something_
