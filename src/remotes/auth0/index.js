@@ -31,6 +31,7 @@ function getConnectionResolvers(prefix, schemas) {
               where: {
                 id: parent.id,
               },
+              limit: 1,
             },
             context,
             info,
