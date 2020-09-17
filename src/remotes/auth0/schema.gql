@@ -12,6 +12,12 @@ type User {
   phoneNumber: String
   pronoun: String
   roles: [UserRole]
+  badges: [UserBadge]
+}
+
+type UserBadge {
+  id: ID!
+  expiresUtc: String
 }
 
 type UserRole {

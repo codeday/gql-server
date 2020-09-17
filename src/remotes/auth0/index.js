@@ -1,10 +1,64 @@
 import fs from 'fs';
 import path from 'path';
+import { delegateToSchema } from '@graphql-tools/delegate';
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import { WrapQuery, TransformQuery } from '@graphql-tools/wrap';
+import { Kind } from 'graphql';
 import { scopes, requireScope } from '../../auth';
 import query from './query';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
+
+function getConnectionTypes(prefix) {
+  return `
+    extend type ${prefix}UserBadge {
+      details: CmsBadge
+    }
+  `;
+}
+
+function getConnectionResolvers(prefix, schemas) {
+  return {
+    [`${prefix}UserBadge`]: {
+      details: {
+        selectionSet: '{ id }',
+        async resolve(parent, args, context, info) {
+          return delegateToSchema({
+            schema: schemas.cms,
+            operation: 'query',
+            fieldName: 'badgeCollection',
+            args: {
+              where: {
+                id: parent.id,
+              },
+            },
+            context,
+            info,
+            transforms: [
+              new TransformQuery({
+                path: ['badgeCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: {
+                        kind: Kind.NAME,
+                        value: 'items',
+                      },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (r) => r?.items[0],
+              }),
+            ],
+          });
+        },
+      },
+    },
+  };
+}
 
 export default function createAuth0Schema(domain, clientId, clientSecret) {
   const { findUsers, getRolesForUser, findUsersByRole } = query(domain, clientId, clientSecret);
@@ -40,5 +94,9 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     resolvers,
   });
 
-  return { schema };
+  return {
+    schema,
+    getConnectionTypes,
+    getConnectionResolvers,
+  };
 }
