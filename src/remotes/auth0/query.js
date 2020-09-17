@@ -39,11 +39,12 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
 
   if (query.discordId) {
     filteredQuery['user_metadata.discord_id'] = query.discordId;
+    delete filteredQuery.discord_id;
   }
 
   // Make sure the user has the proper scope to search by the specified fields
   if (Object.keys(filteredQuery).filter((k) => userPrivateFields.includes(k)).length > 0) {
-    requireScope(ctx, scopes.readUsers);
+    // requireScope(ctx, scopes.readUsers);
   }
 
   // Make sure the user is searching for _something_
