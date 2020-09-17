@@ -1,6 +1,6 @@
 type User {
   id: ID!
-  blocked: Boolean!
+  blocked: Boolean
   email: String
   username: String
   picture(transform: UserPictureTransformInput): String
@@ -9,13 +9,33 @@ type User {
   name: String
   title: String
   bio: String
+  discordId: String
+  acceptTos: Boolean
+  displayNameFormat: String
   phoneNumber: String
   pronoun: String
   roles: [UserRole]
   badges: [UserBadge]
 }
 
+input UpdateUserInput {
+  blocked: Boolean
+  email: String
+  username: String
+  givenName: String
+  familyName: String
+  title: String
+  bio: String
+  phoneNumber: String
+  pronoun: String
+}
+
 type UserBadge {
+  id: ID!
+  expiresUtc: String
+}
+
+input UserBadgeInput {
   id: ID!
   expiresUtc: String
 }
@@ -58,7 +78,12 @@ input UserSearch {
 }
 
 type Query {
-  getUser(where: UserSingleInput): User
-  searchUsers(where: UserSearch): [User]
-  roleUsers(roleId: String): [User]
+  getUser(where: UserSingleInput!, fresh: Boolean): User
+  searchUsers(where: UserSearch!): [User]!
+  roleUsers(roleId: String!): [User]!
+}
+
+type Mutation {
+  updateUser(username: String!, updates: UpdateUserInput!): Boolean
+  grantBadge(username: String!, badge: UserBadgeInput!): Boolean
 }

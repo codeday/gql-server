@@ -62,14 +62,40 @@ function getConnectionResolvers(prefix, schemas) {
 }
 
 export default function createAuth0Schema(domain, clientId, clientSecret) {
-  const { findUsers, getRolesForUser, findUsersByRole } = query(domain, clientId, clientSecret);
+  const {
+    findUsers,
+    findUsersUncached,
+    getRolesForUser,
+    findUsersByRole,
+    updateUser
+  } = query(domain, clientId, clientSecret);
 
   const resolvers = {};
   resolvers.Query = {
-    getUser: async (_, { where }, ctx) => (await findUsers(where, ctx))[0] || null,
+    getUser: async (_, { where, fresh }, ctx) => {
+      const fn = fresh ? findUsersUncached : findUsers;
+      return (await fn(where, ctx))[0] || null
+    },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
     roleUsers: async (_, { roleId }, ctx) => findUsersByRole(roleId, ctx),
   };
+  resolvers.Mutation = {
+    updateUser: async (_, { username, updates }, ctx) => {
+      await updateUser(username, ctx, (prev) => ({
+        ...prev,
+        ...updates
+      }));
+    },
+    grantBadge: async (_, { username, badge }, ctx) => {
+      await updateUser(username, ctx, (prev) => ({
+        ...prev,
+        badges: [
+          ...(prev.badges || []).filter((b) => b.id !== badge.id),
+          badge,
+        ]
+      }));
+    }
+  }
   resolvers.User = {
     roles: async ({ id }, _, ctx) => requireScope(ctx, scopes.readUserRoles) && getRolesForUser(id),
     picture: async ({ picture }, { transform }) => {

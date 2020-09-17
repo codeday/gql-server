@@ -2,7 +2,7 @@ import { verify } from 'jsonwebtoken';
 
 export const scopes = {
   readUsers: 'read:users',
-  readUserRoles: 'read:roles',
+  writeUsers: 'write:users',
   readBlogUnpublished: 'read:blog_unpublished',
 };
 

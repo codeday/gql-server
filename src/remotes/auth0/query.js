@@ -6,7 +6,17 @@ import {
 import { scopes, requireScope, hasScope } from '../../auth';
 
 const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title', 'bio', 'badges'];
-const userPrivateFields = ['email', 'blocked', 'given_name', 'family_name', 'phone_number'];
+const userPrivateFields = [
+  'email',
+  'blocked',
+  'given_name',
+  'family_name',
+  'phone_number',
+  'discord_id',
+  'accept_tos',
+  'display_name_format',
+];
+const topLevelFields = ['given_name', 'family_name', 'email', 'blocked', 'username', 'name', 'user_id'];
 
 const cacheOutput = (lru, fn) => (...args) => {
   const key = JSON.stringify(args);
@@ -61,7 +71,7 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
     .map((user) => ({ ...filterKeysRemove(user, ['user_metadata']), ...user.user_metadata }))
     .map((user) => filterKeysKeep(user, [
       ...userPublicFields,
-      ...(hasScope(ctx, scopes.readUsers) ? user.userPrivateFields : []),
+      ...((hasScope(ctx, scopes.readUsers) || hasScope(ctx, scopes.writeUsers)) ? userPrivateFields : []),
     ]))
     .map((user) => ({ ...objectSnakeToCamel(filterKeysRemove(user, ['user_id'])), id: user.user_id }));
 };
@@ -80,6 +90,46 @@ const findUsersByRoleFactory = (auth0) => async (roleId, ctx, perPage = 100, pag
   return userChunks.reduce((accum, c) => [...accum, ...c], []);
 };
 
+const updateUserFactory = (auth0) => async (username, ctx, updateFn) => {
+  requireScope(ctx, scopes.writeUsers);
+  const user = (await findUsersFactory(auth0)({ username }, ctx, 1))[0];
+  const newUser = updateFn(user);
+
+  // Find the changes and turn it into a mostly-final array
+  const changedProps = objectCamelToSnake(Object.keys(newUser)
+    .filter((k) => user[k] !== newUser[k])
+    .reduce((accum, k) => ({ ...accum, [k]: newUser[k] }), {}));
+
+  // Break into main user updates and user_metadata updates
+  const toplevel = Object.keys(changedProps)
+    .filter((k) => topLevelFields.includes(k))
+    .reduce((accum, k) => ({ ...accum, [k]: changedProps[k] }), {});
+
+  const metadata = Object.keys(changedProps)
+    .filter((k) => !topLevelFields.includes(k))
+    .reduce((accum, k) => ({ ...accum, [k]: changedProps[k] }), {});
+
+  // Perform updates
+  if (Object.keys(toplevel).length > 0) {
+    await auth0.updateUser({ id: user.id }, {
+      name: user.name,
+      given_name: user.givenName,
+      family_name: user.familyName,
+      username: user.username,
+      nickname: user.username,
+      blocked: user.blocked,
+      ...toplevel,
+    });
+  }
+  if (Object.keys(metadata).length > 0) {
+    const auth0Data = (await auth0.getUser({ id: user.id, fields: ['user_metadata'] })).user_metadata;
+    await auth0.updateUserMetadata({ id: user.id }, {
+      ...auth0Data,
+      ...metadata,
+    });
+  }
+};
+
 export default function getResolvers(domain, clientId, clientSecret) {
   const auth0 = new ManagementClient({
     domain,
@@ -92,7 +142,9 @@ export default function getResolvers(domain, clientId, clientSecret) {
 
   return {
     findUsers: cacheOutput(lru, findUsersFactory(auth0)),
+    findUsersUncached: findUsersFactory(auth0),
     findUsersByRole: cacheOutput(lru, findUsersByRoleFactory(auth0)),
     getRolesForUser: getRolesForUserFactory(auth0),
+    updateUser: updateUserFactory(auth0),
   };
 }
