@@ -10,10 +10,6 @@ function getConnectionTypes(prefix) {
     extend type ${prefix}Post {
       author: AccountUser
     }
-
-    extend type ${prefix}Post_Authoroverride {
-      author: AccountUser
-    }
   `;
 }
 
@@ -21,40 +17,25 @@ function getConnectionResolvers(prefix, schemas) {
   return {
     [`${prefix}Post`]: {
       author: {
-        selectionSet: '{ wpAuthor { slug } }',
-        resolve(parent, args, context, info) {
-          return delegateToSchema({
+        selectionSet: '{ wpAuthor { slug } authorOverride { username title } }',
+        async resolve(parent, args, context, info) {
+          const result = await delegateToSchema({
             schema: schemas.account,
             operation: 'query',
             fieldName: 'getUser',
             args: {
               where: {
-                username: parent.wpAuthor.slug,
+                username: parent.authorOverride?.username || parent.wpAuthor.slug,
               },
             },
             context,
             info,
           });
-        },
-      },
-    },
-    [`${prefix}Post_Authoroverride`]: {
-      author: {
-        selectionSet: '{ username }',
-        resolve(parent, args, context, info) {
-          if (!parent.username) return null;
-          return delegateToSchema({
-            schema: schemas.account,
-            operation: 'query',
-            fieldName: 'getUser',
-            args: {
-              where: {
-                username: parent.username,
-              },
-            },
-            context,
-            info,
-          });
+
+          return {
+            ...result,
+            ...(parent.authorOverride?.title ? { title: parent.authorOverride.title } : {}),
+          };
         },
       },
     },
