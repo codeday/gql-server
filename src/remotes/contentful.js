@@ -10,12 +10,12 @@ function getConnectionTypes(prefix) {
   `;
 }
 
-function getConnectionResolvers(prefix, schemas) {
+function getConnectionResolvers(prefix) {
   return {
     [`${prefix}Asset`]: {
       url: {
         selectionSet: '{ __selectionSetContentfulBaseUrl: contentfulBaseUrl }',
-        resolve(parent, args, context, info) {
+        resolve(parent, args) {
           const transformQueryFormats = {
             width: (v) => ({ w: v }),
             height: (v) => ({ h: v }),
