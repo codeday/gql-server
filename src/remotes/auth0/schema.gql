@@ -75,6 +75,7 @@ input UserSearch {
   givenName: String
   familyName: String
   name: String
+  username: String
 }
 
 type Query {

@@ -1,4 +1,5 @@
 import { RenameObjectFields } from '@graphql-tools/wrap';
+import { delegateToSchema } from '@graphql-tools/delegate';
 import { loadSchema } from '@graphql-tools/load';
 import { UrlLoader } from '@graphql-tools/url-loader';
 
@@ -7,11 +8,36 @@ function getConnectionTypes(prefix) {
     extend type ${prefix}Asset {
       url(transform: ${prefix}ImageTransformOptions): String
     }
+    extend type ${prefix}HiringCompany {
+      alumniReferralAccounts: [AccountUser]
+    }
   `;
 }
 
-function getConnectionResolvers(prefix) {
+function getConnectionResolvers(prefix, schemas) {
   return {
+    [`${prefix}HiringCompany`]: {
+      alumniReferralAccounts: {
+        selectionSet: '{ alumniReferrals }',
+        async resolve(parent, _, context, info) {
+          if (!parent.alumniReferrals || parent.alumniReferrals.length === 0) return [];
+
+          const results = await Promise.all(parent.alumniReferrals.map((a) => delegateToSchema({
+            schema: schemas.account,
+            operation: 'query',
+            fieldName: 'searchUsers',
+            args: {
+              where: {
+                username: a,
+              },
+            },
+            context,
+            info,
+          })));
+          return results.reduce((accum, a) => [...accum, ...a], []);
+        },
+      },
+    },
     [`${prefix}Asset`]: {
       url: {
         selectionSet: '{ __selectionSetContentfulBaseUrl: contentfulBaseUrl }',
