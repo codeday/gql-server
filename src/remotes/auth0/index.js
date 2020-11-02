@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { delegateToSchema } from '@graphql-tools/delegate';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { WrapQuery, TransformQuery } from '@graphql-tools/wrap';
+import { TransformQuery } from '@graphql-tools/wrap';
 import { Kind } from 'graphql';
 import { scopes, requireScope } from '../../auth';
 import query from './query';

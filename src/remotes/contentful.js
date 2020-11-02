@@ -66,6 +66,7 @@ export default async function createContentfulSchema(space, token) {
       new RenameObjectFields((_, fieldName) => {
         const cleanedName = fieldName
           .replace(/sCollection/g, 's')
+          .replace(/yCollection/g, 'ies')
           .replace(/Collection/g, 's')
           .replace(/contentType(.+)/g, '$1');
         return cleanedName[0].toLowerCase() + cleanedName.slice(1);
