@@ -3,14 +3,16 @@ import createWordpressSchema from './remotes/wordpress';
 import createContentfulSchema from './remotes/contentful';
 import createDiscordPostsSchema from './remotes/discordPosts';
 import createAuth0Schema from './remotes/auth0';
+import createShowcaseSchema from './remotes/showcase';
+import createCalendarSchema from './remotes/calendar';
 import { addAuthContext } from './auth';
 import { weave } from './schema';
-import createShowcaseSchema from './remotes/showcase';
 
 export default async () => {
   const wordpress = await createWordpressSchema('https://wp.codeday.org/graphql');
   const showYourWork = await createDiscordPostsSchema('http://discord-posts.codeday.cloud');
   const showcase = await createShowcaseSchema('http://showcase-gql.codeday.cloud/graphql');
+  const calendar = await createCalendarSchema('http://calendar-gql.codeday.cloud/graphql');
   const contentful = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
   const auth0 = await createAuth0Schema(
     process.env.AUTH0_DOMAIN,
@@ -19,7 +21,7 @@ export default async () => {
   );
 
   const schema = weave({
-    account: auth0, blog: wordpress, cms: contentful, showYourWork, showcase,
+    account: auth0, blog: wordpress, cms: contentful, showYourWork, showcase, calendar,
   });
 
   const server = new ApolloServer({

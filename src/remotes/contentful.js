@@ -38,6 +38,7 @@ function getConnectionResolvers(prefix, schemas) {
         },
       },
     },
+
     [`${prefix}Asset`]: {
       url: {
         selectionSet: '{ __selectionSetContentfulBaseUrl: contentfulBaseUrl }',
