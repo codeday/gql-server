@@ -18,10 +18,14 @@ const userPrivateFields = [
 ];
 const topLevelFields = ['given_name', 'family_name', 'email', 'blocked', 'username', 'name', 'user_id'];
 
-const cacheOutput = (lru, fn) => (...args) => {
-  const key = JSON.stringify(args);
+const cacheOutput = (lru, fn) => (args, context, ...rest) => {
+  const varyHeaders = Object.keys(context?.headers || {})
+    .filter((h) => h.toLowerCase().indexOf('authorization') >= 0)
+    .reduce((accum, k) => ({ ...accum, [k]: context.headers[k] }), {});
+
+  const key = JSON.stringify([args, varyHeaders]);
   if (!lru.has(key)) {
-    lru.set(key, fn(...args));
+    lru.set(key, fn(args, context, ...rest));
   }
   return lru.get(key);
 };
