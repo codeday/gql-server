@@ -95,6 +95,7 @@ function makeSubscriber(wsEndpoint) {
           {
             next: (data) => observer.next && observer.next(data),
             error: (err) => {
+              console.error(err);
               if (!observer.error) return;
               if (err instanceof Error) {
                 observer.error(err);
