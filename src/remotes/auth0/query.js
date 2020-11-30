@@ -5,14 +5,13 @@ import {
 } from '../../utils';
 import { scopes, requireScope, hasScope } from '../../auth';
 
-const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title', 'bio', 'badges'];
+const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title', 'bio', 'badges', 'discord_id'];
 const userPrivateFields = [
   'email',
   'blocked',
   'given_name',
   'family_name',
   'phone_number',
-  'discord_id',
   'accept_tos',
   'display_name_format',
 ];
