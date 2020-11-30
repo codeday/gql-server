@@ -108,6 +108,10 @@ function makeSubscriber(wsEndpoint) {
             complete: () => observer.complete && observer.complete(),
           }
         );
+
+        return {
+          unsubscribe: subscriber,
+        };
       },
     });
   };
