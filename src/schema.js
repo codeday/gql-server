@@ -3,10 +3,11 @@ import {
 } from '@graphql-tools/wrap';
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
 import { stitchSchemas } from '@graphql-tools/stitch';
+import { GraphQLUpload } from '@graphql-tools/links';
 import map from 'map-obj';
 
 export function namespace(fieldPrefix, typePrefix, schema) {
-  const wrapFields = ['Query', 'Mutation', 'Subscription']
+  const wrapFields = ['Query', 'Mutation']
     .map((operation) => {
       const type = schema[`get${operation}Type`]();
       if (type) {
@@ -16,7 +17,7 @@ export function namespace(fieldPrefix, typePrefix, schema) {
     }).filter((f) => f);
 
   return [
-    new RenameTypes((t) => typePrefix + t),
+    new RenameTypes((t) => { if (t === 'Upload') return t; return typePrefix + t; }),
     ...wrapFields,
   ];
 }
@@ -28,6 +29,9 @@ export function weave(components) {
     const fieldPrefix = k.charAt(0).toLowerCase() + k.slice(1);
     const typePrefix = k.charAt(0).toUpperCase() + k.slice(1);
 
+    const typeDefs = 'getConnectionTypes' in v && v.getConnectionTypes(typePrefix);
+    const resolvers = `getConnectionResolvers` in v && v.getConnectionResolvers(typePrefix, allRawSchemas);
+
     const subschema = {
       schema: v.schema,
       transforms: [
@@ -35,8 +39,6 @@ export function weave(components) {
         ...namespace(fieldPrefix, typePrefix, v.schema),
       ],
     };
-    const typeDefs = 'getConnectionTypes' in v && v.getConnectionTypes(typePrefix);
-    const resolvers = `getConnectionResolvers` in v && v.getConnectionResolvers(typePrefix, allRawSchemas);
 
     return [k, { subschema, typeDefs, resolvers }];
   }));
@@ -46,7 +48,10 @@ export function weave(components) {
   const schemas = {
     subschemas: resolve('subschema'),
     typeDefs: mergeTypeDefs(resolve('typeDefs')),
-    resolvers: mergeResolvers(resolve('resolvers')),
+    resolvers: {
+      ...mergeResolvers(resolve('resolvers')),
+      Upload: GraphQLUpload,
+    },
   };
   return stitchSchemas(schemas);
 }

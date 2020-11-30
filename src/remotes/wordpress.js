@@ -47,7 +47,7 @@ export default async function createWordpressSchema(uri) {
   return {
     schema,
     transforms: [
-      new FilterRootFields((operation, name) => (name === 'post' || name === 'posts')),
+      new FilterRootFields((operation, name) => (name === 'post' || name === 'posts' || name === 'createComment')),
       new FilterInputObjectFields((_, __, { type }) => type && String(type).indexOf('PostStatusEnum') === -1),
       new RenameInterfaceFields((typeName, fieldName) => (
         typeName === 'NodeWithAuthor' && fieldName === 'author' ? 'wpAuthor' : fieldName

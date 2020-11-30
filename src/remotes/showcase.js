@@ -1,7 +1,6 @@
-import { loadSchema } from '@graphql-tools/load';
-import { ContextUrlLoader } from '../ContextUrlLoader';
+import makeRemoteTransport from '../remoteTransport';
+import { wrapSchema, introspectSchema } from '@graphql-tools/wrap';
 import { delegateToSchema } from '@graphql-tools/delegate';
-import { fetch as crossFetch } from 'cross-fetch';
 import { TransformQuery } from '@graphql-tools/wrap';
 import { Kind } from 'graphql';
 
@@ -80,20 +79,15 @@ function getConnectionResolvers(prefix, schemas) {
   };
 }
 
-export default async function createShowcaseSchema(uri) {
-  const schema = await loadSchema(uri, {
-    loaders: [new ContextUrlLoader()],
-    headers: () => console.log,
-    customFetch: (uri, { headers: origHeaders, context, ...origArgs }) => {
-      return crossFetch(uri, {
-        ...origArgs,
-        headers: {
-          ...origHeaders,
-          'Authorization': context?.headers ? context.headers['x-showcase-authorization'] : null,
-        },
-      });
-    }
+
+export default async function createShowcaseSchema(uri, wsUri) {
+  const { executor, subscriber } = makeRemoteTransport(uri, wsUri);
+  const schema = wrapSchema({
+    schema: await introspectSchema(executor),
+    executor,
+    subscriber,
   });
+
   return {
     schema,
     transforms: [],

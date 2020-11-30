@@ -14,7 +14,10 @@ export const requireScope = (ctx, scope) => {
   return true;
 };
 
-export const addAuthContext = ({ headers }) => {
+export const addAuthContext = (req) => {
+  if (!req) return { scopes: [] };
+
+  const { headers } = req;
   if (!headers || !('authorization' in headers) || !headers.authorization) return { scopes: [] };
 
   const [authType, token] = headers.authorization.split(/\s+/);
