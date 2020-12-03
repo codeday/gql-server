@@ -142,7 +142,7 @@ export default function getResolvers(domain, clientId, clientSecret) {
     scope: 'read:users read:roles',
   });
 
-  const lru = new LruCache({ maxAge: 60 * 60 * 1000, max: 500 });
+  const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
 
   return {
     findUsers: cacheOutput(lru, findUsersFactory(auth0)),

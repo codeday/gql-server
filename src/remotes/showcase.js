@@ -30,6 +30,7 @@ function getConnectionResolvers(prefix, schemas) {
               where: {
                 username: parent.username,
               },
+              fresh: true,
             },
             context,
             info,
