@@ -8,6 +8,8 @@ COPY yarn.lock /app
 RUN yarn install
 
 COPY . /app
+RUN rm /app/node_modules/@graphql-tools/delegate/index.cjs.js
+COPY index.cjs.js /app/node_modules/@graphql-tools/delegate/index.cjs.js
 RUN yarn run build
 
 CMD yarn run start
