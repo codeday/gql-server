@@ -114,6 +114,9 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return picture
         .replace(/https:\/\/img.codeday.org\/[a-zA-Z0-9]+\//, `https://img.codeday.org/${imgArgs}/`);
     },
+    discordInformation: async({ discordId }) => {
+      console.log(discordId);
+    }
   };
 
   const schema = makeExecutableSchema({
