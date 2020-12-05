@@ -6,6 +6,8 @@ import { TransformQuery } from '@graphql-tools/wrap';
 import { Kind } from 'graphql';
 import { scopes, requireScope } from '../../auth';
 import query from './query';
+import LruCache from 'lru-cache';
+import fetch from "node-fetch";
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 
@@ -96,6 +98,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       }));
     }
   }
+  const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
     roles: async ({ id }, _, ctx) => requireScope(ctx, scopes.readUserRoles) && getRolesForUser(id),
     picture: async ({ picture }, { transform }) => {
@@ -115,7 +118,23 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         .replace(/https:\/\/img.codeday.org\/[a-zA-Z0-9]+\//, `https://img.codeday.org/${imgArgs}/`);
     },
     discordInformation: async({ discordId }) => {
-      console.log(discordId);
+      let result = lru.get(discordId);
+
+      if (!result) {
+        const response = await fetch("https://discordapp.com/api/users/" + discordId, {
+          method: "GET",
+          headers: {"Authorization": "Bot " + process.env.DISCORD_BOT_TOKEN}
+        })
+        const data = await response.json();
+        result = {
+          username: data.username,
+          discriminator: data.discriminator,
+          avatar: "https://cdn.discordapp.com/avatars/" + discordId + "/" + data.avatar
+        };
+        lru.set(discordId, result);
+      }
+
+      return result
     }
   };
 
