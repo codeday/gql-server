@@ -16,6 +16,7 @@ type User {
   pronoun: String
   roles: [UserRole]
   badges: [UserBadge]
+  discordInformation: DiscordInformation
 }
 
 input UpdateUserInput {
@@ -44,6 +45,12 @@ type UserRole {
   id: ID!
   name: String!
   description: String
+}
+
+type DiscordInformation {
+  username: String!
+  discriminator: String!
+  avatar: String
 }
 
 enum UserPictureFit {
