@@ -118,6 +118,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         .replace(/https:\/\/img.codeday.org\/[a-zA-Z0-9]+\//, `https://img.codeday.org/${imgArgs}/`);
     },
     discordInformation: async({ discordId }) => {
+      if (!discordId) return null;
       let result = lru.get(discordId);
 
       if (!result) {
@@ -126,15 +127,17 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           headers: {"Authorization": "Bot " + process.env.DISCORD_BOT_TOKEN}
         })
         const data = await response.json();
-        result = {
+        result = data ? {
           username: data.username,
           discriminator: data.discriminator,
+          handle: `@${data.username}#${data.discriminator}`,
+          tag: `<@${discordId}>`,
           avatar: "https://cdn.discordapp.com/avatars/" + discordId + "/" + data.avatar
-        };
+        } : null;
         lru.set(discordId, result);
       }
 
-      return result
+      return result;
     }
   };
 

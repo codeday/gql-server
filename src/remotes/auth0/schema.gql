@@ -50,6 +50,8 @@ type UserRole {
 type DiscordInformation {
   username: String!
   discriminator: String!
+  handle: String!
+  tag: String!
   avatar: String
 }
 
