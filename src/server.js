@@ -12,6 +12,7 @@ import createDiscordPostsSchema from './remotes/discordPosts';
 import createAuth0Schema from './remotes/auth0';
 import createShowcaseSchema from './remotes/showcase';
 import createCalendarSchema from './remotes/calendar';
+import createTwitchSchema from './remotes/twitch';
 import { addAuthContext } from './auth';
 import { weave } from './schema';
 
@@ -29,6 +30,11 @@ export default async () => {
     process.env.AUTH0_CLIENT_ID,
     process.env.AUTH0_CLIENT_SECRET
   );
+  const twitch = await createTwitchSchema(
+    process.env.TWITCH_CHANNEL,
+    process.env.TWITCH_CLIENT_ID,
+    process.env.TWITCH_CLIENT_SECRET
+  );
 
   const schema = weave({
     account: auth0,
@@ -36,7 +42,8 @@ export default async () => {
     cms: contentful,
     showYourWork,
     showcase,
-    calendar
+    calendar,
+    twitch,
   });
 
   const apollo = new ApolloServer({
