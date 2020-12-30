@@ -8,6 +8,7 @@ import ws from 'ws';
 import { execute, subscribe } from 'graphql';
 import createWordpressSchema from './remotes/wordpress';
 import createContentfulSchema from './remotes/contentful';
+import createLearnSchema from './remotes/learn';
 import createDiscordPostsSchema from './remotes/discordPosts';
 import createAuth0Schema from './remotes/auth0';
 import createShowcaseSchema from './remotes/showcase';
@@ -24,8 +25,8 @@ export default async () => {
   const showYourWork = await createDiscordPostsSchema('http://discord-posts.codeday.cloud');
   const showcase = await createShowcaseSchema('http://showcase-gql.codeday.cloud/graphql', 'ws://showcase-gql.codeday.cloud/graphql');
   const calendar = await createCalendarSchema('http://calendar-gql.codeday.cloud/graphql');
-  const contentful = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
-  const learn = await createContentfulSchema('muw2pziidpat', process.env.CONTENTFUL_LEARN_TOKEN);
+  const cms = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
+  const learn = await createLearnSchema('muw2pziidpat', process.env.CONTENTFUL_LEARN_TOKEN);
   const auth0 = await createAuth0Schema(
     process.env.AUTH0_DOMAIN,
     process.env.AUTH0_CLIENT_ID,
@@ -40,12 +41,12 @@ export default async () => {
   const schema = weave({
     account: auth0,
     blog: wordpress,
-    learn: learn,
-    cms: contentful,
+    cms,
     showYourWork,
     showcase,
     calendar,
     twitch,
+    learn,
   });
 
   const apollo = new ApolloServer({
