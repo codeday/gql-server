@@ -25,6 +25,7 @@ export default async () => {
   const showcase = await createShowcaseSchema('http://showcase-gql.codeday.cloud/graphql', 'ws://showcase-gql.codeday.cloud/graphql');
   const calendar = await createCalendarSchema('http://calendar-gql.codeday.cloud/graphql');
   const contentful = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
+  const learn = await createContentfulSchema('muw2pziidpat', process.env.CONTENTFUL_LEARN_TOKEN);
   const auth0 = await createAuth0Schema(
     process.env.AUTH0_DOMAIN,
     process.env.AUTH0_CLIENT_ID,
@@ -39,6 +40,7 @@ export default async () => {
   const schema = weave({
     account: auth0,
     blog: wordpress,
+    learn: learn,
     cms: contentful,
     showYourWork,
     showcase,
