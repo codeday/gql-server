@@ -4,10 +4,13 @@ import { delegateToSchema } from '@graphql-tools/delegate';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { TransformQuery } from '@graphql-tools/wrap';
 import { Kind } from 'graphql';
-import { scopes, requireScope } from '../../auth';
+import { scopes, requireScope, hasScope } from '../../auth';
 import query from './query';
 import LruCache from 'lru-cache';
 import fetch from "node-fetch";
+import { formatName } from './utils';
+import { GraphQLUpload } from 'apollo-server';
+import Uploader from '@codeday/uploader-node';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 
@@ -62,45 +65,109 @@ function getConnectionResolvers(prefix, schemas) {
     },
   };
 }
-
+const uploader = new Uploader(process.env.UPLOADER_URL, process.env.UPLOADER_SECRET);
 export default function createAuth0Schema(domain, clientId, clientSecret) {
   const {
     findUsers,
     findUsersUncached,
     getRolesForUser,
     findUsersByRole,
-    updateUser
+    updateUser,
+    addRole
   } = query(domain, clientId, clientSecret);
 
   const resolvers = {};
+  resolvers.FileUpload = GraphQLUpload
   resolvers.Query = {
     getUser: async (_, { where, fresh }, ctx) => {
       const fn = fresh ? findUsersUncached : findUsers;
       return (await fn(where, ctx))[0] || null
+    },
+    getDisplayedBadges: async (_, { where, fresh }, ctx) => {
+      const fn = findUsersUncached;
+      const user = (await fn(where, ctx))[0] || null
+      if (user.badges) {
+        const displayedBadges = user.badges.filter((b) => b.displayed === true).slice(0, 3)
+        return (displayedBadges.length > 0 ? displayedBadges : user.badges.slice(0, 3))
+      }
+      return null
     },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
     roleUsers: async (_, { roleId }, ctx) => findUsersByRole(roleId, ctx),
   };
   resolvers.Mutation = {
     updateUser: async (_, { username, updates }, ctx) => {
-      await updateUser(username, ctx, (prev) => ({
-        ...prev,
-        ...updates
-      }));
+      await updateUser(username, ctx, (prev) => {
+        const newUser = {
+          ...prev,
+          ...updates
+        }
+        newUser.name = (updates.displayNameFormat ? formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName) : newUser.name)
+        return newUser;
+      });
     },
-    grantBadge: async (_, { username, badge }, ctx) => {
-      await updateUser(username, ctx, (prev) => ({
+    updateAuthUser: async (_, { updates }, ctx) => {
+      if (!ctx.user) {
+        throw Error("Sorry! You don't have permission to do this. Please refresh the page and try again.")
+      } else if (updates.username && updates.username !== updates.username.replace(/[^a-zA-Z0-9\-_]/g, '')) {
+        throw new Error('Username can only consist of letters, numbers, and _ or -.');
+      } else if (!updates.familyName && typeof updates.familyName !== 'undefined') {
+        throw new Error('Name is required.');
+      } else if (!updates.givenName && typeof updates.givenName !== 'undefined') {
+        throw new Error('Name is required.');
+      }
+      await updateUser(null, ctx, (prev) => {
+        const newUser = {
+          ...prev,
+          ...updates
+        }
+        newUser.name = formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName)
+        return newUser;
+      });
+    },
+    grantBadge: async (_, { where, badge }, ctx) => {
+      await updateUser(where, ctx, (prev) => ({
         ...prev,
         badges: [
           ...(prev.badges || []).filter((b) => b.id !== badge.id),
           badge,
         ]
       }));
+    },
+    revokeBadge: async (_, { where, badge }, ctx) => {
+      await updateUser(where, ctx, (prev) => ({
+        ...prev,
+        badges: [
+          ...(prev.badges || []).filter((b) => b.id !== badge.id)
+        ]
+      }));
+    },
+    uploadPicture: async (_, { upload }, ctx) => {
+      const { createReadStream, filename } = await upload;
+      console.log(filename)
+      const chunks = [];
+      // eslint-disable-next-line no-restricted-syntax
+      for await (const chunk of createReadStream()) {
+        chunks.push(chunk);
+      }
+      const uploadBuffer = Buffer.concat(chunks);
+
+      const result = await uploader.image(uploadBuffer, filename || '_.jpg');
+
+      return result.url
+    },
+    addRole: async (_, {id, roleId}, ctx) => {
+      addRole(id, roleId, ctx)
     }
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
-    roles: async ({ id }, _, ctx) => requireScope(ctx, scopes.readUserRoles) && getRolesForUser(id),
+    roles: async ({ id }, _, ctx) => {
+      if (!hasScope(ctx, scopes.readUserRoles) && !hasScope(ctx, `read:${ctx.user}`)) {
+        throw new Error(`Your request requires the scope ${scopes.readUserRoles}.`);
+      }
+      return getRolesForUser(id)
+    },
     picture: async ({ picture }, { transform }) => {
       if (!transform || Object.keys(transform).length === 0) return picture;
 
@@ -117,14 +184,14 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return picture
         .replace(/https:\/\/img.codeday.org\/[a-zA-Z0-9]+\//, `https://img.codeday.org/${imgArgs}/`);
     },
-    discordInformation: async({ discordId }) => {
+    discordInformation: async ({ discordId }) => {
       if (!discordId) return null;
       let result = lru.get(discordId);
 
       if (!result) {
         const response = await fetch("https://discordapp.com/api/users/" + discordId, {
           method: "GET",
-          headers: {"Authorization": "Bot " + process.env.DISCORD_BOT_TOKEN}
+          headers: { "Authorization": "Bot " + process.env.DISCORD_BOT_TOKEN }
         })
         const data = await response.json();
         result = data ? {

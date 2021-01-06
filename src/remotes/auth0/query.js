@@ -30,6 +30,9 @@ const cacheOutput = (lru, fn) => (args, context, ...rest) => {
 };
 
 const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, escape = true) => {
+  if (ctx.user) {
+    query = {id: ctx.user}
+  }
   // Convert query to Auth0 field names
   const snakeQuery = objectCamelToSnake(filterNullOrUndefinedKeys(query));
   if ('id' in snakeQuery) {
@@ -47,7 +50,9 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
 
   // Make sure the user has the proper scope to search by the specified fields
   if (Object.keys(filteredQuery).filter((k) => userPrivateFields.includes(k)).length > 0) {
-    requireScope(ctx, scopes.readUsers);
+    if (!hasScope(ctx, scopes.readUsers) && !hasScope(ctx, `read:${ctx.user}`)) {
+      throw new Error(`Your request requires the scope ${scopes.readUsers}.`);
+    }
   }
 
   // Make sure the user is searching for _something_
@@ -66,7 +71,7 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
     page,
     fields: [
       ...userPublicFields,
-      ...(hasScope(ctx, scopes.readUsers) ? userPrivateFields : []),
+      ...((hasScope(ctx, scopes.readUsers) || hasScope(ctx, `read:${ctx.user}`)) ? userPrivateFields : []),
       'user_metadata',
     ],
   });
@@ -75,7 +80,7 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
     .map((user) => ({ ...filterKeysRemove(user, ['user_metadata']), ...user.user_metadata }))
     .map((user) => filterKeysKeep(user, [
       ...userPublicFields,
-      ...((hasScope(ctx, scopes.readUsers) || hasScope(ctx, scopes.writeUsers)) ? userPrivateFields : []),
+      ...((hasScope(ctx, scopes.readUsers) || hasScope(ctx, scopes.writeUsers) || hasScope(ctx, `read:${ctx.user}`)) ? userPrivateFields : []),
     ]))
     .map((user) => ({ ...objectSnakeToCamel(filterKeysRemove(user, ['user_id'])), id: user.user_id }));
 };
@@ -95,8 +100,15 @@ const findUsersByRoleFactory = (auth0) => async (roleId, ctx, perPage = 100, pag
 };
 
 const updateUserFactory = (auth0) => async (username, ctx, updateFn) => {
-  requireScope(ctx, scopes.writeUsers);
-  const user = (await findUsersFactory(auth0)({ username }, ctx, 1))[0];
+  if (!hasScope(ctx, scopes.writeUsers) && !hasScope(ctx, `write:${ctx.user}`)) {
+    throw new Error(`Your request requires the scope ${scopes.writeUsers}.`);
+  }
+  let user = {}
+  if (ctx.user) {
+    user = (await findUsersFactory(auth0)({ id: ctx.user }, ctx, 1))[0]
+  } else {
+    user = (await findUsersFactory(auth0)({ username }, ctx, 1))[0];
+  }
   const newUser = updateFn(user);
 
   // Find the changes and turn it into a mostly-final array
@@ -133,6 +145,21 @@ const updateUserFactory = (auth0) => async (username, ctx, updateFn) => {
     });
   }
 };
+const addRoleToUserFactory = (auth0) => async (id, roleId, ctx) => {
+  if (!hasScope(ctx, scopes.writeUsers) && !hasScope(ctx, `write:${ctx.user}`)) {
+    throw new Error(`Your request requires the scope ${scopes.writeUsers}.`);
+  }
+  if (ctx.user) {
+    id = ctx.user
+  }
+  console.log("test")
+  auth0.assignRolestoUser({id}, {roles: [roleId]}, function (err) {
+    if (err) {
+      throw new Error(err)
+    }
+  });
+}
+
 
 export default function getResolvers(domain, clientId, clientSecret) {
   const auth0 = new ManagementClient({
@@ -150,5 +177,6 @@ export default function getResolvers(domain, clientId, clientSecret) {
     findUsersByRole: cacheOutput(lru, findUsersByRoleFactory(auth0)),
     getRolesForUser: getRolesForUserFactory(auth0),
     updateUser: updateUserFactory(auth0),
+    addRole: addRoleToUserFactory(auth0),
   };
 }

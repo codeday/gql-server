@@ -25,21 +25,30 @@ input UpdateUserInput {
   username: String
   givenName: String
   familyName: String
+  displayNameFormat: String
   title: String
   bio: String
   phoneNumber: String
   pronoun: String
+  acceptTos: Boolean
+  picture: String
+  badges: [UserBadgeInput]
 }
 
 type UserBadge {
   id: ID!
+  displayed: Boolean
+  order: Int
   expiresUtc: String
 }
 
 input UserBadgeInput {
   id: ID!
+  displayed: Boolean
+  order: Int
   expiresUtc: String
 }
+
 
 type UserRole {
   id: ID!
@@ -89,11 +98,18 @@ input UserSearch {
 
 type Query {
   getUser(where: UserSingleInput!, fresh: Boolean): User
+  getDisplayedBadges(where: UserSingleInput!, fresh: Boolean): [UserBadge]
   searchUsers(where: UserSearch!): [User]!
   roleUsers(roleId: String!): [User]!
 }
 
+scalar FileUpload
+
 type Mutation {
-  updateUser(username: String!, updates: UpdateUserInput!): Boolean
-  grantBadge(username: String!, badge: UserBadgeInput!): Boolean
+  updateUser(where: String!, updates: UpdateUserInput!): Boolean
+  updateAuthUser(updates: UpdateUserInput!): Boolean
+  addRole(id: ID!, roleId: ID!): Boolean
+  grantBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
+  revokeBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
+  uploadPicture(upload: FileUpload!): String
 }
