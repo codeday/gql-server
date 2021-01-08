@@ -31,7 +31,6 @@ input UpdateUserInput {
   phoneNumber: String
   pronoun: String
   acceptTos: Boolean
-  picture: String
 }
 
 type UserBadge {
