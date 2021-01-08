@@ -5404,6 +5404,11 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+phone@^2.4.19:
+  version "2.4.19"
+  resolved "https://registry.yarnpkg.com/phone/-/phone-2.4.19.tgz#ff356a3b186ae971d27718bd76da274248c9f001"
+  integrity sha512-V+nzB6MPUSO5qkd2iJwLAa/S4X7wgD/NXhu/b7EZexssfGhtBnY0wdh/WOyA4qCv8uaSuJwYpLx0i9WK/wQKSw==
+
 picomatch@^2.0.4, picomatch@^2.0.5, picomatch@^2.2.1:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.2.2.tgz#21f333e9b6b8eaff02468f5146ea406d345f4dad"

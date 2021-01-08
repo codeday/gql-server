@@ -20,6 +20,7 @@ type User {
 }
 
 input UpdateUserInput {
+  username: String
   blocked: Boolean
   email: String
   givenName: String

@@ -11,6 +11,7 @@ import fetch from "node-fetch";
 import { formatName } from './utils';
 import { GraphQLUpload } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
+import phone from 'phone';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 const MAX_DISPLAYED_BADGES = 3;
@@ -19,6 +20,10 @@ function getConnectionTypes(prefix) {
   return `
     extend type ${prefix}UserBadge {
       details: CmsBadge
+    }
+    
+    extend type ${prefix}User {
+      sites: [CmsSite]
     }
   `;
 }
@@ -64,6 +69,48 @@ function getConnectionResolvers(prefix, schemas) {
         },
       },
     },
+    [`${prefix}User`]: {
+      sites: {
+        selectionSet: '{ roles }',
+        async resolve(parent, args, context, info) {
+          requireAnyOfScopes(context, [scopes.readUsers, context.user ? `read:user:${context.user}` : null])
+          return delegateToSchema({
+            schema: schemas.cms,
+            operation: 'query',
+            fieldName: 'siteCollection',
+            args: {
+              where: {
+                OR: [...parent.roles.map((role) => {
+                  if (role.name == "Staff") return { type: "Volunteer" };
+                  return { type: role.name };
+                }), { type: "Student" }]
+              }
+            },
+            context,
+            info,
+            transforms: [
+              new TransformQuery({
+                path: ['siteCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: {
+                        kind: Kind.NAME,
+                        value: 'items',
+                      },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (r) => r?.items,
+              }),
+            ],
+          });
+        },
+      },
+    },
   };
 }
 const uploader = new Uploader(process.env.UPLOADER_URL, process.env.UPLOADER_SECRET);
@@ -91,6 +138,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         throw new Error("Couldn't find any users with those paramaters.")
       }
       if (!user.badges) return []
+
       let displayedBadges = user.badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
       if (displayedBadges.length < 1) {
         displayedBadges = user.badges.slice(0, MAX_DISPLAYED_BADGES)
@@ -112,7 +160,11 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       } else if (!updates.givenName && typeof updates.givenName !== 'undefined') {
         throw new Error('Name is required.');
       }
+      if (updates.phoneNumber) {
+        updates.phoneNumber = phone(updates.phoneNumber)[0]
+      }
       await updateUser({ username }, ctx, (prev) => {
+        if (prev.username && updates.username) throw new Error("You cannot change your username!")
         const newUser = {
           ...prev,
           ...updates
@@ -224,7 +276,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       }
 
       return result;
-    }
+    },
   };
 
   const schema = makeExecutableSchema({
