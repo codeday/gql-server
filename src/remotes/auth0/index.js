@@ -85,13 +85,18 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return (await fn(where, ctx))[0] || null
     },
     getDisplayedBadges: async (_, { where, fresh }, ctx) => {
-      const fn = findUsersUncached;
-      const user = (await fn(where, ctx))[0] || null
-      if (user.badges) {
-        const displayedBadges = user.badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
-        return (displayedBadges.length > 0 ? displayedBadges : user.badges.slice(0, MAX_DISPLAYED_BADGES))
+      const fn = fresh ? findUsersUncached : findUsers;
+      const user = (await fn(where, ctx))[0]
+      if (!user) {
+        throw new Error("Couldn't find any users with those paramaters.")
       }
-      return null
+      if (!user.badges) return []
+      let displayedBadges = user.badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
+      if (displayedBadges.length < 1) {
+        displayedBadges = user.badges.slice(0, MAX_DISPLAYED_BADGES)
+        displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index })
+      }
+      return displayedBadges
     },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
     roleUsers: async (_, { roleId }, ctx) => findUsersByRole(roleId, ctx),
@@ -146,7 +151,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         displayedBadges.map((badge, index) => { badge.order = badges.find(x => x.id === badge.id).order; })
         displayedBadges.sort((a, b) => a.order - b.order)
         displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index; })
-        
+
         const notDisplayedBadges = prev.badges.filter((badge) => !badges.some(e => e.id === badge.id))
         notDisplayedBadges.map((badge) => { badge.displayed = false; badge.order = null; })
 
