@@ -153,7 +153,9 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         return { ...prev, badges: [...displayedBadges, ...notDisplayedBadges] }
       });
     },
-    uploadPicture: async (_, { upload }, ctx) => {
+    uploadProfilePicture: async (_, { where, upload }, ctx) => {
+      requireAnyOfScopes(ctx, [scopes.writeUsers, ctx.user ? `write:user:${ctx.user}` : null])
+      where = ctx.user ? { id: ctx.user } : where
       const { createReadStream, filename } = await upload;
       const chunks = [];
       // eslint-disable-next-line no-restricted-syntax
@@ -163,8 +165,12 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       const uploadBuffer = Buffer.concat(chunks);
 
       const result = await uploader.image(uploadBuffer, filename || '_.jpg');
+      if (!result.url) {
+        throw new Error("An error occured while uploading your picture. Please refresh the page and try again.")
+      }
+      await updateUser(where, ctx, (prev) => ({ ...prev, picture: result.urlResize.replace(/{(width|height)}/g, 256) }))
 
-      return result.url
+      return result.urlResize.replace(/{(width|height)}/g, 256)
     },
     addRole: async (_, { id, roleId }, ctx) => {
       addRole(id, roleId, ctx)

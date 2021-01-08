@@ -114,5 +114,5 @@ type Mutation {
   setDisplayedBadges(where: UserSingleInput, badges: [DisplayedUserBadgeInput!]): Boolean
   grantBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   revokeBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
-  uploadPicture(upload: FileUpload!): String
+  uploadProfilePicture(where: UserSingleInput, upload: FileUpload!): String
 }
