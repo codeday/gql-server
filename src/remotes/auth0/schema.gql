@@ -99,6 +99,11 @@ input UserSearch {
   username: String
 }
 
+type UserSubscription {
+  mutation: String!
+  id: ID!
+}
+
 type Query {
   getUser(where: UserSingleInput!, fresh: Boolean): User
   getDisplayedBadges(where: UserSingleInput!, fresh: Boolean): [UserBadge]
@@ -115,4 +120,8 @@ type Mutation {
   grantBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   revokeBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   uploadProfilePicture(where: UserSingleInput, upload: FileUpload!): String
+}
+
+type Subscription {
+  user: UserSubscription
 }

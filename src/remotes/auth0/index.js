@@ -9,7 +9,7 @@ import query from './query';
 import LruCache from 'lru-cache';
 import fetch from "node-fetch";
 import { formatName } from './utils';
-import { GraphQLUpload } from 'apollo-server';
+import { GraphQLUpload, PubSub } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
 import phone from 'phone';
 
@@ -114,6 +114,7 @@ function getConnectionResolvers(prefix, schemas) {
   };
 }
 const uploader = new Uploader(process.env.UPLOADER_URL, process.env.UPLOADER_SECRET);
+const pubsub = new PubSub();
 export default function createAuth0Schema(domain, clientId, clientSecret) {
   const {
     findUsers,
@@ -163,6 +164,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       if (updates.phoneNumber) {
         updates.phoneNumber = phone(updates.phoneNumber)[0]
       }
+      
       await updateUser({ username }, ctx, (prev) => {
         if (prev.username && updates.username) throw new Error("You cannot change your username!")
         const newUser = {
@@ -170,25 +172,51 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           ...updates
         }
         newUser.name = (updates.displayNameFormat ? formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName) : newUser.name)
+        if (Object.keys(prev).length === Object.keys(newUser).length
+        && Object.keys(prev).every(p => prev[p] === newUser[p])) {
+          return true
+        }
+        pubsub.publish("user", {
+          user: {
+            mutation: "update",
+            id: newUser.id
+          }
+        });
         return newUser;
       });
     },
     grantBadge: async (_, { where, badge }, ctx) => {
-      await updateUser(where, ctx, (prev) => ({
-        ...prev,
-        badges: [
-          ...(prev.badges || []).filter((b) => b.id !== badge.id),
-          badge,
-        ]
-      }));
+      await updateUser(where, ctx, (prev) => {
+        pubsub.publish("user", {
+          user: {
+            mutation: "badgeUpdate",
+            id: prev.id
+          }
+        });
+        return {
+          ...prev,
+          badges: [
+            ...(prev.badges || []).filter((b) => b.id !== badge.id),
+            badge,
+          ]
+        }
+      });
     },
     revokeBadge: async (_, { where, badge }, ctx) => {
-      await updateUser(where, ctx, (prev) => ({
-        ...prev,
-        badges: [
-          ...(prev.badges || []).filter((b) => b.id !== badge.id)
-        ]
-      }));
+      await updateUser(where, ctx, (prev) => {
+        pubsub.publish("user", {
+          user: {
+            mutation: "badgeUpdate",
+            id: prev.id
+          }
+        });
+        return {
+          ...prev,
+          badges: [
+            ...(prev.badges || []).filter((b) => b.id !== badge.id)
+          ]
+        }
+      });
     },
     setDisplayedBadges: async (_, { where, badges }, ctx) => {
       if (!ctx.user && !where) {
@@ -199,7 +227,12 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       where = ctx.user ? { id: ctx.user } : where
 
       await updateUser(where, ctx, (prev) => {
+        const oldDisplayedBadges = prev.badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
         const displayedBadges = prev.badges.filter((badge) => badges.some((e) => e.id === badge.id));
+        if (Object.keys(oldDisplayedBadges).length === Object.keys(displayedBadges).length
+          && Object.keys(oldDisplayedBadges).every(p => oldDisplayedBadges[p] === displayedBadges[p])) {
+            return true
+          }
         displayedBadges.map((badge, index) => { badge.order = badges.find(x => x.id === badge.id).order; })
         displayedBadges.sort((a, b) => a.order - b.order)
         displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index; })
@@ -207,6 +240,12 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         const notDisplayedBadges = prev.badges.filter((badge) => !badges.some(e => e.id === badge.id))
         notDisplayedBadges.map((badge) => { badge.displayed = false; badge.order = null; })
 
+        pubsub.publish("user", {
+          user: {
+            mutation: "displayedBadgeUpdate",
+            id: prev.id
+          }
+        });
         return { ...prev, badges: [...displayedBadges, ...notDisplayedBadges] }
       });
     },
@@ -225,8 +264,15 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       if (!result.url) {
         throw new Error("An error occured while uploading your picture. Please refresh the page and try again.")
       }
-      await updateUser(where, ctx, (prev) => ({ ...prev, picture: result.urlResize.replace(/{(width|height)}/g, 256) }))
-
+      await updateUser(where, ctx, (prev) => {
+        pubsub.publish("user", {
+          user: {
+            mutation: "pictureUpdate",
+            id: prev.id
+          }
+        });
+        return { ...prev, picture: result.urlResize.replace(/{(width|height)}/g, 256) }
+      })
       return result.urlResize.replace(/{(width|height)}/g, 256)
     },
     addRole: async (_, { id, roleId }, ctx) => {
@@ -278,6 +324,12 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return result;
     },
   };
+
+  resolvers.Subscription = {
+    user: {
+      subscribe: () => pubsub.asyncIterator('user')
+    }
+  }
 
   const schema = makeExecutableSchema({
     typeDefs,
