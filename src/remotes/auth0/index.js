@@ -4,7 +4,7 @@ import { delegateToSchema } from '@graphql-tools/delegate';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { TransformQuery } from '@graphql-tools/wrap';
 import { Kind } from 'graphql';
-import { scopes, requireScope, hasScope } from '../../auth';
+import { scopes, requireAnyOfScopes } from '../../auth';
 import query from './query';
 import LruCache from 'lru-cache';
 import fetch from "node-fetch";
@@ -13,6 +13,7 @@ import { GraphQLUpload } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
+const MAX_DISPLAYED_BADGES = 3;
 
 function getConnectionTypes(prefix) {
   return `
@@ -87,8 +88,8 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       const fn = findUsersUncached;
       const user = (await fn(where, ctx))[0] || null
       if (user.badges) {
-        const displayedBadges = user.badges.filter((b) => b.displayed === true).slice(0, 3)
-        return (displayedBadges.length > 0 ? displayedBadges : user.badges.slice(0, 3))
+        const displayedBadges = user.badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
+        return (displayedBadges.length > 0 ? displayedBadges : user.badges.slice(0, MAX_DISPLAYED_BADGES))
       }
       return null
     },
@@ -97,18 +98,8 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
   };
   resolvers.Mutation = {
     updateUser: async (_, { username, updates }, ctx) => {
-      await updateUser(username, ctx, (prev) => {
-        const newUser = {
-          ...prev,
-          ...updates
-        }
-        newUser.name = (updates.displayNameFormat ? formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName) : newUser.name)
-        return newUser;
-      });
-    },
-    updateAuthUser: async (_, { updates }, ctx) => {
-      if (!ctx.user) {
-        throw Error("Sorry! You don't have permission to do this. Please refresh the page and try again.")
+      if (!ctx.user && !username) {
+        throw new Error("Please specify a user to update.")
       } else if (updates.username && updates.username !== updates.username.replace(/[^a-zA-Z0-9\-_]/g, '')) {
         throw new Error('Username can only consist of letters, numbers, and _ or -.');
       } else if (!updates.familyName && typeof updates.familyName !== 'undefined') {
@@ -116,12 +107,12 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       } else if (!updates.givenName && typeof updates.givenName !== 'undefined') {
         throw new Error('Name is required.');
       }
-      await updateUser(null, ctx, (prev) => {
+      await updateUser({ username }, ctx, (prev) => {
         const newUser = {
           ...prev,
           ...updates
         }
-        newUser.name = formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName)
+        newUser.name = (updates.displayNameFormat ? formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName) : newUser.name)
         return newUser;
       });
     },
@@ -142,9 +133,28 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         ]
       }));
     },
+    setDisplayedBadges: async (_, { where, badges }, ctx) => {
+      if (!ctx.user && !where) {
+        throw new Error("Please specify a user to update.")
+      } else if (badges.length > MAX_DISPLAYED_BADGES) {
+        throw new Error("Displayed badges cannot be more than 3.")
+      }
+      where = ctx.user ? { id: ctx.user } : where
+
+      await updateUser(where, ctx, (prev) => {
+        const displayedBadges = prev.badges.filter((badge) => badges.some((e) => e.id === badge.id));
+        displayedBadges.map((badge, index) => { badge.order = badges.find(x => x.id === badge.id).order; })
+        displayedBadges.sort((a, b) => a.order - b.order)
+        displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index; })
+        
+        const notDisplayedBadges = prev.badges.filter((badge) => !badges.some(e => e.id === badge.id))
+        notDisplayedBadges.map((badge) => { badge.displayed = false; badge.order = null; })
+
+        return { ...prev, badges: [...displayedBadges, ...notDisplayedBadges] }
+      });
+    },
     uploadPicture: async (_, { upload }, ctx) => {
       const { createReadStream, filename } = await upload;
-      console.log(filename)
       const chunks = [];
       // eslint-disable-next-line no-restricted-syntax
       for await (const chunk of createReadStream()) {
@@ -156,16 +166,14 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
 
       return result.url
     },
-    addRole: async (_, {id, roleId}, ctx) => {
+    addRole: async (_, { id, roleId }, ctx) => {
       addRole(id, roleId, ctx)
     }
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
     roles: async ({ id }, _, ctx) => {
-      if (!hasScope(ctx, scopes.readUserRoles) && !hasScope(ctx, `read:${ctx.user}`)) {
-        throw new Error(`Your request requires the scope ${scopes.readUserRoles}.`);
-      }
+      requireAnyOfScopes(ctx, [scopes.readUserRoles, ctx.user ? `read:user:${ctx.user}` : null])
       return getRolesForUser(id)
     },
     picture: async ({ picture }, { transform }) => {

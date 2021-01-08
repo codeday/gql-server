@@ -22,7 +22,6 @@ type User {
 input UpdateUserInput {
   blocked: Boolean
   email: String
-  username: String
   givenName: String
   familyName: String
   displayNameFormat: String
@@ -32,7 +31,6 @@ input UpdateUserInput {
   pronoun: String
   acceptTos: Boolean
   picture: String
-  badges: [UserBadgeInput]
 }
 
 type UserBadge {
@@ -47,6 +45,11 @@ input UserBadgeInput {
   displayed: Boolean
   order: Int
   expiresUtc: String
+}
+
+input DisplayedUserBadgeInput {
+  id: ID!
+  order: Int!
 }
 
 
@@ -106,9 +109,9 @@ type Query {
 scalar FileUpload
 
 type Mutation {
-  updateUser(where: String!, updates: UpdateUserInput!): Boolean
-  updateAuthUser(updates: UpdateUserInput!): Boolean
+  updateUser(username: String, updates: UpdateUserInput!): Boolean
   addRole(id: ID!, roleId: ID!): Boolean
+  setDisplayedBadges(where: UserSingleInput, badges: [DisplayedUserBadgeInput!]): Boolean
   grantBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   revokeBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   uploadPicture(upload: FileUpload!): String
