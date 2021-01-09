@@ -164,7 +164,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       if (updates.phoneNumber) {
         updates.phoneNumber = phone(updates.phoneNumber)[0]
       }
-      
+
       await updateUser({ username }, ctx, (prev) => {
         if (prev.username && updates.username) throw new Error("You cannot change your username!")
         const newUser = {
@@ -173,7 +173,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         }
         newUser.name = (updates.displayNameFormat ? formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName) : newUser.name)
         if (Object.keys(prev).length === Object.keys(newUser).length
-        && Object.keys(prev).every(p => prev[p] === newUser[p])) {
+          && Object.keys(prev).every(p => prev[p] === newUser[p])) {
           return true
         }
         pubsub.publish("user", {
@@ -231,8 +231,8 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         const displayedBadges = prev.badges.filter((badge) => badges.some((e) => e.id === badge.id));
         if (Object.keys(oldDisplayedBadges).length === Object.keys(displayedBadges).length
           && Object.keys(oldDisplayedBadges).every(p => oldDisplayedBadges[p] === displayedBadges[p])) {
-            return true
-          }
+          return true
+        }
         displayedBadges.map((badge, index) => { badge.order = badges.find(x => x.id === badge.id).order; })
         displayedBadges.sort((a, b) => a.order - b.order)
         displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index; })
@@ -276,7 +276,18 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return result.urlResize.replace(/{(width|height)}/g, 256)
     },
     addRole: async (_, { id, roleId }, ctx) => {
-      addRole(id, roleId, ctx)
+      const user = await findUsersUncached({ id }, ctx)
+      try {
+        await addRole(id, roleId, ctx)
+      } catch (error) {
+        throw new Error(error)
+      }
+      pubsub.publish("user", {
+        user: {
+          mutation: "roleUpdate",
+          id: user.id
+        }
+      });
     }
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
