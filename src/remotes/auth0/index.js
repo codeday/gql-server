@@ -196,7 +196,9 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         }
         pubsub.publish("userBadgeUpdate", {
           userBadgeUpdate: {
-            ...user
+            type: "grant",
+            user,
+            badge
           }
         });
         return user
@@ -212,7 +214,9 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         }
         pubsub.publish("userBadgeUpdate", {
           userBadgeUpdate: {
-            ...user
+            type: "revoke",
+            user,
+            badge
           }
         });
         return user
@@ -348,7 +352,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     },
     userBadgeUpdate: {
       resolve: async (payload, args, context, info) => ({
-        roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userBadgeUpdate.id) : null,
+        user: { roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userBadgeUpdate.user.id) : null, ...payload.userBadgeUpdate.user },
         ...payload.userBadgeUpdate,
       }),
       subscribe: () => pubsub.asyncIterator('userBadgeUpdate')

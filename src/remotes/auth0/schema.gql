@@ -110,6 +110,12 @@ type SubscriptionUser {
   badges: [UserBadge]
 }
 
+type SubscriptionBadge {
+  type: String
+  user: SubscriptionUser!
+  badge: UserBadge!
+}
+
 type Query {
   getUser(where: UserSingleInput!, fresh: Boolean): User
   getDisplayedBadges(where: UserSingleInput!, fresh: Boolean): [UserBadge]
@@ -133,7 +139,7 @@ type Mutation {
 
 type Subscription {
   userUpdate: SubscriptionUser
-  userBadgeUpdate: SubscriptionUser
+  userBadgeUpdate: SubscriptionBadge
   userDisplayedBadgesUpdate: SubscriptionUser
   userProfilePictureUpdate: SubscriptionUser
   userRoleUpdate: SubscriptionUser
