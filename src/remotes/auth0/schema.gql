@@ -52,7 +52,6 @@ input DisplayedUserBadgeInput {
   order: Int!
 }
 
-
 type UserRole {
   id: ID!
   name: String!
@@ -68,15 +67,15 @@ type DiscordInformation {
 }
 
 enum UserPictureFit {
-  CLAMP,
-  CLIP,
-  CROP,
-  FACEAREA,
-  FILL,
-  FILLMAX,
-  MAX,
-  MIN,
-  SCALE,
+  CLAMP
+  CLIP
+  CROP
+  FACEAREA
+  FILL
+  FILLMAX
+  MAX
+  MIN
+  SCALE
 }
 
 input UserPictureTransformInput {
@@ -99,9 +98,16 @@ input UserSearch {
   username: String
 }
 
-type UserSubscription {
-  mutation: String!
+type SubscriptionUser {
   id: ID!
+  username: String
+  name: String
+  pronoun: String
+  bio: String
+  discordId: String
+  picture(transform: UserPictureTransformInput): String
+  roles: [UserRole]
+  badges: [UserBadge]
 }
 
 type Query {
@@ -116,12 +122,19 @@ scalar FileUpload
 type Mutation {
   updateUser(username: String, updates: UpdateUserInput!): Boolean
   addRole(id: ID!, roleId: ID!): Boolean
-  setDisplayedBadges(where: UserSingleInput, badges: [DisplayedUserBadgeInput!]): Boolean
+  setDisplayedBadges(
+    where: UserSingleInput
+    badges: [DisplayedUserBadgeInput!]
+  ): Boolean
   grantBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   revokeBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   uploadProfilePicture(where: UserSingleInput, upload: FileUpload!): String
 }
 
 type Subscription {
-  user: UserSubscription
+  userUpdate: SubscriptionUser
+  userBadgeUpdate: SubscriptionUser
+  userDisplayedBadgesUpdate: SubscriptionUser
+  userProfilePictureUpdate: SubscriptionUser
+  userRoleUpdate: SubscriptionUser
 }

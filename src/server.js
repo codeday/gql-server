@@ -14,7 +14,7 @@ import createAuth0Schema from './remotes/auth0';
 import createShowcaseSchema from './remotes/showcase';
 import createCalendarSchema from './remotes/calendar';
 import createTwitchSchema from './remotes/twitch';
-import { addAuthContext } from './auth';
+import { addAuthContext, addWsAuthContext } from './auth';
 import { weave } from './schema';
 
 const port = process.env.PORT || 4000;
@@ -73,10 +73,13 @@ export default async () => {
 
   server.listen(port, () => {
     new SubscriptionServer({
-        schema,
-        execute,
-        subscribe,
-      }, { server, path: '/subscriptions'});
+      schema,
+      execute,
+      subscribe,
+      onConnect: (connectionParams, webSocket) => { 
+        return addWsAuthContext(connectionParams) 
+      }
+    }, { server, path: '/subscriptions' });
     console.log(`Listening on http://0.0.0.0:${port}`);
   });
 };
