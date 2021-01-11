@@ -49,3 +49,13 @@ export const addAuthContext = (req) => {
     return { user, scopes: [`write:user:${user}`, `read:user:${user}`] }
   }
 };
+
+export const addWsAuthContext = (connectionParams) => {
+  if (!connectionParams.authorization) return { scopes: [] };
+  
+  const [authType, token] = connectionParams.authorization.split(/\s+/);
+  if (authType !== 'Bearer' || !token) return { scopes: [] };
+
+  const { scopes: grantedScopes } = verify(token, process.env.TOKEN_SECRET)
+  return { scopes: grantedScopes.split(/\s+/g) };
+};

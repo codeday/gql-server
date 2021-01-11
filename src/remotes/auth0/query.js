@@ -31,7 +31,7 @@ const cacheOutput = (lru, fn) => (args, context, ...rest) => {
 
 const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, escape = true) => {
   if (ctx.user) {
-    query = {id: ctx.user}
+    query = { id: ctx.user }
   }
   // Convert query to Auth0 field names
   const snakeQuery = objectCamelToSnake(filterNullOrUndefinedKeys(query));
@@ -72,14 +72,17 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
       'user_metadata',
     ],
   });
-
-  return users
+  const newUsers = users
     .map((user) => ({ ...filterKeysRemove(user, ['user_metadata']), ...user.user_metadata }))
     .map((user) => filterKeysKeep(user, [
       ...userPublicFields,
       ...(hasAnyOfScopes(ctx, [scopes.readUsers, scopes.writeUsers, ctx.user ? `read:user:${ctx.user}` : null, ctx.user ? `write:user:${ctx.user}` : null]) ? userPrivateFields : []),
     ]))
     .map((user) => ({ ...objectSnakeToCamel(filterKeysRemove(user, ['user_id'])), id: user.user_id }));
+  if (newUsers.length < 1) {
+    throw new Error("No user(s) were found with that query.")
+  }
+  return newUsers
 };
 
 const getRolesForUserFactory = (auth0) => async (id) => auth0.getUserRoles({ id });
@@ -145,10 +148,14 @@ const addRoleToUserFactory = (auth0) => async (id, roleId, ctx) => {
   if (ctx.user) {
     id = ctx.user
   }
-  auth0.assignRolestoUser({id}, {roles: [roleId]}, function (err) {
-    if (err) {
-      throw new Error(err)
-    }
+  return new Promise(function (resolve, reject) {
+    auth0.assignRolestoUser({ id }, { roles: [roleId] }, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
   });
 }
 

@@ -9,9 +9,10 @@ import query from './query';
 import LruCache from 'lru-cache';
 import fetch from "node-fetch";
 import { formatName } from './utils';
-import { GraphQLUpload } from 'apollo-server';
+import { GraphQLUpload, PubSub } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
 import phone from 'phone';
+import { hasAnyOfScopes } from './../../auth';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 const MAX_DISPLAYED_BADGES = 3;
@@ -114,6 +115,7 @@ function getConnectionResolvers(prefix, schemas) {
   };
 }
 const uploader = new Uploader(process.env.UPLOADER_URL, process.env.UPLOADER_SECRET);
+const pubsub = new PubSub();
 export default function createAuth0Schema(domain, clientId, clientSecret) {
   const {
     findUsers,
@@ -163,6 +165,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       if (updates.phoneNumber) {
         updates.phoneNumber = phone(updates.phoneNumber)[0]
       }
+
       await updateUser({ username }, ctx, (prev) => {
         if (prev.username && updates.username) throw new Error("You cannot change your username!")
         const newUser = {
@@ -170,25 +173,54 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           ...updates
         }
         newUser.name = (updates.displayNameFormat ? formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName) : newUser.name)
+        if (Object.keys(prev).length === Object.keys(newUser).length
+          && Object.keys(prev).every(p => prev[p] === newUser[p])) {
+          return true
+        }
+        pubsub.publish("userUpdate", {
+          userUpdate: {
+            ...newUser
+          }
+        });
         return newUser;
       });
     },
     grantBadge: async (_, { where, badge }, ctx) => {
-      await updateUser(where, ctx, (prev) => ({
-        ...prev,
-        badges: [
-          ...(prev.badges || []).filter((b) => b.id !== badge.id),
-          badge,
-        ]
-      }));
+      await updateUser(where, ctx, (prev) => {
+        const user = {
+          ...prev,
+          badges: [
+            ...(prev.badges || []).filter((b) => b.id !== badge.id),
+            badge,
+          ]
+        }
+        pubsub.publish("userBadgeUpdate", {
+          userBadgeUpdate: {
+            type: "grant",
+            user,
+            badge
+          }
+        });
+        return user
+      });
     },
     revokeBadge: async (_, { where, badge }, ctx) => {
-      await updateUser(where, ctx, (prev) => ({
-        ...prev,
-        badges: [
-          ...(prev.badges || []).filter((b) => b.id !== badge.id)
-        ]
-      }));
+      await updateUser(where, ctx, (prev) => {
+        const user = {
+          ...prev,
+          badges: [
+            ...(prev.badges || []).filter((b) => b.id !== badge.id)
+          ]
+        }
+        pubsub.publish("userBadgeUpdate", {
+          userBadgeUpdate: {
+            type: "revoke",
+            user,
+            badge
+          }
+        });
+        return user
+      });
     },
     setDisplayedBadges: async (_, { where, badges }, ctx) => {
       if (!ctx.user && !where) {
@@ -199,15 +231,25 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       where = ctx.user ? { id: ctx.user } : where
 
       await updateUser(where, ctx, (prev) => {
+        const oldDisplayedBadges = prev.badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
         const displayedBadges = prev.badges.filter((badge) => badges.some((e) => e.id === badge.id));
+        if (Object.keys(oldDisplayedBadges).length === Object.keys(displayedBadges).length
+          && Object.keys(oldDisplayedBadges).every(p => oldDisplayedBadges[p] === displayedBadges[p])) {
+          return true
+        }
         displayedBadges.map((badge, index) => { badge.order = badges.find(x => x.id === badge.id).order; })
         displayedBadges.sort((a, b) => a.order - b.order)
         displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index; })
 
         const notDisplayedBadges = prev.badges.filter((badge) => !badges.some(e => e.id === badge.id))
         notDisplayedBadges.map((badge) => { badge.displayed = false; badge.order = null; })
-
-        return { ...prev, badges: [...displayedBadges, ...notDisplayedBadges] }
+        const user = { ...prev, badges: [...displayedBadges, ...notDisplayedBadges] }
+        pubsub.publish("userDisplayedBadgesUpdate", {
+          userDisplayedBadgesUpdate: {
+            ...user
+          }
+        });
+        return user
       });
     },
     uploadProfilePicture: async (_, { where, upload }, ctx) => {
@@ -225,19 +267,40 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       if (!result.url) {
         throw new Error("An error occured while uploading your picture. Please refresh the page and try again.")
       }
-      await updateUser(where, ctx, (prev) => ({ ...prev, picture: result.urlResize.replace(/{(width|height)}/g, 256) }))
-
+      await updateUser(where, ctx, (prev) => {
+        const user = { ...prev, picture: result.urlResize.replace(/{(width|height)}/g, 256) }
+        pubsub.publish("userProfilePictureUpdate", {
+          userProfilePictureUpdate: {
+            ...user
+          }
+        });
+        return user
+      })
       return result.urlResize.replace(/{(width|height)}/g, 256)
     },
     addRole: async (_, { id, roleId }, ctx) => {
-      addRole(id, roleId, ctx)
+      const user = await findUsersUncached({ id }, ctx)
+      try {
+        await addRole(id, roleId, ctx)
+      } catch (error) {
+        throw new Error(error)
+      }
+      pubsub.publish("userRoleUpdate", {
+        userRoleUpdate: {
+          ...user
+        }
+      });
     }
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
     roles: async ({ id }, _, ctx) => {
-      requireAnyOfScopes(ctx, [scopes.readUserRoles, ctx.user ? `read:user:${ctx.user}` : null])
-      return getRolesForUser(id)
+      try {
+        requireAnyOfScopes(ctx, [scopes.readUserRoles, ctx.user ? `read:user:${ctx.user}` : null])
+      } catch {
+        return null
+      }
+      return await getRolesForUser(id)
     },
     picture: async ({ picture }, { transform }) => {
       if (!transform || Object.keys(transform).length === 0) return picture;
@@ -278,6 +341,44 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return result;
     },
   };
+
+  resolvers.Subscription = {
+    userUpdate: {
+      resolve: async (payload, args, context, info) => ({
+        roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userUpdate.id) : null,
+        ...payload.userUpdate,
+      }),
+      subscribe: () => pubsub.asyncIterator('userUpdate')
+    },
+    userBadgeUpdate: {
+      resolve: async (payload, args, context, info) => ({
+        user: { roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userBadgeUpdate.user.id) : null, ...payload.userBadgeUpdate.user },
+        ...payload.userBadgeUpdate,
+      }),
+      subscribe: () => pubsub.asyncIterator('userBadgeUpdate')
+    },
+    userDisplayedBadgesUpdate: {
+      resolve: async (payload, args, context, info) => ({
+        roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userDisplayedBadgesUpdate.id) : null,
+        ...payload.userDisplayedBadgesUpdate,
+      }),
+      subscribe: () => pubsub.asyncIterator('userDisplayedBadgesUpdate')
+    },
+    userProfilePictureUpdate: {
+      resolve: async (payload, args, context, info) => ({
+        roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userProfilePictureUpdate.id) : null,
+        ...payload.userProfilePictureUpdate,
+      }),
+      subscribe: () => pubsub.asyncIterator('userProfilePictureUpdate')
+    },
+    userRoleUpdate: {
+      resolve: async (payload, args, context, info) => ({
+        roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userRoleUpdate.id) : null,
+        ...payload.userRoleUpdate,
+      }),
+      subscribe: () => pubsub.asyncIterator('userRoleUpdate')
+    },
+  }
 
   const schema = makeExecutableSchema({
     typeDefs,
