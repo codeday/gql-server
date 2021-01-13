@@ -79,9 +79,6 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
       ...(hasAnyOfScopes(ctx, [scopes.readUsers, scopes.writeUsers, ctx.user ? `read:user:${ctx.user}` : null, ctx.user ? `write:user:${ctx.user}` : null]) ? userPrivateFields : []),
     ]))
     .map((user) => ({ ...objectSnakeToCamel(filterKeysRemove(user, ['user_id'])), id: user.user_id }));
-  if (newUsers.length < 1) {
-    throw new Error("No user(s) were found with that query.")
-  }
   return newUsers
 };
 
