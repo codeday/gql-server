@@ -15,7 +15,7 @@ type User {
   phoneNumber: String
   pronoun: String
   roles: [UserRole]
-  badges: [UserBadge]
+  badges(displayed: Boolean): [UserBadge]
   discordInformation: DiscordInformation
 }
 
@@ -118,7 +118,6 @@ type SubscriptionBadge {
 
 type Query {
   getUser(where: UserSingleInput!, fresh: Boolean): User
-  getDisplayedBadges(where: UserSingleInput!, fresh: Boolean): [UserBadge]
   searchUsers(where: UserSearch!): [User]!
   roleUsers(roleId: String!): [User]!
 }
