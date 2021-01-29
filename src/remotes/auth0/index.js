@@ -133,21 +133,6 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       const fn = fresh ? findUsersUncached : findUsers;
       return (await fn(where, ctx))[0] || null
     },
-    getDisplayedBadges: async (_, { where, fresh }, ctx) => {
-      const fn = fresh ? findUsersUncached : findUsers;
-      const user = (await fn(where, ctx))[0]
-      if (!user) {
-        throw new Error("Couldn't find any users with those paramaters.")
-      }
-      if (!user.badges) return []
-
-      let displayedBadges = user.badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
-      if (displayedBadges.length < 1) {
-        displayedBadges = user.badges.slice(0, MAX_DISPLAYED_BADGES)
-        displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index })
-      }
-      return displayedBadges
-    },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
     roleUsers: async (_, { roleId }, ctx) => findUsersByRole(roleId, ctx),
   };
@@ -294,6 +279,19 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
+    badges: async ({ badges }, displayed, ctx) => {
+      console.log(badges)
+      console.log(displayed)
+      if (displayed) {
+        let displayedBadges = badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
+        if (displayedBadges.length < 1) {
+          displayedBadges = badges.slice(0, MAX_DISPLAYED_BADGES)
+          displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index })
+        }
+        return displayedBadges
+      }
+      return badges.map((badge, index) => { if (index < MAX_DISPLAYED_BADGES) { badge.displayed = true; badge.order = index } })
+    },
     roles: async ({ id }, _, ctx) => {
       try {
         requireAnyOfScopes(ctx, [scopes.readUserRoles, ctx.user ? `read:user:${ctx.user}` : null])
