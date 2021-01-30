@@ -280,8 +280,6 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
     badges: async ({ badges }, displayed, ctx) => {
-      console.log(badges)
-      console.log(displayed)
       if (displayed) {
         let displayedBadges = badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
         if (displayedBadges.length < 1) {
