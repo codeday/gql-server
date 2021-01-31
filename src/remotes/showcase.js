@@ -12,6 +12,11 @@ function getConnectionTypes(prefix) {
 
     extend type ${prefix}Project {
       eventGroup: CmsEvent
+      program: CmsProgram
+    }
+
+    extend type ${prefix}Award {
+      info: CmsAward
     }
   `;
 }
@@ -38,7 +43,83 @@ function getConnectionResolvers(prefix, schemas) {
         },
       },
     },
+    [`${prefix}Award`]: {
+      info: {
+        selectionSet: '{ type }',
+        async resolve(parent, args, context, info) {
+          return delegateToSchema({
+            schema: schemas.cms,
+            operation: 'query',
+            fieldName: 'awardCollection',
+            args: {
+              where: {
+                type: parent.type,
+              },
+              limit: 1,
+            },
+            context,
+            info,
+            transforms: [
+              new TransformQuery({
+                path: ['awardCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: {
+                        kind: Kind.NAME,
+                        value: 'items',
+                      },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (r) => r?.items[0],
+              }),
+            ],
+          });
+        },
+      },
+    },
     [`${prefix}Project`]: {
+      program: {
+        selectionSet: '{ programId }',
+        async resolve(parent, args, context, info) {
+          return delegateToSchema({
+            schema: schemas.cms,
+            operation: 'query',
+            fieldName: 'programCollection',
+            args: {
+              where: {
+                id: parent.programId,
+              },
+              limit: 1,
+            },
+            context,
+            info,
+            transforms: [
+              new TransformQuery({
+                path: ['programCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: {
+                        kind: Kind.NAME,
+                        value: 'items',
+                      },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (r) => r?.items[0],
+              }),
+            ],
+          });
+        },
+      },
       eventGroup: {
         selectionSet: '{ eventGroupId }',
         async resolve(parent, args, context, info) {
@@ -48,7 +129,7 @@ function getConnectionResolvers(prefix, schemas) {
             fieldName: 'eventCollection',
             args: {
               where: {
-                id: parent.id,
+                id: parent.eventGroupId,
               },
               limit: 1,
             },
