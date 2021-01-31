@@ -41,7 +41,7 @@ function getConnectionResolvers(prefix, schemas) {
 
     [`${prefix}Asset`]: {
       url: {
-        selectionSet: '{ __selectionSetContentfulBaseUrl: contentfulBaseUrl }',
+        selectionSet: '{ __selectionSetContentfulBaseUrl: contentfulBaseUrl, __selectionSetUrl: url }',
         resolve(parent, args) {
           const transformQueryFormats = {
             width: (v) => ({ w: v }),
@@ -67,8 +67,8 @@ function getConnectionResolvers(prefix, schemas) {
             .join('&');
 
           // eslint-disable-next-line no-underscore-dangle
-          const baseUrl = parent.__selectionSetContentfulBaseUrl
-            .replace('images.ctfassets.net', 'f2.codeday.org');
+          const baseUrl = (parent.__selectionSetContentfulBaseUrl || parent.__selectionSetUrl)
+            ?.replace('images.ctfassets.net', 'f2.codeday.org');
 
           return `${baseUrl}${qs.length > 0 ? '?' : ''}${qs}`;
         },
