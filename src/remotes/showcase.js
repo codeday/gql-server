@@ -53,7 +53,7 @@ function getConnectionResolvers(prefix, schemas) {
             fieldName: 'awardCollection',
             args: {
               where: {
-                type: parent.type,
+                id: parent.type,
               },
               limit: 1,
             },

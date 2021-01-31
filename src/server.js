@@ -76,8 +76,8 @@ export default async () => {
       schema,
       execute,
       subscribe,
-      onConnect: (connectionParams, webSocket) => { 
-        return addWsAuthContext(connectionParams) 
+      onConnect: (connectionParams, webSocket) => {
+        return addWsAuthContext(connectionParams)
       }
     }, { server, path: '/subscriptions' });
     console.log(`Listening on http://0.0.0.0:${port}`);
