@@ -275,6 +275,22 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           ...user
         }
       });
+    },
+    linkDiscord: async (_, { userId, discordId }, ctx) => {
+      requireScope(ctx, scopes.writeUsers)
+      await updateUser({ id: userId }, ctx, (prev) => {
+        if (!prev.discordId) {
+          throw new Error("Discord already linked!")
+        } else {
+          const user = { discordId, ...prev }
+          pubsub.publish("userUpdate", {
+            userUpdate: {
+              ...user
+            }
+          });
+          return user
+        }
+      });
     }
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
