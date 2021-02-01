@@ -12,7 +12,7 @@ import { formatName } from './utils';
 import { GraphQLUpload, PubSub } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
 import phone from 'phone';
-import { hasAnyOfScopes } from './../../auth';
+import { hasAnyOfScopes, requireScope } from './../../auth';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 const MAX_DISPLAYED_BADGES = 3;
@@ -279,18 +279,18 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     linkDiscord: async (_, { userId, discordId }, ctx) => {
       requireScope(ctx, scopes.writeUsers)
       await updateUser({ id: userId }, ctx, (prev) => {
-        if (!prev.discordId) {
+        if (prev.discordId) {
           throw new Error("Discord already linked!")
-        } else {
-          const user = { discordId, ...prev }
-          pubsub.publish("userUpdate", {
-            userUpdate: {
-              ...user
-            }
-          });
-          return user
         }
+        const user = { discordId, ...prev }
+        pubsub.publish("userUpdate", {
+          userUpdate: {
+            ...user
+          }
+        });
+        return user
       });
+      return true
     }
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
