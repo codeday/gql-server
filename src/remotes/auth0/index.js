@@ -295,16 +295,18 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
-    badges: async ({ badges }, displayed, ctx) => {
-      if (displayed) {
-        let displayedBadges = badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
-        if (displayedBadges.length < 1) {
-          displayedBadges = badges.slice(0, MAX_DISPLAYED_BADGES)
-          displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index })
+    badges: async ({ badges }, {displayed}, ctx) => {
+      if (badges) {
+        if (displayed) {
+          let displayedBadges = badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
+          if (displayedBadges.length < 1) {
+            displayedBadges = badges.slice(0, MAX_DISPLAYED_BADGES)
+            displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index })
+          }
+          return displayedBadges
         }
-        return displayedBadges
+        return badges
       }
-      return badges.map((badge, index) => { if (index < MAX_DISPLAYED_BADGES) { badge.displayed = true; badge.order = index } })
     },
     roles: async ({ id }, _, ctx) => {
       try {
