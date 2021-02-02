@@ -157,7 +157,9 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           ...prev,
           ...updates
         }
-        newUser.name = (updates.displayNameFormat ? formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName) : newUser.name)
+        if (updates.displayNameFormat || updates.givenName || updates.familyName) {
+          newUser.name = formatName(newUser.displayNameFormat, newUser.givenName, newUser.familyName)
+        }
         if (Object.keys(prev).length === Object.keys(newUser).length
           && Object.keys(prev).every(p => prev[p] === newUser[p])) {
           return true
