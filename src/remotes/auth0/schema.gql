@@ -127,8 +127,9 @@ scalar FileUpload
 type Mutation {
   updateUser(username: String, updates: UpdateUserInput!): Boolean
   addRole(id: ID!, roleId: ID!): Boolean
+  addRoleByCode(where: UserSingleInput!, code: String!): Boolean
   setDisplayedBadges(
-    where: UserSingleInput
+    where: UserSingleInput,
     badges: [DisplayedUserBadgeInput!]
   ): Boolean
   grantBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean

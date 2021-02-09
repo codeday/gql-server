@@ -16,13 +16,20 @@ import { hasAnyOfScopes, requireScope } from './../../auth';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 const MAX_DISPLAYED_BADGES = 3;
+const ROLE_CODES = process.env.ROLE_CODES
+  .split(';')
+  .map((e) => e.split(':'))
+  .reduce((accum, [code, role]) => ({ ...accum, [code]: role }), {});
+function getRoleByCode(code) {
+  return ROLE_CODES[code.replace(/\W/g, '')] || null;
+}
 
 function getConnectionTypes(prefix) {
   return `
     extend type ${prefix}UserBadge {
       details: CmsBadge
     }
-    
+
     extend type ${prefix}User {
       sites: [CmsSite]
     }
@@ -266,7 +273,8 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return result.urlResize.replace(/{(width|height)}/g, 256)
     },
     addRole: async (_, { id, roleId }, ctx) => {
-      const user = await findUsersUncached({ id }, ctx)
+      requireAnyOfScopes(ctx, [scopes.writeUsers]);
+      const user = await findUsersUncached({ id }, ctx);
       try {
         await addRole(id, roleId, ctx)
       } catch (error) {
@@ -277,6 +285,29 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           ...user
         }
       });
+      return true;
+    },
+    addRoleByCode: async (_, { where, code }, ctx) => {
+      requireAnyOfScopes(ctx, [scopes.writeUsers, ctx.user ? `write:user:${ctx.user}` : null])
+      where = ctx.user ? { id: ctx.user } : where;
+
+      const users = await findUsersUncached(where, ctx);
+      const roleId = getRoleByCode(code);
+
+      if (!users || users.length === 0) return false;
+      if (!roleId) throw new Error('Invalid role code');
+
+      try {
+        await addRole(users[0].id, roleId, ctx);
+      } catch (error) {
+        throw new Error(error);
+      }
+      pubsub.publish("userRoleUpdate", {
+        userRoleUpdate: {
+          ...users
+        }
+      });
+      return true;
     },
     linkDiscord: async (_, { userId, discordId }, ctx) => {
       requireScope(ctx, scopes.writeUsers)
