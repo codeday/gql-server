@@ -153,6 +153,8 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         throw new Error('Name is required.');
       } else if (!updates.givenName && typeof updates.givenName !== 'undefined') {
         throw new Error('Name is required.');
+      } else if (updates.acceptTos === false && !hasScope(ctx, scopes.writeUsers)) {
+        throw new Error("You cannot unaccept the TOS.")
       }
       if (updates.phoneNumber) {
         updates.phoneNumber = phone(updates.phoneNumber)[0]
