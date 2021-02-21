@@ -324,7 +324,23 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         return user
       });
       return true
-    }
+    },
+    unlinkDiscord: async (_, { userId }, ctx) => {
+      requireAnyOfScopes(ctx, [scopes.writeUsers, ctx.user ? `write:user:${ctx.user}` : null])
+      if (ctx.user) userId = ctx.user
+      await updateUser({ id: userId }, ctx, (prev) => {
+        if (!prev.discordId) {
+          throw new Error("That user does not have a Discord account linked!")
+        }
+        const user = {...prev, discordId: null }
+        console.log(user)
+        pubsub.publish("userUnlinkDiscord", {
+          userUnlinkDiscord: prev.discordId
+        });
+        return user
+      });
+      return true
+    },
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
@@ -424,6 +440,9 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         ...payload.userRoleUpdate,
       }),
       subscribe: () => pubsub.asyncIterator('userRoleUpdate')
+    },
+    userUnlinkDiscord: {
+      subscribe: () => pubsub.asyncIterator('userUnlinkDiscord')
     },
   }
 

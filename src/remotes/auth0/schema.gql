@@ -135,7 +135,8 @@ type Mutation {
   grantBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   revokeBadge(where: UserSingleInput!, badge: UserBadgeInput!): Boolean
   uploadProfilePicture(where: UserSingleInput, upload: FileUpload!): String
-  linkDiscord(userId: ID!, discordId: String!) : Boolean
+  linkDiscord(userId: ID!, discordId: String!): Boolean
+  unlinkDiscord(userId: ID!): Boolean
 }
 
 type Subscription {
@@ -144,4 +145,5 @@ type Subscription {
   userDisplayedBadgesUpdate: SubscriptionUser
   userProfilePictureUpdate: SubscriptionUser
   userRoleUpdate: SubscriptionUser
+  userUnlinkDiscord: String
 }
