@@ -12,7 +12,7 @@ import { formatName } from './utils';
 import { GraphQLUpload, PubSub } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
 import phone from 'phone';
-import { hasAnyOfScopes, requireScope } from './../../auth';
+import { hasAnyOfScopes, requireScope, hasScope } from './../../auth';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 const MAX_DISPLAYED_BADGES = 3;
