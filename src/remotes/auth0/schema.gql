@@ -124,6 +124,11 @@ type Query {
 
 scalar FileUpload
 
+enum PizzaOrTurtle {
+  TURTLE
+  PIZZA
+}
+
 type Mutation {
   updateUser(username: String, updates: UpdateUserInput!): Boolean
   addRole(id: ID!, roleId: ID!): Boolean
@@ -137,6 +142,7 @@ type Mutation {
   uploadProfilePicture(where: UserSingleInput, upload: FileUpload!): String
   linkDiscord(userId: ID!, discordId: String!): Boolean
   unlinkDiscord(userId: ID!): Boolean
+  pizzaOrTurtleCult(userId: ID, pizzaOrTurtle: PizzaOrTurtle!): Boolean
 }
 
 type Subscription {
@@ -146,4 +152,5 @@ type Subscription {
   userProfilePictureUpdate: SubscriptionUser
   userRoleUpdate: SubscriptionUser
   userUnlinkDiscord: String
+  userCultSelection: SubscriptionUser
 }

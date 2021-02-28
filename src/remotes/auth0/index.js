@@ -334,7 +334,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         if (!prev.discordId) {
           throw new Error("That user does not have a Discord account linked!")
         }
-        const user = {...prev, discordId: null }
+        const user = { ...prev, discordId: null }
         console.log(user)
         pubsub.publish("userUnlinkDiscord", {
           userUnlinkDiscord: prev.discordId
@@ -343,10 +343,37 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       });
       return true
     },
+    pizzaOrTurtleCult: async (_, { userId, pizzaOrTurtle }, ctx) => {
+      requireAnyOfScopes(ctx, [scopes.writeUsers, ctx.user ? `write:user:${ctx.user}` : null])
+      if (ctx.user) userId = ctx.user
+      const badgeId = pizzaOrTurtle.toLowerCase()
+      const otherBadgeId = badgeId == "turtle" ? "pizza": "turtle"
+      await updateUser({ userId }, ctx, (prev) => {
+        if ((prev.badges || []).filter((b) => b.id === otherBadgeId).length > 0) {
+          throw new Error(`HEY YOU ARE ALREADY APART OF THE ${otherBadgeId.toUpperCase()} CULT`)
+        } else if ((prev.badges || []).filter((b) => b.id === badgeId).length > 0) {
+          throw new Error("You are already apart of that cult!")
+        }
+        const user = {
+          ...prev,
+          badges: [
+            ...(prev.badges || []).filter((b) => b.id !== badgeId),
+            { id: badgeId },
+          ]
+        }
+        pubsub.publish("userCultSelection", {
+          userCultSelection: {
+            ...user
+          }
+        });
+        return user
+      });
+      return true
+    },
   }
   const lru = new LruCache({ maxAge: 1000 * 60 * 5, max: 500 });
   resolvers.User = {
-    badges: async ({ badges }, {displayed}, ctx) => {
+    badges: async ({ badges }, { displayed }, ctx) => {
       if (badges) {
         if (displayed) {
           let displayedBadges = badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
@@ -445,6 +472,13 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     },
     userUnlinkDiscord: {
       subscribe: () => pubsub.asyncIterator('userUnlinkDiscord')
+    },
+    userCultSelection: {
+      resolve: async (payload, args, context, info) => ({
+        roles: hasAnyOfScopes(context, [scopes.readUserRoles, context.user ? `read:user:${context.user}` : null]) ? await getRolesForUser(payload.userCultSelection.id) : null,
+        ...payload.userCultSelection,
+      }),
+      subscribe: () => pubsub.asyncIterator('userCultSelection')
     },
   }
 
