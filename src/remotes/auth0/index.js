@@ -343,12 +343,12 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       });
       return true
     },
-    pizzaOrTurtleCult: async (_, { userId, pizzaOrTurtle }, ctx) => {
+    pizzaOrTurtleCult: async (_, { where, pizzaOrTurtle }, ctx) => {
       requireAnyOfScopes(ctx, [scopes.writeUsers, ctx.user ? `write:user:${ctx.user}` : null])
-      if (ctx.user) userId = ctx.user
+      if (ctx.user) where = { id: ctx.user }
       const badgeId = pizzaOrTurtle.toLowerCase()
-      const otherBadgeId = badgeId == "turtle" ? "pizza": "turtle"
-      await updateUser({ userId }, ctx, (prev) => {
+      const otherBadgeId = badgeId == "turtle" ? "pizza" : "turtle"
+      await updateUser(where, ctx, (prev) => {
         if ((prev.badges || []).filter((b) => b.id === otherBadgeId).length > 0) {
           throw new Error(`HEY YOU ARE ALREADY APART OF THE ${otherBadgeId.toUpperCase()} CULT`)
         } else if ((prev.badges || []).filter((b) => b.id === badgeId).length > 0) {

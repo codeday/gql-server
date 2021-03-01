@@ -142,7 +142,7 @@ type Mutation {
   uploadProfilePicture(where: UserSingleInput, upload: FileUpload!): String
   linkDiscord(userId: ID!, discordId: String!): Boolean
   unlinkDiscord(userId: ID!): Boolean
-  pizzaOrTurtleCult(userId: ID, pizzaOrTurtle: PizzaOrTurtle!): Boolean
+  pizzaOrTurtleCult(where: UserSingleInput!, pizzaOrTurtle: PizzaOrTurtle!): Boolean
 }
 
 type Subscription {
