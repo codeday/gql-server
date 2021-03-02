@@ -29,6 +29,5 @@ export const sanitizeUser = (user) => {
   if (user.givenName) {
     user.name = formatName(user.displayNameFormat, user.givenName, user.familyName)
   }
-  console.log(user)
   return user
 }

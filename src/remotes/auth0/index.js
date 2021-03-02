@@ -340,7 +340,6 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           throw new Error("That user does not have a Discord account linked!")
         }
         const user = { ...prev, discordId: null }
-        console.log(user)
         pubsub.publish("userUnlinkDiscord", {
           userUnlinkDiscord: prev.discordId
         });
