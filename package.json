@@ -58,6 +58,7 @@
     "dataloader": "^2.0.0",
     "deepmerge": "^4.2.2",
     "dotenv": "^8.2.0",
+    "emoji-strip": "^1.0.1",
     "express": "^4.16.4",
     "extract-files": "^9.0.0",
     "form-data": "^3.0.0",

@@ -8,7 +8,7 @@ import { scopes, requireAnyOfScopes } from '../../auth';
 import query from './query';
 import LruCache from 'lru-cache';
 import fetch from "node-fetch";
-import { formatName } from './utils';
+import { formatName, sanitizeUser } from './utils';
 import { GraphQLUpload, PubSub } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
 import phone from 'phone';
@@ -138,6 +138,10 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
   resolvers.Query = {
     getUser: async (_, { where, fresh }, ctx) => {
       const fn = fresh ? findUsersUncached : findUsers;
+      await updateUser(where, { scopes: ["write:users"] }, (prev) => {
+        const user = sanitizeUser({ ...prev })
+        return { ...user };
+      });
       return (await fn(where, ctx))[0] || null
     },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
@@ -173,12 +177,13 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
           && Object.keys(prev).every(p => prev[p] === newUser[p])) {
           return true
         }
+        const user = sanitizeUser(newUser)
         pubsub.publish("userUpdate", {
           userUpdate: {
-            ...newUser
+            ...user
           }
         });
-        return newUser;
+        return user;
       });
     },
     grantBadge: async (_, { where, badge }, ctx) => {
