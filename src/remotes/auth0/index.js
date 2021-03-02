@@ -311,7 +311,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       }
       pubsub.publish("userRoleUpdate", {
         userRoleUpdate: {
-          ...users
+          ...users[0]
         }
       });
       return true;
