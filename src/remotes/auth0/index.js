@@ -370,6 +370,13 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
             ...user
           }
         });
+        pubsub.publish("userBadgeUpdate", {
+          userBadgeUpdate: {
+            type: "grant",
+            user,
+            badge: { id: badgeId },
+          }
+        });
         return user
       });
       return true
