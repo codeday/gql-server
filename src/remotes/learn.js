@@ -1,4 +1,5 @@
-import { RenameObjectFields } from '@graphql-tools/wrap';
+import { RenameObjectFields, TransformQuery } from '@graphql-tools/wrap';
+import { delegateToSchema } from '@graphql-tools/delegate';
 import { loadSchema } from '@graphql-tools/load';
 import { UrlLoader } from '@graphql-tools/url-loader';
 
@@ -10,10 +11,14 @@ function getConnectionTypes(prefix) {
     extend type ${prefix}Asset {
       url(transform: ${prefix}ImageTransformOptions): String
     }
+
+    extend type ${prefix}Track {
+      previewProjects: [ShowcaseProject!]!
+    }
   `;
 }
 
-function getConnectionResolvers(prefix) {
+function getConnectionResolvers(prefix, schemas) {
   return {
     [`${prefix}Asset`]: {
       url: {
@@ -47,6 +52,31 @@ function getConnectionResolvers(prefix) {
             .replace('images.ctfassets.net', 'f2.codeday.org');
 
           return `${baseUrl}${qs.length > 0 ? '?' : ''}${qs}`;
+        },
+      },
+    },
+    [`${prefix}Track`]: {
+      previewProjects: {
+        selectionSet: '{ previewProjectIds }',
+        async resolve(parent, _, context, info) {
+          if (!parent.previewProjectIds || parent.previewProjectIds.length === 0) return [];
+
+          const res = await Promise.all(parent.previewProjectIds.map((id) => delegateToSchema({
+            schema: schemas.showcase,
+            operation: 'query',
+            fieldName: 'project',
+            args: { id },
+            context,
+            info,
+            transforms: [
+              new TransformQuery({
+                path: ['project'],
+                queryTransformer: (q) => q,
+                resultTransformer: (r) => [r],
+              }),
+            ],
+          })));
+          return res.reduce((accum, r) => [...accum, ...r], []);
         },
       },
     },
