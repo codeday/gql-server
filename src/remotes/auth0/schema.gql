@@ -14,7 +14,7 @@ type User {
   displayNameFormat: String
   phoneNumber: String
   pronoun: String
-  roles: [UserRole]
+  roles: [Role]
   badges(displayed: Boolean): [UserBadge]
   discordInformation: DiscordInformation
 }
@@ -52,7 +52,7 @@ input DisplayedUserBadgeInput {
   order: Int!
 }
 
-type UserRole {
+type Role {
   id: ID!
   name: String!
   description: String
@@ -106,7 +106,7 @@ type SubscriptionUser {
   bio: String
   discordId: String
   picture(transform: UserPictureTransformInput): String
-  roles: [UserRole]
+  roles: [Role]
   badges: [UserBadge]
 }
 
@@ -120,6 +120,7 @@ type Query {
   getUser(where: UserSingleInput!, fresh: Boolean): User
   searchUsers(where: UserSearch!): [User]!
   roleUsers(roleId: String!): [User]!
+  roles: [Role]!
 }
 
 scalar FileUpload

@@ -96,6 +96,8 @@ const findUsersByRoleFactory = (auth0) => async (roleId, ctx, perPage = 100, pag
   return userChunks.reduce((accum, c) => [...accum, ...c], []);
 };
 
+const findRolesFactory = (auth0) => async () => auth0.getRoles();
+
 const updateUserFactory = (auth0) => async (where, ctx, updateFn) => {
   requireAnyOfScopes(ctx, [scopes.writeUsers, ctx.user ? `write:user:${ctx.user}` : null])
   let user = {}
@@ -174,5 +176,6 @@ export default function getResolvers(domain, clientId, clientSecret) {
     getRolesForUser: getRolesForUserFactory(auth0),
     updateUser: updateUserFactory(auth0),
     addRole: addRoleToUserFactory(auth0),
+    findRoles: cacheOutput(lru, findRolesFactory(auth0)),
   };
 }

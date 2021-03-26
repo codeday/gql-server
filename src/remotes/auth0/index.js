@@ -129,6 +129,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     findUsersUncached,
     getRolesForUser,
     findUsersByRole,
+    findRoles,
     updateUser,
     addRole
   } = query(domain, clientId, clientSecret);
@@ -146,6 +147,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
     roleUsers: async (_, { roleId }, ctx) => findUsersByRole(roleId, ctx),
+    roles: async (_, __, ctx) => findRoles({}, ctx),
   };
   resolvers.Mutation = {
     updateUser: async (_, { username, updates }, ctx) => {
