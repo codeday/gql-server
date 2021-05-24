@@ -122,6 +122,6 @@ export default function makeRemoteTransport(httpEndpoint, wsEndpoint) {
 
   return {
     executor: makeExecutor(httpEndpoint),
-    subscriber: makeSubscriber(wsEndpoint)
+    subscriber: wsEndpoint ? makeSubscriber(wsEndpoint) : undefined,
   };
 }
