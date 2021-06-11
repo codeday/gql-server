@@ -138,12 +138,14 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
   resolvers.FileUpload = GraphQLUpload
   resolvers.Query = {
     getUser: async (_, { where, fresh }, ctx) => {
-      const fn = fresh ? findUsersUncached : findUsers;
-      await updateUser(where, { scopes: ["write:users"] }, (prev) => {
-        const user = sanitizeUser({ ...prev })
-        return { ...user };
-      });
-      return (await fn(where, ctx))[0] || null
+      try {
+        const fn = fresh ? findUsersUncached : findUsers;
+        await updateUser(where, { scopes: ["write:users"] }, (prev) => {
+          const user = sanitizeUser({ ...prev })
+          return { ...user };
+        });
+        return (await fn(where, ctx))[0] || null
+      } catch (ex) { return null; }
     },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
     roleUsers: async (_, { roleId }, ctx) => findUsersByRole(roleId, ctx),
