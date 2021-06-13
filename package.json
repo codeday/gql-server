@@ -74,6 +74,7 @@
     "prettier": "^1.16.4",
     "pretty-quick": "^1.10.0",
     "subscriptions-transport-ws": "^0.9.18",
+    "syslog-client": "^1.1.1",
     "ws": "^7.4.6"
   }
 }

@@ -6423,6 +6423,11 @@ sync-fetch@0.3.0:
     buffer "^5.7.0"
     node-fetch "^2.6.1"
 
+syslog-client@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/syslog-client/-/syslog-client-1.1.1.tgz#bdb28de3b5b7eb28a11352ec3eb78e55aed2ab6b"
+  integrity sha1-vbKN47W36yihE1LsPreOVa7Sq2s=
+
 table@^6.0.4:
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/table/-/table-6.0.7.tgz#e45897ffbcc1bcf9e8a87bf420f2c9e5a7a52a34"
