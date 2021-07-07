@@ -15,6 +15,7 @@ import createAuth0Schema from './remotes/auth0';
 import createShowcaseSchema from './remotes/showcase';
 import createCalendarSchema from './remotes/calendar';
 import createLabsSchema from './remotes/labs';
+import createAdvisorsSchema from './remotes/advisors';
 import createTwitchSchema from './remotes/twitch';
 import { addAuthContext, addWsAuthContext } from './auth';
 import { weave } from './schema';
@@ -33,6 +34,7 @@ export default async () => {
   const showcase = await createShowcaseSchema('http://showcase-gql.codeday.cloud/graphql', 'ws://showcase-gql.codeday.cloud/graphql');
   const calendar = await createCalendarSchema('http://calendar-gql.codeday.cloud/graphql');
   const labs = await createLabsSchema('http://labs-gql.codeday.cloud/graphql');
+  const advisors = await createAdvisorsSchema('http://advisors-gql.codeday.cloud/graphql');
   const cms = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
   const learn = await createLearnSchema('muw2pziidpat', process.env.CONTENTFUL_LEARN_TOKEN);
   const auth0 = await createAuth0Schema(
@@ -56,6 +58,7 @@ export default async () => {
     twitch,
     learn,
     labs,
+    advisors,
   });
 
   const apollo = new ApolloServer({
