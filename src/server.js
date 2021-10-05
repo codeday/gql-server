@@ -17,6 +17,7 @@ import createCalendarSchema from './remotes/calendar';
 import createLabsSchema from './remotes/labs';
 import createAdvisorsSchema from './remotes/advisors';
 import createTwitchSchema from './remotes/twitch';
+import createClearSchema from "./remotes/clear";
 import { addAuthContext, addWsAuthContext } from './auth';
 import { weave } from './schema';
 
@@ -35,6 +36,7 @@ export default async () => {
   const calendar = await createCalendarSchema('http://calendar-gql.codeday.cloud/graphql');
   const labs = await createLabsSchema('http://labs-gql.codeday.cloud/graphql');
   const advisors = await createAdvisorsSchema('http://advisors-gql.codeday.cloud/graphql');
+  const clear = await createClearSchema('http://clear-gql.codeday.cloud/graphql');
   const cms = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
   const learn = await createLearnSchema('muw2pziidpat', process.env.CONTENTFUL_LEARN_TOKEN);
   const auth0 = await createAuth0Schema(
@@ -47,7 +49,6 @@ export default async () => {
     process.env.TWITCH_CLIENT_ID,
     process.env.TWITCH_CLIENT_SECRET
   );
-
   const schema = weave({
     account: auth0,
     blog: wordpress,
@@ -59,6 +60,7 @@ export default async () => {
     learn,
     labs,
     advisors,
+   clear
   });
 
   const apollo = new ApolloServer({
@@ -123,7 +125,7 @@ export default async () => {
   const app = Express();
   app.use(graphqlUploadExpress({ maxFileSize: 100 * 1024 * 1024, maxFiles: 3 }));
   apollo.applyMiddleware({ app, path: '/' });
-  
+
   app.timeout = 5 * 60 * 1000;
   app.keepAliveTimeout = 2 * 60 * 1000;
   app.headersTimeout = 5 * 60 * 1000;
