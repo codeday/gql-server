@@ -92,7 +92,7 @@ function getConnectionResolvers(prefix, schemas) {
             fieldName: 'programCollection',
             args: {
               where: {
-                id: parent.programId,
+                webname: parent.programId,
               },
               limit: 1,
             },
