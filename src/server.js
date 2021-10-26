@@ -17,6 +17,7 @@ import createCalendarSchema from './remotes/calendar';
 import createLabsSchema from './remotes/labs';
 import createAdvisorsSchema from './remotes/advisors';
 import createTwitchSchema from './remotes/twitch';
+import createGeoSchema from './remotes/geo';
 import createClearSchema from "./remotes/clear";
 import { addAuthContext, addWsAuthContext } from './auth';
 import { weave } from './schema';
@@ -44,6 +45,10 @@ export default async () => {
     process.env.AUTH0_CLIENT_ID,
     process.env.AUTH0_CLIENT_SECRET
   );
+  const geo = await createGeoSchema(
+    process.env.MAXMIND_ACCOUNT,
+    process.env.MAXMIND_KEY
+  );
   const twitch = await createTwitchSchema(
     process.env.TWITCH_CHANNEL,
     process.env.TWITCH_CLIENT_ID,
@@ -60,7 +65,8 @@ export default async () => {
     learn,
     labs,
     advisors,
-   clear
+    geo,
+    clear,
   });
 
   const apollo = new ApolloServer({
