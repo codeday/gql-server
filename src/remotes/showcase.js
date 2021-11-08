@@ -13,6 +13,7 @@ function getConnectionTypes(prefix) {
     extend type ${prefix}Project {
       eventGroup: CmsEvent
       program: CmsProgram
+      region: CmsRegion
     }
 
     extend type ${prefix}Award {
@@ -86,6 +87,7 @@ function getConnectionResolvers(prefix, schemas) {
       program: {
         selectionSet: '{ programId }',
         async resolve(parent, args, context, info) {
+          if (!parent.programId) return null;
           return delegateToSchema({
             schema: schemas.cms,
             operation: 'query',
@@ -120,9 +122,11 @@ function getConnectionResolvers(prefix, schemas) {
           });
         },
       },
+
       eventGroup: {
         selectionSet: '{ eventGroupId }',
         async resolve(parent, args, context, info) {
+          if (!parent.eventGroupId) return null;
           return delegateToSchema({
             schema: schemas.cms,
             operation: 'query',
@@ -138,6 +142,45 @@ function getConnectionResolvers(prefix, schemas) {
             transforms: [
               new TransformQuery({
                 path: ['eventCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: {
+                        kind: Kind.NAME,
+                        value: 'items',
+                      },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (r) => r?.items[0],
+              }),
+            ],
+          });
+        },
+      },
+
+      region: {
+        selectionSet: '{ regionId }',
+        async resolve(parent, args, context, info) {
+          if (!parent.regionId) return null;
+          return delegateToSchema({
+            schema: schemas.cms,
+            operation: 'query',
+            fieldName: 'regionCollection',
+            args: {
+              where: {
+                webname: parent.regionId,
+              },
+              limit: 1,
+            },
+            context,
+            info,
+            transforms: [
+              new TransformQuery({
+                path: ['regionCollection'],
                 queryTransformer: (subtree) => ({
                   kind: Kind.SELECTION_SET,
                   selections: [
