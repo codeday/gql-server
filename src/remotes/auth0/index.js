@@ -128,6 +128,7 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     findUsers,
     findUsersUncached,
     getRolesForUser,
+    getAllUsers,
     findUsersByRole,
     findRoles,
     updateUser,
@@ -147,7 +148,17 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
         return (await fn(where, ctx))[0] || null
       } catch (ex) { return null; }
     },
+    // VERY SLOW can take from 2-30 seconds
+    getDiscordUsers: async (_, __, ctx) => {
+      requireScope(ctx, scopes.readUsers)
+      const users = (await getAllUsers(ctx)).filter((user) => user?.discordId != null)
+      return users
+    },
     searchUsers: async (_, { where }, ctx) => findUsers(where, ctx),
+    userRoles: async (_, { id }, ctx) => {
+      requireAnyOfScopes(ctx, [scopes.readUserRoles, ctx.user ? `read:user:${ctx.user}` : null])
+      return await getRolesForUser(id)
+    },
     roleUsers: async (_, { roleId }, ctx) => findUsersByRole(roleId, ctx),
     roles: async (_, __, ctx) => findRoles({}, ctx),
   };
@@ -448,6 +459,22 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
       return result;
     },
   };
+
+  resolvers.DiscordUser = {
+    badges: async ({ badges }, { displayed }, ctx) => {
+      if (badges) {
+        if (displayed) {
+          let displayedBadges = badges.filter((b) => b.displayed === true).slice(0, MAX_DISPLAYED_BADGES)
+          if (displayedBadges.length < 1) {
+            displayedBadges = badges.slice(0, MAX_DISPLAYED_BADGES)
+            displayedBadges.map((badge, index) => { badge.displayed = true; badge.order = index })
+          }
+          return displayedBadges
+        }
+        return badges
+      }
+    }
+  }
 
   resolvers.Subscription = {
     userUpdate: {
