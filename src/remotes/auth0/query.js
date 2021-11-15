@@ -4,6 +4,7 @@ import {
   objectCamelToSnake, objectSnakeToCamel, filterNullOrUndefinedKeys, filterKeysKeep, filterKeysRemove, chunk,
 } from '../../utils';
 import { scopes, hasAnyOfScopes, requireAnyOfScopes } from '../../auth';
+import getAllUsers from 'auth0-get-all-users'
 
 const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title', 'bio', 'badges', 'discord_id'];
 const userPrivateFields = [
@@ -28,6 +29,33 @@ const cacheOutput = (lru, fn) => (args, context, ...rest) => {
   }
   return lru.get(key);
 };
+
+const getAllUsersFactory = (auth0) => async (ctx) => {
+  let users = []
+  try {
+    users = await getAllUsers(auth0).asArray({
+      fields: [
+        ...userPublicFields.map((field) => ({ name: field })),
+        ...(hasAnyOfScopes(ctx, [scopes.readUsers, ctx.user ? `read:user:${ctx.user}` : null]) ? userPrivateFields : []).map((field) => ({ name: field })),
+        { name: 'user_metadata' },
+      ],
+    }, { checkRetries: 100 })
+  } catch (e) {
+    if (e.message.startsWith("Giving up waiting for job")) {
+      throw new Error("Timed out. Please try again!")
+    }
+  }
+
+  const newUsers = users
+    .map((user) => ({ ...filterKeysRemove(user, ['user_metadata']), ...user.user_metadata }))
+    .map((user) => filterKeysKeep(user, [
+      ...userPublicFields,
+      ...(hasAnyOfScopes(ctx, [scopes.readUsers, scopes.writeUsers, ctx.user ? `read:user:${ctx.user}` : null, ctx.user ? `write:user:${ctx.user}` : null]) ? userPrivateFields : []),
+    ]))
+    .map((user) => ({ ...objectSnakeToCamel(filterKeysRemove(user, ['user_id'])), id: user.user_id }));
+
+  return newUsers
+}
 
 const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, escape = true) => {
   if (ctx.user) {
@@ -173,6 +201,7 @@ export default function getResolvers(domain, clientId, clientSecret) {
     findUsers: cacheOutput(lru, findUsersFactory(auth0)),
     findUsersUncached: findUsersFactory(auth0),
     findUsersByRole: cacheOutput(lru, findUsersByRoleFactory(auth0)),
+    getAllUsers: getAllUsersFactory(auth0),
     getRolesForUser: getRolesForUserFactory(auth0),
     updateUser: updateUserFactory(auth0),
     addRole: addRoleToUserFactory(auth0),
