@@ -13,7 +13,7 @@ export default function createGeoSchema(account, key) {
   const resolvers = {};
   resolvers.Query = {
     async mine(_, __, { req }) {
-      const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress).split(',')[0].trim();
 
       if (cache.has(ip)) return cache.get(ip);
 
@@ -24,6 +24,7 @@ export default function createGeoSchema(account, key) {
       });
 
       const data = await result.json();
+      const subdivision = (data?.subdivisions || [])[0] || {};
       const res = {
         lat: data?.location?.latitude,
         lng: data?.location?.longitude,
@@ -31,8 +32,8 @@ export default function createGeoSchema(account, key) {
         tz: data?.location?.time_zone,
         country: data?.country?.iso_code,
         countryName: data?.country?.names?.en,
-        subdivision: data?.subdivisions[0]?.iso_code,
-        subdivisionName: data?.subdivisions[0]?.names?.en,
+        subdivision: subdivision?.iso_code,
+        subdivisionName: subdivision?.names?.en,
         cityName: data?.city?.names?.en,
         postalCode: data?.postal?.code,
         isp: data?.traits?.isp,

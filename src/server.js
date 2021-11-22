@@ -31,13 +31,18 @@ const logger = syslog.createClient(process.env.SYSLOG_HOST, {
 
 export default async () => {
   globalThis.WebSocket = WebSocket;
-  const wordpress = await createWordpressSchema('https://wp.codeday.org/graphql');
-  const showYourWork = await createDiscordPostsSchema('http://discord-posts.codeday.cloud');
-  const showcase = await createShowcaseSchema('http://showcase-gql.codeday.cloud/graphql', 'ws://showcase-gql.codeday.cloud/graphql');
-  const calendar = await createCalendarSchema('http://calendar-gql.codeday.cloud/graphql');
-  const labs = await createLabsSchema('http://labs-gql.codeday.cloud/graphql');
-  const advisors = await createAdvisorsSchema('http://advisors-gql.codeday.cloud/graphql');
-  const clear = await createClearSchema('http://clear-gql.codeday.cloud/graphql');
+  const wordpress = await createWordpressSchema(process.env.WORDPRESS_URL || 'https://wp.codeday.org/graphql');
+  const showYourWork = await createDiscordPostsSchema(
+    process.env.SHOWYOURWORK_URL || 'http://discord-posts.codeday.cloud'
+  );
+  const showcase = await createShowcaseSchema(
+    process.env.SHOWCASE_URL || 'http://showcase-gql.codeday.cloud/graphql',
+    process.env.SHOWCASE_WS || 'ws://showcase-gql.codeday.cloud/graphql'
+  );
+  const calendar = await createCalendarSchema(process.env.CALENDAR_URL || 'http://calendar-gql.codeday.cloud/graphql');
+  const labs = await createLabsSchema(process.env.LABS_URL || 'http://labs-gql.codeday.cloud/graphql');
+  const advisors = await createAdvisorsSchema(process.env.ADVISORS_URL || 'http://advisors-gql.codeday.cloud/graphql');
+  const clear = await createClearSchema(process.env.CLEAR_URL || 'http://clear-gql.codeday.cloud/graphql');
   const cms = await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN);
   const learn = await createLearnSchema('muw2pziidpat', process.env.CONTENTFUL_LEARN_TOKEN);
   const auth0 = await createAuth0Schema(
