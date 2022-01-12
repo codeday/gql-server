@@ -17,7 +17,7 @@ function getConnectionResolvers(prefix, schemas) {
   return {
     [`${prefix}Post`]: {
       author: {
-        selectionSet: '{ wpAuthor { slug } authorOverride { username title } }',
+        selectionSet: '{ wpAuthor { node { slug } } authorOverride { username title } }',
         async resolve(parent, args, context, info) {
           const result = await delegateToSchema({
             schema: schemas.account,
@@ -25,7 +25,7 @@ function getConnectionResolvers(prefix, schemas) {
             fieldName: 'getUser',
             args: {
               where: {
-                username: parent.authorOverride?.username || parent.wpAuthor.slug,
+                username: parent.authorOverride?.username || parent.wpAuthor.node.slug,
               },
             },
             context,
