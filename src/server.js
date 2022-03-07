@@ -84,11 +84,11 @@ export default async () => {
     },
     plugins: [
       {
-        requestDidStart({ schemaHash, context: { req }, ...rest }) {
+        requestDidStart({ schemaHash, context: { req } }) {
           const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
           return {
-            validationDidStart({ source, queryHash }) {
+            validationDidStart({ source, queryHash, request }) {
               logger.log([
                 queryHash,
                 ip,
@@ -96,6 +96,15 @@ export default async () => {
                 `"${source?.split(`\n`).filter((line) => Boolean(line.trim())).join(' ').replace(/"/g, `'`)}"`,
                 schemaHash,
               ].join(' '));
+              if (request?.variables) {
+                logger.log([
+                  queryHash,
+                  ip,
+                  `QUERY_VARIABLES`,
+                  `"${JSON.stringify(request.variables)}"`,
+                  schemaHash,
+                ].join(' '));
+              }
               return (errs) => {
                 (errs || []).forEach((e) => {
                   logger.log([

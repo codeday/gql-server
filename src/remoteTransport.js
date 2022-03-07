@@ -30,7 +30,7 @@ function makeExecutor(httpEndpoint) {
             .map(async (key) => [key, await variables[key]])
         )).reduce((accum, [k, v]) => ({ ...accum, [k]: v }), {});
 
-      ({ clone, files } = extractFiles(awaitedVariables, 'variables', (v) => !!v.createReadStream));
+      ({ clone, files } = extractFiles(awaitedVariables, 'variables', (v) => !!v?.createReadStream));
     }
 
     // Handles generating a multi-part request
