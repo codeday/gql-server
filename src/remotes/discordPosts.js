@@ -35,6 +35,7 @@ function getConnectionResolvers(prefix, schemas) {
 }
 
 export default async function createDiscordPostsSchema(uri) {
+  console.log(` * discordPosts(${uri})`);
   const schema = await loadSchema(uri, { loaders: [new UrlLoader()] });
   return {
     schema,

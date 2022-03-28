@@ -206,6 +206,7 @@ function getConnectionResolvers(prefix, schemas) {
 
 
 export default async function createShowcaseSchema(uri, wsUri) {
+  console.log(` * showcase(${uri})`);
   const { executor, subscriber } = makeRemoteTransport(uri, wsUri);
   const schema = wrapSchema({
     schema: await introspectSchema(executor),

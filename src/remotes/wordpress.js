@@ -43,6 +43,7 @@ function getConnectionResolvers(prefix, schemas) {
 }
 
 export default async function createWordpressSchema(uri) {
+  console.log(` * wordpress(${uri})`);
   const schema = await loadSchema(uri, { loaders: [new UrlLoader()] });
   return {
     schema,

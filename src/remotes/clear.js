@@ -61,6 +61,7 @@ function getConnectionResolvers(prefix, schemas) {
 
 
 export default async function createClearSchema(uri) {
+  console.log(` * clear(${uri})`);
   const { executor, subscriber } = makeRemoteTransport(uri);
   const schema = wrapSchema({
     schema: await introspectSchema(executor),

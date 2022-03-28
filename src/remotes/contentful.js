@@ -78,6 +78,7 @@ function getConnectionResolvers(prefix, schemas) {
 }
 
 export default async function createContentfulSchema(space, token) {
+  console.log(` * contentful(${space})`);
   const schema = await loadSchema(
     `https://graphql.contentful.com/content/v1/spaces/${space}`,
     {
