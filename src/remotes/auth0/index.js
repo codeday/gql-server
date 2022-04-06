@@ -141,10 +141,10 @@ export default function createAuth0Schema(domain, clientId, clientSecret) {
     getUser: async (_, { where, fresh }, ctx) => {
       try {
         const fn = fresh ? findUsersUncached : findUsers;
-        await updateUser(where, { scopes: ["write:users"] }, (prev) => {
-          const user = sanitizeUser({ ...prev })
-          return { ...user };
-        });
+        // await updateUser(where, { scopes: ["write:users"] }, (prev) => {
+        //   const user = sanitizeUser({ ...prev })
+        //   return { ...user };
+        // });
         return (await fn(where, ctx))[0] || null
       } catch (ex) { return null; }
     },
