@@ -3,13 +3,11 @@ import http from 'http';
 import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
-import { default as WebSocket } from 'ws';
-import ws from 'ws';
+import WebSocket from 'ws';
 import { execute, subscribe } from 'graphql';
 import createWordpressSchema from './remotes/wordpress';
 import createContentfulSchema from './remotes/contentful';
 import createDiscordPostsSchema from './remotes/discordPosts';
-import createAuth0Schema from './remotes/auth0';
 import createShowcaseSchema from './remotes/showcase';
 import createCalendarSchema from './remotes/calendar';
 import createLabsSchema from './remotes/labs';
@@ -17,7 +15,7 @@ import createAdvisorsSchema from './remotes/advisors';
 import createTwitchSchema from './remotes/twitch';
 import createGeoSchema from './remotes/geo';
 import createClearSchema from "./remotes/clear";
-import { addAuthContext, addWsAuthContext } from './auth';
+import createAccountSchema from './remotes/account';
 import { weave } from './schema';
 import log from './plugins/log';
 
@@ -37,11 +35,7 @@ async function buildSchema() {
     await createAdvisorsSchema(process.env.ADVISORS_URL || 'http://advisors-gql.codeday.cloud/graphql'),
     await createClearSchema(process.env.CLEAR_URL || 'http://clear-gql.codeday.cloud/graphql'),
     await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN),
-    await createAuth0Schema(
-      process.env.AUTH0_DOMAIN,
-      process.env.AUTH0_CLIENT_ID,
-      process.env.AUTH0_CLIENT_SECRET
-    ),
+    await createAccountSchema(process.env.ACCOUNT_URL ||"http://account-gql.codeday.cloud/graphql" , process.env.ACCOUNT_WS || "ws://account-gql.codeday.cloud/graphql"),
     await createGeoSchema(
       process.env.MAXMIND_ACCOUNT,
       process.env.MAXMIND_KEY
@@ -86,7 +80,6 @@ export default async () => {
     context: ({ req }) => ({
       headers: req?.headers,
       req,
-      ...addAuthContext(req || {}),
     }),
   });
 
@@ -111,9 +104,6 @@ export default async () => {
       schema,
       execute,
       subscribe,
-      onConnect: (connectionParams, webSocket) => {
-        return addWsAuthContext(connectionParams)
-      }
     }, { server, path: '/subscriptions' });
     console.log(`Listening on http://0.0.0.0:${port}`);
   });
