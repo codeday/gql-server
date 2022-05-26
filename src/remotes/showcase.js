@@ -63,12 +63,8 @@ function getConnectionResolvers(prefix, schemas) {
             }),
             context,
             info,
-            valuesFromResults: (results, keys) => {
-              console.log(results, keys);
-              return keys.map((key) =>
-                results.find((result) => result.id === key)
-              );
-            },
+            valuesFromResults: (results, keys) =>
+              keys.map((key) => results.find((result) => result.id === key)),
             transforms: [
               new AddFieldToRequestTransform(schemas.cms, "Award", "id"),
               new TransformQuery({
