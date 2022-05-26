@@ -13,6 +13,8 @@ import { GraphQLUpload, PubSub } from 'apollo-server';
 import Uploader from '@codeday/uploader-node';
 import phone from 'phone';
 import { hasAnyOfScopes, requireScope, hasScope } from './../../auth';
+import { batchDelegateToSchema } from "@graphql-tools/batch-delegate";
+import { AddFieldToRequestTransform } from '../../gql-utils';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 const MAX_DISPLAYED_BADGES = 3;
@@ -42,19 +44,20 @@ function getConnectionResolvers(prefix, schemas) {
       details: {
         selectionSet: '{ id }',
         async resolve(parent, args, context, info) {
-          return delegateToSchema({
+          return batchDelegateToSchema({
             schema: schemas.cms,
             operation: 'query',
             fieldName: 'badgeCollection',
-            args: {
-              where: {
-                id: parent.id,
-              },
-              limit: 1,
-            },
+            key: parent.id,
+            argsFromKeys: (ids) => ({ where: {OR: [...ids?.map((id) => ({id}))]} }),
             context,
             info,
+            valuesFromResults: (results, keys) =>
+              keys?.map((key) =>
+                results.find((result) => result?.id === key)
+              ),
             transforms: [
+              new AddFieldToRequestTransform(schemas.cms, "Badge", "id"),
               new TransformQuery({
                 path: ['badgeCollection'],
                 queryTransformer: (subtree) => ({
@@ -70,7 +73,7 @@ function getConnectionResolvers(prefix, schemas) {
                     },
                   ],
                 }),
-                resultTransformer: (r) => r?.items[0],
+                resultTransformer: (result) =>  (result?.items || [])
               }),
             ],
           });

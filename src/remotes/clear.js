@@ -1,9 +1,9 @@
-import { wrapSchema, introspectSchema } from '@graphql-tools/wrap';
-import makeRemoteTransport from '../remoteTransport';
-import { delegateToSchema } from '@graphql-tools/delegate';
-import { TransformQuery } from '@graphql-tools/wrap';
-import { Kind } from 'graphql';
-
+import { wrapSchema, introspectSchema } from "@graphql-tools/wrap";
+import makeRemoteTransport from "../remoteTransport"
+import { batchDelegateToSchema } from "@graphql-tools/batch-delegate";
+import { TransformQuery } from "@graphql-tools/wrap";
+import { Kind } from "graphql";
+import { AddFieldToRequestTransform } from "../gql-utils";
 
 function getConnectionTypes(prefix) {
   return `
@@ -17,22 +17,23 @@ function getConnectionResolvers(prefix, schemas) {
   return {
     [`${prefix}Event`]: {
       region: {
-        selectionSet: '{ contentfulWebname }',
+        selectionSet: "{ contentfulWebname }",
         async resolve(parent, args, context, info) {
           if (!parent.contentfulWebname) return null;
-          return delegateToSchema({
+          return batchDelegateToSchema({
             schema: schemas.cms,
-            operation: 'query',
-            fieldName: 'regionCollection',
-            args: {
-              where: {
-                webname: parent.contentfulWebname,
-              },
-              limit: 1,
-            },
+            operation: "query",
+            fieldName: "regionCollection",
+            key: parent.contentfulWebname,
+            argsFromKeys: (webnames) => ({ where: {OR: [...webnames?.map((webname) => ({webname}))]} }),
             context,
             info,
+            valuesFromResults: (results, keys) =>
+              keys?.map((key) =>
+                results.find((result) => result?.webname === key)
+              ),
             transforms: [
+              new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
               new TransformQuery({
                 path: ['regionCollection'],
                 queryTransformer: (subtree) => ({
@@ -40,25 +41,20 @@ function getConnectionResolvers(prefix, schemas) {
                   selections: [
                     {
                       kind: Kind.FIELD,
-                      name: {
-                        kind: Kind.NAME,
-                        value: 'items',
-                      },
+                      name: { kind: Kind.NAME, value: 'items' },
                       selectionSet: subtree,
                     },
                   ],
                 }),
-                resultTransformer: (r) => r?.items[0],
+                resultTransformer: (result) =>  (result?.items || [])
               }),
             ],
           });
         },
       },
-    }
+    },
   };
 }
-
-
 
 export default async function createClearSchema(uri) {
   console.log(` * clear(${uri})`);
