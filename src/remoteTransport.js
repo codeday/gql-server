@@ -9,10 +9,10 @@ import extractFiles from 'extract-files/public/extractFiles';
 // HTTP requests
 //
 
-function makeExecutor(httpEndpoint) {
+function makeExecutor(httpEndpoint, prefix) {
   return async function executor({ document, variables, context }) {
     const allowedHeaders = Object.keys(context?.headers || {})
-      .filter((name) => name.toLowerCase().substr(0, 2) === 'x-')
+      .filter((name) => name.toLowerCase().startsWith(prefix))
       .reduce((accum, name) => ({ ...accum, [name]: context?.headers[name] }), {});
 
     const query = print(document);
@@ -118,10 +118,10 @@ function makeSubscriber(wsEndpoint) {
   };
 }
 
-export default function makeRemoteTransport(httpEndpoint, wsEndpoint) {
+export default function makeRemoteTransport(httpEndpoint, wsEndpoint, prefix="x-") {
 
   return {
-    executor: makeExecutor(httpEndpoint),
+    executor: makeExecutor(httpEndpoint, prefix),
     subscriber: wsEndpoint ? makeSubscriber(wsEndpoint) : undefined,
   };
 }
