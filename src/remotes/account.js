@@ -1,8 +1,10 @@
-import { wrapSchema, introspectSchema } from '@graphql-tools/wrap';
-import makeRemoteTransport from '../remoteTransport';
-import { delegateToSchema } from '@graphql-tools/delegate';
-import { TransformQuery } from '@graphql-tools/wrap';
-import { Kind } from 'graphql';
+import { wrapSchema, introspectSchema } from "@graphql-tools/wrap";
+import makeRemoteTransport from "../remoteTransport";
+import { delegateToSchema } from "@graphql-tools/delegate";
+import { batchDelegateToSchema } from "@graphql-tools/batch-delegate";
+import { TransformQuery } from "@graphql-tools/wrap";
+import { Kind } from "graphql";
+import { AddFieldToRequestTransform } from "../gql-utils";
 
 function getConnectionTypes(prefix) {
   return `
@@ -20,23 +22,24 @@ function getConnectionResolvers(prefix, schemas) {
   return {
     [`${prefix}Badge`]: {
       details: {
-        selectionSet: '{ id }',
+        selectionSet: "{ id }",
         async resolve(parent, args, context, info) {
-          return delegateToSchema({
+          return batchDelegateToSchema({
             schema: schemas.cms,
-            operation: 'query',
-            fieldName: 'badgeCollection',
-            args: {
-              where: {
-                id: parent.id,
-              },
-              limit: 1,
-            },
+            operation: "query",
+            fieldName: "badgeCollection",
+            key: parent.id,
+            argsFromKeys: (ids) => ({
+              where: { OR: [...ids?.map((id) => ({ id }))] },
+            }),
             context,
             info,
+            valuesFromResults: (results, keys) =>
+              keys?.map((key) => results.find((result) => result?.id === key)),
             transforms: [
+              new AddFieldToRequestTransform(schemas.cms, "Badge", "id"),
               new TransformQuery({
-                path: ['badgeCollection'],
+                path: ["badgeCollection"],
                 queryTransformer: (subtree) => ({
                   kind: Kind.SELECTION_SET,
                   selections: [
@@ -44,13 +47,13 @@ function getConnectionResolvers(prefix, schemas) {
                       kind: Kind.FIELD,
                       name: {
                         kind: Kind.NAME,
-                        value: 'items',
+                        value: "items",
                       },
                       selectionSet: subtree,
                     },
                   ],
                 }),
-                resultTransformer: (r) => r?.items[0],
+                resultTransformer: (result) => result?.items || [],
               }),
             ],
           });
@@ -59,25 +62,28 @@ function getConnectionResolvers(prefix, schemas) {
     },
     [`${prefix}User`]: {
       sites: {
-        selectionSet: '{ roles }',
+        selectionSet: "{ roles }",
         async resolve(parent, args, context, info) {
           return delegateToSchema({
             schema: schemas.cms,
-            operation: 'query',
-            fieldName: 'siteCollection',
+            operation: "query",
+            fieldName: "siteCollection",
             args: {
               where: {
-                OR: [...parent.roles.map((role) => {
-                  if (role.name == "Staff") return { type: "Volunteer" };
-                  return { type: role.name };
-                }), { type: "Student" }]
-              }
+                OR: [
+                  ...parent.roles.map((role) => {
+                    if (role.name == "Staff") return { type: "Volunteer" };
+                    return { type: role.name };
+                  }),
+                  { type: "Student" },
+                ],
+              },
             },
             context,
             info,
             transforms: [
               new TransformQuery({
-                path: ['siteCollection'],
+                path: ["siteCollection"],
                 queryTransformer: (subtree) => ({
                   kind: Kind.SELECTION_SET,
                   selections: [
@@ -85,7 +91,7 @@ function getConnectionResolvers(prefix, schemas) {
                       kind: Kind.FIELD,
                       name: {
                         kind: Kind.NAME,
-                        value: 'items',
+                        value: "items",
                       },
                       selectionSet: subtree,
                     },
