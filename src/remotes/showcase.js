@@ -21,11 +21,146 @@ function getConnectionTypes(prefix) {
       region: CmsRegion
     }
 
+    extend type ${prefix}Photo {
+      eventGroup: CmsEvent
+      program: CmsProgram
+      region: CmsRegion
+    }
+
     extend type ${prefix}Award {
       info: CmsAward
     }
   `;
 }
+
+const projectPhotoResolvers = (prefix, schemas) => ({
+  program: {
+    selectionSet: "{ programId }",
+    async resolve(parent, args, context, info) {
+      if (!parent.programId) return null;
+      return batchDelegateToSchema({
+        schema: schemas.cms,
+        operation: "query",
+        fieldName: "programCollection",
+        key: parent.programId,
+        argsFromKeys: (programIds) => ({
+          where: { OR: [...programIds.map((webname) => ({ webname }))] },
+        }),
+        context,
+        info,
+        valuesFromResults: (results, keys) =>
+          keys.map((key) =>
+            results.find((result) => result.webname === key)
+          ),
+        transforms: [
+          new AddFieldToRequestTransform(schemas.cms, "Program", "webname"),
+          new TransformQuery({
+            path: ["programCollection"],
+            queryTransformer: (subtree) => ({
+              kind: Kind.SELECTION_SET,
+              selections: [
+                {
+                  kind: Kind.FIELD,
+                  name: {
+                    kind: Kind.NAME,
+                    value: "items",
+                  },
+                  selectionSet: subtree,
+                },
+              ],
+            }),
+            resultTransformer: (result) => result?.items || [],
+          }),
+        ],
+      });
+    },
+  },
+
+  eventGroup: {
+    selectionSet: "{ eventGroupId }",
+    async resolve(parent, args, context, info) {
+      if (!parent.eventGroupId) return null;
+      return batchDelegateToSchema({
+        schema: schemas.cms,
+        operation: "query",
+        fieldName: "eventCollection",
+        key: parent.eventGroupId,
+        argsFromKeys: (eventGroupIds) => ({
+          where: {
+            OR: [
+              ...eventGroupIds.map((eventGroupId) => ({
+                id: eventGroupId,
+              })),
+            ],
+          },
+        }),
+        context,
+        info,
+        valuesFromResults: (results, keys) =>
+          keys.map((key) => results.find((result) => result.id === key)),
+        transforms: [
+          new AddFieldToRequestTransform(schemas.cms, "Event", "id"),
+          new TransformQuery({
+            path: ["eventCollection"],
+            queryTransformer: (subtree) => ({
+              kind: Kind.SELECTION_SET,
+              selections: [
+                {
+                  kind: Kind.FIELD,
+                  name: {
+                    kind: Kind.NAME,
+                    value: "items",
+                  },
+                  selectionSet: subtree,
+                },
+              ],
+            }),
+            resultTransformer: (result) => result?.items || [],
+          }),
+        ],
+      });
+    },
+  },
+
+  region: {
+    selectionSet: "{ regionId }",
+    async resolve(parent, args, context, info) {
+      if (!parent.regionId) return null;
+      return batchDelegateToSchema({
+        schema: schemas.cms,
+        operation: "query",
+        fieldName: "regionCollection",
+        key: parent.regionId,
+        argsFromKeys: (webnames) => ({
+          where: { OR: [...webnames.map((webname) => ({ webname }))] },
+        }),
+        context,
+        info,
+        valuesFromResults: (results, keys) =>
+          keys.map((key) =>
+            results.find((result) => result.webname === key)
+          ),
+        transforms: [
+          new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
+          new TransformQuery({
+            path: ["regionCollection"],
+            queryTransformer: (subtree) => ({
+              kind: Kind.SELECTION_SET,
+              selections: [
+                {
+                  kind: Kind.FIELD,
+                  name: { kind: Kind.NAME, value: "items" },
+                  selectionSet: subtree,
+                },
+              ],
+            }),
+            resultTransformer: (result) => result?.items || [],
+          }),
+        ],
+      });
+    },
+  }
+});
 
 function getConnectionResolvers(prefix, schemas) {
   return {
@@ -89,134 +224,8 @@ function getConnectionResolvers(prefix, schemas) {
         },
       },
     },
-    [`${prefix}Project`]: {
-      program: {
-        selectionSet: "{ programId }",
-        async resolve(parent, args, context, info) {
-          if (!parent.programId) return null;
-          return batchDelegateToSchema({
-            schema: schemas.cms,
-            operation: "query",
-            fieldName: "programCollection",
-            key: parent.programId,
-            argsFromKeys: (programIds) => ({
-              where: { OR: [...programIds.map((webname) => ({ webname }))] },
-            }),
-            context,
-            info,
-            valuesFromResults: (results, keys) =>
-              keys.map((key) =>
-                results.find((result) => result.webname === key)
-              ),
-            transforms: [
-              new AddFieldToRequestTransform(schemas.cms, "Program", "webname"),
-              new TransformQuery({
-                path: ["programCollection"],
-                queryTransformer: (subtree) => ({
-                  kind: Kind.SELECTION_SET,
-                  selections: [
-                    {
-                      kind: Kind.FIELD,
-                      name: {
-                        kind: Kind.NAME,
-                        value: "items",
-                      },
-                      selectionSet: subtree,
-                    },
-                  ],
-                }),
-                resultTransformer: (result) => result?.items || [],
-              }),
-            ],
-          });
-        },
-      },
-
-      eventGroup: {
-        selectionSet: "{ eventGroupId }",
-        async resolve(parent, args, context, info) {
-          if (!parent.eventGroupId) return null;
-          return batchDelegateToSchema({
-            schema: schemas.cms,
-            operation: "query",
-            fieldName: "eventCollection",
-            key: parent.eventGroupId,
-            argsFromKeys: (eventGroupIds) => ({
-              where: {
-                OR: [
-                  ...eventGroupIds.map((eventGroupId) => ({
-                    id: eventGroupId,
-                  })),
-                ],
-              },
-            }),
-            context,
-            info,
-            valuesFromResults: (results, keys) =>
-              keys.map((key) => results.find((result) => result.id === key)),
-            transforms: [
-              new AddFieldToRequestTransform(schemas.cms, "Event", "id"),
-              new TransformQuery({
-                path: ["eventCollection"],
-                queryTransformer: (subtree) => ({
-                  kind: Kind.SELECTION_SET,
-                  selections: [
-                    {
-                      kind: Kind.FIELD,
-                      name: {
-                        kind: Kind.NAME,
-                        value: "items",
-                      },
-                      selectionSet: subtree,
-                    },
-                  ],
-                }),
-                resultTransformer: (result) => result?.items || [],
-              }),
-            ],
-          });
-        },
-      },
-
-      region: {
-        selectionSet: "{ regionId }",
-        async resolve(parent, args, context, info) {
-          if (!parent.regionId) return null;
-          return batchDelegateToSchema({
-            schema: schemas.cms,
-            operation: "query",
-            fieldName: "regionCollection",
-            key: parent.regionId,
-            argsFromKeys: (webnames) => ({
-              where: { OR: [...webnames.map((webname) => ({ webname }))] },
-            }),
-            context,
-            info,
-            valuesFromResults: (results, keys) =>
-              keys.map((key) =>
-                results.find((result) => result.webname === key)
-              ),
-            transforms: [
-              new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
-              new TransformQuery({
-                path: ["regionCollection"],
-                queryTransformer: (subtree) => ({
-                  kind: Kind.SELECTION_SET,
-                  selections: [
-                    {
-                      kind: Kind.FIELD,
-                      name: { kind: Kind.NAME, value: "items" },
-                      selectionSet: subtree,
-                    },
-                  ],
-                }),
-                resultTransformer: (result) => result?.items || [],
-              }),
-            ],
-          });
-        },
-      },
-    },
+    [`${prefix}Project`]: projectPhotoResolvers(prefix, schemas),
+    [`${prefix}Photo`]: projectPhotoResolvers(prefix, schemas),
   };
 }
 

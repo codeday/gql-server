@@ -97,7 +97,7 @@ export default async () => {
   }, 1000 * 60 * 15);
 
   const app = Express();
-  app.use(graphqlUploadExpress({ maxFileSize: 100 * 1024 * 1024, maxFiles: 3 }));
+  app.use(graphqlUploadExpress({ maxFileSize: 250 * 1024 * 1024, maxFiles: 3 }));
   apollo.applyMiddleware({ app, path: '/' });
 
   app.timeout = 5 * 60 * 1000;
