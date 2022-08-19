@@ -6,7 +6,7 @@ import {
 import { scopes, hasAnyOfScopes, requireAnyOfScopes } from '../../auth';
 import getAllUsers from 'auth0-get-all-users'
 
-const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title', 'bio', 'badges', 'discord_id'];
+const userPublicFields = ['user_id', 'username', 'name', 'picture', 'pronoun', 'title', 'bio', 'badges', 'discord_id', 'github_username'];
 const userPrivateFields = [
   'email',
   'blocked',
@@ -74,6 +74,11 @@ const findUsersFactory = (auth0) => async (query, ctx, perPage = 10, page = 0, e
   if (query.discordId) {
     filteredQuery['user_metadata.discord_id'] = query.discordId;
     delete filteredQuery.discord_id;
+  }
+
+ if (query.githubUsername) {
+    filteredQuery['user_metadata.github_username'] = query.githubUsername;
+    delete filteredQuery.github_username;
   }
 
   // Make sure the user has the proper scope to search by the specified fields

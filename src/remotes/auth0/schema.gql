@@ -10,6 +10,7 @@ type User {
   title: String
   bio: String
   discordId: String
+  githubUsername: String
   acceptTos: Boolean
   displayNameFormat: String
   phoneNumber: String
@@ -106,6 +107,7 @@ input UserSingleInput {
   username: String
   email: String
   discordId: String
+  githubUsername: String
 }
 
 input UserSearch {
