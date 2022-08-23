@@ -11,6 +11,9 @@ function getConnectionTypes(prefix) {
     extend type ${prefix}HiringCompany {
       alumniReferralAccounts: [AccountUser]
     }
+    extend type ${prefix}Region {
+      pastPhotos(where: ShowcasePhotosWhere, orderBy: ShowcasePhotoOrderByArg, take: Float, skip: Float): [ShowcasePhoto!]!
+    }
   `;
 }
 
@@ -35,6 +38,28 @@ function getConnectionResolvers(prefix, schemas) {
             info,
           })));
           return results.reduce((accum, a) => [...accum, ...a], []);
+        },
+      },
+    },
+
+    [`${prefix}Region`]: {
+      pastPhotos: {
+        selectionSet: '{ webname }',
+        async resolve(parent, args, context, info) {
+          return delegateToSchema({
+            schema: schemas.showcase,
+            operation: 'query',
+            fieldName: 'photos',
+            args: {
+              ...args,
+              where: {
+                ...args.where,
+                region: parent.webname,
+              },
+            },
+            context,
+            info,
+          });
         },
       },
     },

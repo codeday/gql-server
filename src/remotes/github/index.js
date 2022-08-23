@@ -72,7 +72,7 @@ export default function createGithubSchema(token) {
           body: JSON.stringify({
             query: CONTRIBUTORS_QUERY,
             variables: {
-              owner,
+              owner: owner || 'codeday',
               repository,
               branch: branch || 'main',
               path,
