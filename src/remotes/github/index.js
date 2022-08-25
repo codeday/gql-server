@@ -41,7 +41,7 @@ function getConnectionResolvers(prefix, schemas) {
 }
 
 const CONTRIBUTORS_QUERY = `
-query GetContributorsQuery($owner: String!, $repository: String!, $branch: String!, $path: String!) {
+query GetContributorsQuery($owner: String!, $repository: String!, $branch: String!, $path: String) {
   repository(owner: $owner, name: $repository) {
     object(expression: $branch) {
       ... on Commit {
