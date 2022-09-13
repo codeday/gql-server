@@ -18,10 +18,14 @@ import { AddFieldToRequestTransform } from '../../gql-utils';
 
 const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 const MAX_DISPLAYED_BADGES = 3;
-const ROLE_CODES = process.env.ROLE_CODES
-  .split(';')
-  .map((e) => e.split(':'))
+
+const ROLE_CODES = Object.keys(process.env)
+  .filter(n => n.startsWith(`ROLE_CODE_`))
+  .map(n => [n.slice('ROLE_CODE_'.length).toLowerCase(), process.env[n]])
   .reduce((accum, [code, role]) => ({ ...accum, [code]: role }), {});
+
+console.log(`Role codes:\n`, ROLE_CODES);
+
 function getRoleByCode(code) {
   return ROLE_CODES[code.replace(/\W/g, '')] || null;
 }
