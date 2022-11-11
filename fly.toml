@@ -7,6 +7,13 @@ kill_timeout = 5
 processes = []
 
 [env]
+  ACCOUNT_URL = "http://top1.nearest.of.codeday-account-gql.internal:5000/graphql"
+  ADVISORS_URL = "http://top1.nearest.of.codeday-advisors-gql.internal:5000/graphql"
+  CALENDAR_URL = "http://top1.nearest.of.codeday-calendar-gql.internal:5000/graphql"
+  CLEAR_URL = "http://top1.nearest.of.codeday-clear-gql.internal:5000/graphql"
+  LABS_URL = "http://top1.nearest.of.codeday-labs-gql.internal:5000/graphql"
+  SHOWYOURWORK_URL = "http://top1.nearest.of.codeday-discord-gql.internal:5000/graphql"
+  WORDPRESS_URL = "http://top1.nearest.of.codeday-wp.internal/graphql"
 
 [experimental]
   allowed_public_ports = []
