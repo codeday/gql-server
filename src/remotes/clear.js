@@ -1,6 +1,7 @@
 import { wrapSchema, introspectSchema } from "@graphql-tools/wrap";
 import makeRemoteTransport from "../remoteTransport"
 import { batchDelegateToSchema } from "@graphql-tools/batch-delegate";
+import { delegateToSchema } from '@graphql-tools/delegate';
 import { TransformQuery } from "@graphql-tools/wrap";
 import { Kind } from "graphql";
 import { AddFieldToRequestTransform } from "../gql-utils";
@@ -9,6 +10,10 @@ function getConnectionTypes(prefix) {
   return `
     extend type ${prefix}Event {
       region: CmsRegion
+    }
+
+    extend type ${prefix}PublicPerson {
+      account: AccountUser
     }
   `;
 }
@@ -49,6 +54,27 @@ function getConnectionResolvers(prefix, schemas) {
                 resultTransformer: (result) =>  (result?.items || [])
               }),
             ],
+          });
+        },
+      },
+    },
+
+
+    [`${prefix}PublicPerson`]: {
+      account: {
+        selectionSet: '{ username }',
+        resolve(parent, args, context, info) {
+          return delegateToSchema({
+            schema: schemas.account,
+            operation: 'query',
+            fieldName: 'getUser',
+            args: {
+              where: {
+                username: parent.username,
+              },
+            },
+            context,
+            info,
           });
         },
       },
