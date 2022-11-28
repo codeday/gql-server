@@ -12,6 +12,10 @@ function getConnectionTypes(prefix) {
       region: CmsRegion
     }
 
+    extend type ${prefix}EventGroup {
+      cmsEventGroup: CmsEvent
+    }
+
     extend type ${prefix}PublicPerson {
       account: AccountUser
     }
@@ -59,6 +63,44 @@ function getConnectionResolvers(prefix, schemas) {
       },
     },
 
+    [`${prefix}EventGroup`]: {
+      cmsEventGroup: {
+        selectionSet: "{ contentfulId }",
+        async resolve(parent, args, context, info) {
+          if (!parent.contentfulId) return null;
+          return batchDelegateToSchema({
+            schema: schemas.cms,
+            operation: "query",
+            fieldName: "eventCollection",
+            key: parent.contentfulId,
+            argsFromKeys: (id) => ({ where: { id } }),
+            context,
+            info,
+            valuesFromResults: (results, keys) =>
+              keys?.map((key) =>
+                results.find((result) => result?.id === key)
+              ),
+            transforms: [
+              new AddFieldToRequestTransform(schemas.cms, "Event", "id"),
+              new TransformQuery({
+                path: ['eventCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: { kind: Kind.NAME, value: 'items' },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (result) =>  (result?.items || [])
+              }),
+            ],
+          });
+        },
+      },
+    },
 
     [`${prefix}PublicPerson`]: {
       account: {
