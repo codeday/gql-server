@@ -13,6 +13,7 @@ function getConnectionTypes(prefix) {
     }
     extend type ${prefix}Region {
       pastPhotos(where: ShowcasePhotosWhere, orderBy: ShowcasePhotoOrderByArg, take: Float, skip: Float): [ShowcasePhoto!]!
+      clearEvents: [ClearEvent!]!
     }
   `;
 }
@@ -56,6 +57,25 @@ function getConnectionResolvers(prefix, schemas) {
                 ...args.where,
                 region: parent.webname,
               },
+            },
+            context,
+            info,
+          });
+        },
+      },
+
+      clearEvents: {
+        selectionSet: '{ webname }',
+        async resolve(parent, args, context, info) {
+          return delegateToSchema({
+            schema: schemas.clear,
+            operation: 'query',
+            fieldName: 'events',
+            args: {
+              where: {
+                contentfulWebname: { equals: parent.webname },
+              },
+              orderBy: [{ startDate: 'desc' }],
             },
             context,
             info,
