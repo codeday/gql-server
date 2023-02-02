@@ -9,7 +9,7 @@ import extractFiles from 'extract-files/public/extractFiles';
 // HTTP requests
 //
 
-function makeExecutor(httpEndpoint) {
+function makeExecutor(httpEndpoint, options) {
   return async function executor({ document, variables, context }) {
     const allowedHeaders = Object.keys(context?.headers || {})
       .filter((name) => name.toLowerCase().substr(0, 2) === 'x-')
@@ -19,6 +19,7 @@ function makeExecutor(httpEndpoint) {
     let clone = variables;
     let headers = {
       ...allowedHeaders,
+      ...options?.headers,
     };
     let files = [];
     let body = null;
@@ -71,7 +72,9 @@ function makeExecutor(httpEndpoint) {
       headers,
       body,
     });
-    return fetchResult.json();
+    const result = fetchResult.json();
+    if (options?.debug) console.log(JSON.stringify({ body, result }));
+    return result;
   }
 }
 
@@ -79,7 +82,7 @@ function makeExecutor(httpEndpoint) {
 // GraphQL Subscriptions
 //
 
-function makeSubscriber(wsEndpoint) {
+function makeSubscriber(wsEndpoint, options) {
   const subscriptionClient = createClient({
     url: wsEndpoint,
   });
@@ -118,10 +121,10 @@ function makeSubscriber(wsEndpoint) {
   };
 }
 
-export default function makeRemoteTransport(httpEndpoint, wsEndpoint) {
+export default function makeRemoteTransport(httpEndpoint, wsEndpoint, options) {
 
   return {
-    executor: makeExecutor(httpEndpoint),
-    subscriber: wsEndpoint ? makeSubscriber(wsEndpoint) : undefined,
+    executor: makeExecutor(httpEndpoint, options?.executor),
+    subscriber: wsEndpoint ? makeSubscriber(wsEndpoint, options?.subscriber) : undefined,
   };
 }

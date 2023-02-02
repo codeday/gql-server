@@ -6,6 +6,8 @@ import { stitchSchemas } from '@graphql-tools/stitch';
 import { GraphQLUpload } from '@graphql-tools/links';
 import map from 'map-obj';
 
+export const transformedSchemas = {};
+
 export function namespace(fieldPrefix, typePrefix, schema) {
   const wrapFields = ['Query', 'Mutation']
     .map((operation) => {
@@ -40,6 +42,7 @@ export function weave(components) {
       ],
     };
 
+    transformedSchemas[k] = subschema;
     return [k, { subschema, typeDefs, resolvers }];
   }));
 

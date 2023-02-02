@@ -1,10 +1,12 @@
 import { wrapSchema, introspectSchema } from "@graphql-tools/wrap";
 import makeRemoteTransport from "../remoteTransport"
 import { batchDelegateToSchema } from "@graphql-tools/batch-delegate";
-import { delegateToSchema } from '@graphql-tools/delegate';
+import { applySchemaTransforms, delegateToSchema } from '@graphql-tools/delegate';
 import { TransformQuery } from "@graphql-tools/wrap";
 import { Kind } from "graphql";
+import { transformedSchemas } from '../schema';
 import { AddFieldToRequestTransform } from "../gql-utils";
+import { transformSchema } from 'apollo-server-express';
 
 function getConnectionTypes(prefix) {
   return `
@@ -26,26 +28,21 @@ function getConnectionTypes(prefix) {
 function getConnectionResolvers(prefix, schemas) {
   return {
     [`${prefix}Event`]: {
+
       region: {
         selectionSet: "{ contentfulWebname }",
         async resolve(parent, args, context, info) {
           if (!parent.contentfulWebname) return null;
-          return batchDelegateToSchema({
-            schema: schemas.cms,
+          return delegateToSchema({
+            schema: transformedSchemas.cms,
             operation: "query",
-            fieldName: "regionCollection",
-            key: parent.contentfulWebname,
-            argsFromKeys: (webnames) => ({ where: {OR: [...webnames?.map((webname) => ({webname}))]} }),
+            fieldName: "regions",
             context,
             info,
-            valuesFromResults: (results, keys) =>
-              keys?.map((key) =>
-                results.find((result) => result?.webname === key)
-              ) || [],
             transforms: [
               new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
               new TransformQuery({
-                path: ['regionCollection'],
+                path: ['regions'],
                 queryTransformer: (subtree) => ({
                   kind: Kind.SELECTION_SET,
                   selections: [
@@ -56,7 +53,7 @@ function getConnectionResolvers(prefix, schemas) {
                     },
                   ],
                 }),
-                resultTransformer: (result) =>  (result?.items || [])
+                resultTransformer: (result) =>  result?.items[0],
               }),
             ],
           });
@@ -67,9 +64,9 @@ function getConnectionResolvers(prefix, schemas) {
         selectionSet: '{ contentfulEventRestrictions }',
         async resolve(parent, args, context, info) {
           return delegateToSchema({
-            schema: schemas.cms,
+            schema: transformedSchemas.cms,
             operation: 'query',
-            fieldName: 'eventRestrictionCollection',
+            fieldName: 'eventRestrictions',
             args: {
               where: {
                 id_in: parent.contentfulEventRestrictions,
@@ -77,7 +74,7 @@ function getConnectionResolvers(prefix, schemas) {
             },
             transforms: [
               new TransformQuery({
-                path: ['eventRestrictionCollection'],
+                path: ['eventRestrictions'],
                 queryTransformer: (subtree) => ({
                   kind: Kind.SELECTION_SET,
                   selections: [
@@ -104,9 +101,9 @@ function getConnectionResolvers(prefix, schemas) {
         async resolve(parent, args, context, info) {
           if (!parent.contentfulId) return null;
           return delegateToSchema({
-            schema: schemas.cms,
+            schema: transformedSchemas.cms,
             operation: "query",
-            fieldName: 'eventCollection',
+            fieldName: 'events',
             context,
             info,
             args: {
@@ -116,7 +113,7 @@ function getConnectionResolvers(prefix, schemas) {
             },
             transforms: [
               new TransformQuery({
-                path: ['eventCollection'],
+                path: ['events'],
                 queryTransformer: (subtree) => ({
                   kind: Kind.SELECTION_SET,
                   selections: [

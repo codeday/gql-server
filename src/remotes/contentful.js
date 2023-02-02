@@ -1,7 +1,7 @@
+import { wrapSchema, introspectSchema } from "@graphql-tools/wrap";
 import { RenameObjectFields } from '@graphql-tools/wrap';
 import { delegateToSchema } from '@graphql-tools/delegate';
-import { loadSchema } from '@graphql-tools/load';
-import { UrlLoader } from '@graphql-tools/url-loader';
+import makeRemoteTransport from "../remoteTransport"
 
 function getConnectionTypes(prefix) {
   return `
@@ -122,33 +122,42 @@ function getConnectionResolvers(prefix, schemas) {
   };
 }
 
+export const transforms = [
+  new RenameObjectFields((_, fieldName) => {
+    const cleanedName = fieldName
+      .replace(/sCollection/g, 's')
+      .replace(/yCollection/g, 'ies')
+      .replace(/Collection/g, 's')
+      .replace(/contentType(.+)/g, '$1');
+    const finalName = cleanedName[0].toLowerCase() + cleanedName.slice(1);
+    return finalName;
+  }),
+  new RenameObjectFields((typeName, fieldName) => (
+    typeName === 'Asset' && fieldName === 'url' ? 'contentfulBaseUrl' : fieldName
+  )),
+];
+
 export default async function createContentfulSchema(space, token) {
   console.log(` * contentful(${space})`);
-  const schema = await loadSchema(
+  const { executor, subscriber } = makeRemoteTransport(
     `https://graphql.contentful.com/content/v1/spaces/${space}`,
-    {
-      loaders: [new UrlLoader()],
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    undefined,
+    { executor: { headers: { Authorization: `Bearer ${token}` } }, debug: true },
   );
+  const schema = wrapSchema({
+    schema: await introspectSchema(executor),
+    executor,
+    subscriber,
+  });
   return {
     schema,
-    transforms: [
-      new RenameObjectFields((_, fieldName) => {
-        const cleanedName = fieldName
-          .replace(/sCollection/g, 's')
-          .replace(/yCollection/g, 'ies')
-          .replace(/Collection/g, 's')
-          .replace(/contentType(.+)/g, '$1');
-        return cleanedName[0].toLowerCase() + cleanedName.slice(1);
-      }),
-      new RenameObjectFields((typeName, fieldName) => (
-        typeName === 'Asset' && fieldName === 'url' ? 'contentfulBaseUrl' : fieldName
-      )),
-    ],
+    transforms,
     getConnectionTypes,
     getConnectionResolvers,
   };
 }
+export const inverseRenameTransform = new RenameObjectFields((_, fieldName) => {
+    console.log(transformedFieldNames);
+    if (transformedFieldNames.includes(fieldName)) return transformedFieldNames[fieldName];
+    return fieldName;
+  });
