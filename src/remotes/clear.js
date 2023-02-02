@@ -10,10 +10,11 @@ function getConnectionTypes(prefix) {
   return `
     extend type ${prefix}Event {
       region: CmsRegion
+      cmsEventRestrictions: [CmsEventRestriction!]!
     }
 
     extend type ${prefix}EventGroup {
-      cmsEventGroup: CmsEventCollection
+      cmsEventGroup: CmsEvent
     }
 
     extend type ${prefix}PublicPerson {
@@ -40,7 +41,7 @@ function getConnectionResolvers(prefix, schemas) {
             valuesFromResults: (results, keys) =>
               keys?.map((key) =>
                 results.find((result) => result?.webname === key)
-              ),
+              ) || [],
             transforms: [
               new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
               new TransformQuery({
@@ -58,6 +59,40 @@ function getConnectionResolvers(prefix, schemas) {
                 resultTransformer: (result) =>  (result?.items || [])
               }),
             ],
+          });
+        },
+      },
+
+      cmsEventRestrictions: {
+        selectionSet: '{ contentfulEventRestrictions }',
+        async resolve(parent, args, context, info) {
+          return delegateToSchema({
+            schema: schemas.cms,
+            operation: 'query',
+            fieldName: 'eventRestrictionCollection',
+            args: {
+              where: {
+                id_in: parent.contentfulEventRestrictions,
+              },
+            },
+            transforms: [
+              new TransformQuery({
+                path: ['eventRestrictionCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: { kind: Kind.NAME, value: 'items' },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (result) =>  (result?.items || [])
+              }),
+            ],
+            context,
+            info,
           });
         },
       },
@@ -79,6 +114,22 @@ function getConnectionResolvers(prefix, schemas) {
                 id: parent.contentfulId,
               },
             },
+            transforms: [
+              new TransformQuery({
+                path: ['eventCollection'],
+                queryTransformer: (subtree) => ({
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: { kind: Kind.NAME, value: 'items' },
+                      selectionSet: subtree,
+                    },
+                  ],
+                }),
+                resultTransformer: (result) =>  result?.items[0]
+              }),
+            ],
           });
         },
       },
