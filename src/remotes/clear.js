@@ -39,6 +39,11 @@ function getConnectionResolvers(prefix, schemas) {
             fieldName: "regions",
             context,
             info,
+            args: {
+              where: {
+                webname: parent.contentfulWebname,
+              },
+            },
             transforms: [
               new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
               new TransformQuery({
