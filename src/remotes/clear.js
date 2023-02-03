@@ -43,6 +43,7 @@ function getConnectionResolvers(prefix, schemas) {
               where: {
                 webname: parent.contentfulWebname,
               },
+              limit: 1,
             },
             transforms: [
               new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
@@ -76,6 +77,7 @@ function getConnectionResolvers(prefix, schemas) {
               where: {
                 id_in: parent.contentfulEventRestrictions,
               },
+              limit: 1,
             },
             transforms: [
               new TransformQuery({
@@ -115,6 +117,7 @@ function getConnectionResolvers(prefix, schemas) {
               where: {
                 id: parent.contentfulId,
               },
+              limit: 1,
             },
             transforms: [
               new TransformQuery({
