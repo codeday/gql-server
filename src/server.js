@@ -8,7 +8,7 @@ import { execute, subscribe } from 'graphql';
 import createWordpressSchema from './remotes/wordpress';
 import createContentfulSchema from './remotes/contentful';
 import createDiscordPostsSchema from './remotes/discordPosts';
-import createAuth0Schema from './remotes/auth0';
+import createGithubSchema from './remotes/github';
 import createShowcaseSchema from './remotes/showcase';
 import createCalendarSchema from './remotes/calendar';
 import createLabsSchema from './remotes/labs';
@@ -24,33 +24,33 @@ const port = process.env.PORT || 4000;
 
 async function buildSchema() {
   console.log('Fetching sub-schemas...');
-  const [blog, showYourWork, showcase, calendar, labs, advisors, clear, cms, account, geo, twitch] = await Promise.all([
-    await createWordpressSchema(process.env.WORDPRESS_URL || 'https://wp.codeday.org/graphql'),
-    await createDiscordPostsSchema(process.env.SHOWYOURWORK_URL || 'http://discord-posts.codeday.cloud'),
-    await createShowcaseSchema(
-      process.env.SHOWCASE_URL || 'http://showcase-gql.codeday.cloud/graphql',
-      process.env.SHOWCASE_WS || 'ws://showcase-gql.codeday.cloud/graphql'
-    ),
-    await createCalendarSchema(process.env.CALENDAR_URL || 'http://calendar-gql.codeday.cloud/graphql'),
-    await createLabsSchema(process.env.LABS_URL || 'http://labs-gql.codeday.cloud/graphql'),
-    await createAdvisorsSchema(process.env.ADVISORS_URL || 'http://advisors-gql.codeday.cloud/graphql'),
-    await createClearSchema(process.env.CLEAR_URL || 'http://clear-gql.codeday.cloud/graphql'),
-    await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN),
-    await createAuth0Schema(
-      process.env.AUTH0_DOMAIN,
-      process.env.AUTH0_CLIENT_ID,
-      process.env.AUTH0_CLIENT_SECRET
-    ),
-    await createGeoSchema(
-      process.env.MAXMIND_ACCOUNT,
-      process.env.MAXMIND_KEY
-    ),
-    await createTwitchSchema(
-      process.env.TWITCH_CHANNEL,
-      process.env.TWITCH_CLIENT_ID,
-      process.env.TWITCH_CLIENT_SECRET
-    ),
-  ]);
+  const [blog, showYourWork, showcase, calendar, labs, advisors, clear, cms, account, geo, twitch, github] =
+    await Promise.all([
+      await createWordpressSchema(process.env.WORDPRESS_URL || 'https://wp.codeday.org/graphql'),
+      await createDiscordPostsSchema(process.env.SHOWYOURWORK_URL || 'http://discord-posts.codeday.cloud'),
+      await createShowcaseSchema(
+        process.env.SHOWCASE_URL || 'http://showcase-gql.codeday.cloud/graphql',
+        process.env.SHOWCASE_WS || 'ws://showcase-gql.codeday.cloud/graphql'
+      ),
+      await createCalendarSchema(process.env.CALENDAR_URL || 'http://calendar-gql.codeday.cloud/graphql'),
+      await createLabsSchema(process.env.LABS_URL || 'http://labs-gql.codeday.cloud/graphql'),
+      await createAdvisorsSchema(process.env.ADVISORS_URL || 'http://advisors-gql.codeday.cloud/graphql'),
+      await createClearSchema(process.env.CLEAR_URL || 'http://clear-gql.codeday.cloud/graphql'),
+      await createContentfulSchema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN),
+      await createAccountSchema(process.env.ACCOUNT_URL ||"http://account-gql.codeday.cloud/graphql" , process.env.ACCOUNT_WS || "ws://account-gql.codeday.cloud/graphql"),
+      await createGeoSchema(
+        process.env.MAXMIND_ACCOUNT,
+        process.env.MAXMIND_KEY
+      ),
+      await createTwitchSchema(
+        process.env.TWITCH_CHANNEL,
+        process.env.TWITCH_CLIENT_ID,
+        process.env.TWITCH_CLIENT_SECRET
+      ),
+      await createGithubSchema(
+        process.env.GITHUB_TOKEN,
+      ),
+    ]);
   console.log('...sub-schemas fetched.');
 
   return weave({

@@ -12,8 +12,9 @@ import extractFiles from 'extract-files/public/extractFiles';
 function makeExecutor(httpEndpoint, options) {
   return async function executor({ document, variables, context }) {
     const allowedHeaders = Object.keys(context?.headers || {})
-      .filter((name) => name.toLowerCase().startsWith(prefix))
+      .filter((name) => name.toLowerCase().substr(0, 2) === 'x-')
       .reduce((accum, name) => ({ ...accum, [name]: context?.headers[name] }), {});
+      // .filter((name) => name.toLowerCase().startsWith(prefix))
 
     const query = print(document);
     let clone = variables;
