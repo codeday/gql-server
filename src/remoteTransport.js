@@ -12,7 +12,7 @@ import extractFiles from 'extract-files/public/extractFiles';
 function makeExecutor(httpEndpoint, options) {
   return async function executor({ document, variables, context }) {
     const allowedHeaders = Object.keys(context?.headers || {})
-      .filter((name) => name.toLowerCase().substr(0, 2) === 'x-')
+      .filter((name) => name.toLowerCase().startsWith(prefix))
       .reduce((accum, name) => ({ ...accum, [name]: context?.headers[name] }), {});
 
     const query = print(document);
