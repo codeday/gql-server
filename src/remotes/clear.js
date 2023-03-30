@@ -11,12 +11,12 @@ import { transformSchema } from 'apollo-server-express';
 function getConnectionTypes(prefix) {
   return `
     extend type ${prefix}Event {
-      region: CmsRegion
-      cmsEventRestrictions: [CmsEventRestriction!]!
+      region(locale: String): CmsRegion
+      cmsEventRestrictions(locale: String): [CmsEventRestriction!]!
     }
 
     extend type ${prefix}EventGroup {
-      cmsEventGroup: CmsEvent
+      cmsEventGroup(locale: String): CmsEvent
     }
 
     extend type ${prefix}PublicPerson {
@@ -28,7 +28,6 @@ function getConnectionTypes(prefix) {
 function getConnectionResolvers(prefix, schemas) {
   return {
     [`${prefix}Event`]: {
-
       region: {
         selectionSet: "{ contentfulWebname }",
         async resolve(parent, args, context, info) {
@@ -44,6 +43,7 @@ function getConnectionResolvers(prefix, schemas) {
                 webname: parent.contentfulWebname,
               },
               limit: 1,
+              ...args
             },
             transforms: [
               new AddFieldToRequestTransform(schemas.cms, "Region", "webname"),
@@ -78,6 +78,7 @@ function getConnectionResolvers(prefix, schemas) {
                 id_in: parent.contentfulEventRestrictions,
               },
               limit: 1,
+              ...args,
             },
             transforms: [
               new TransformQuery({
@@ -118,6 +119,7 @@ function getConnectionResolvers(prefix, schemas) {
                 id: parent.contentfulId,
               },
               limit: 1,
+              ...args
             },
             transforms: [
               new TransformQuery({
