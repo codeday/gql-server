@@ -109,7 +109,9 @@ function getConnectionResolvers(prefix, schemas) {
 
 export default async function createAccountSchema(uri, wsUri) {
   console.log(` * account(${uri})`);
-  const { executor, subscriber } = makeRemoteTransport(uri, wsUri, "");
+  const { executor, subscriber } = makeRemoteTransport(uri, wsUri, {
+    executor: { forwardHeaders: ["Authorization", "Account-Authorization"] },
+  });
   const schema = wrapSchema({
     schema: await introspectSchema(executor),
     executor,

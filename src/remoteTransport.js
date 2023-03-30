@@ -3,7 +3,7 @@ import { print } from 'graphql';
 import FormData from 'form-data';
 import { observableToAsyncIterable } from '@graphql-tools/utils';
 import { createClient } from 'graphql-ws';
-import extractFiles from 'extract-files/public/extractFiles';
+import { extractFiles } from 'extract-files';
 
 //
 // HTTP requests
@@ -12,9 +12,13 @@ import extractFiles from 'extract-files/public/extractFiles';
 function makeExecutor(httpEndpoint, options) {
   return async function executor({ document, variables, context }) {
     const allowedHeaders = Object.keys(context?.headers || {})
-      .filter((name) => name.toLowerCase().substr(0, 2) === 'x-')
+      .filter(
+        (name) => name.toLowerCase().substr(0, 2) === 'x-'
+          // check if the header is allowed to be forwarded
+          || options?.forwardHeaders?.map((header) => header.toLowerCase()).includes(name)
+      )
       .reduce((accum, name) => ({ ...accum, [name]: context?.headers[name] }), {});
-      // .filter((name) => name.toLowerCase().startsWith(prefix))
+    // .filter((name) => name.toLowerCase().startsWith(prefix))
 
     const query = print(document);
     let clone = variables;
@@ -27,12 +31,15 @@ function makeExecutor(httpEndpoint, options) {
 
     // Handles detecting if file uploads are part of the request, and extracting them
     if (variables) {
-      const awaitedVariables = (await Promise.all(
-          Object.keys(variables)
-            .map(async (key) => [key, await variables[key]])
-        )).reduce((accum, [k, v]) => ({ ...accum, [k]: v }), {});
+      const awaitedVariables = (
+        await Promise.all(Object.keys(variables).map(async (key) => [key, await variables[key]]))
+      ).reduce((accum, [k, v]) => ({ ...accum, [k]: v }), {});
 
-      ({ clone, files } = extractFiles(awaitedVariables, 'variables', (v) => !!v?.createReadStream));
+      ({ clone, files } = extractFiles(
+        awaitedVariables,
+        'variables',
+        (v) => !!v?.createReadStream
+      ));
     }
 
     // Handles generating a multi-part request
@@ -47,13 +54,15 @@ function makeExecutor(httpEndpoint, options) {
       // TODO(@tylermenezes): In theory, form-data and fetch support appending f.createReadStream() directly, but
       // in practice it doesn't seem to work. Processing uploads this way will work, but takes up a lot more memory
       // than necessary
-      await Promise.all(filesArr.map(async (f, i) => {
-        const chunks = []
-        for await (let chunk of f.createReadStream()) {
-          chunks.push(chunk);
-        }
-        form.append(i, Buffer.concat(chunks), f.filename);
-      }));
+      await Promise.all(
+        filesArr.map(async (f, i) => {
+          const chunks = [];
+          for await (const chunk of f.createReadStream()) {
+            chunks.push(chunk);
+          }
+          form.append(i, Buffer.concat(chunks), f.filename);
+        })
+      );
 
       headers = {
         ...form.getHeaders(),
@@ -61,10 +70,10 @@ function makeExecutor(httpEndpoint, options) {
       };
       body = form;
 
-    // Handles simple requests
+      // Handles simple requests
     } else {
       headers['Content-Type'] = 'application/json';
-      body = JSON.stringify({ query, variables: clone })
+      body = JSON.stringify({ query, variables: clone });
     }
 
     // Do the thing!
@@ -76,7 +85,7 @@ function makeExecutor(httpEndpoint, options) {
     const result = fetchResult.json();
     if (options?.debug) console.log(JSON.stringify({ body, result }));
     return result;
-  }
+  };
 }
 
 //
@@ -123,7 +132,6 @@ function makeSubscriber(wsEndpoint, options) {
 }
 
 export default function makeRemoteTransport(httpEndpoint, wsEndpoint, options) {
-
   return {
     executor: makeExecutor(httpEndpoint, options?.executor),
     subscriber: wsEndpoint ? makeSubscriber(wsEndpoint, options?.subscriber) : undefined,

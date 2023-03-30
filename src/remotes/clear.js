@@ -1,12 +1,10 @@
 import { wrapSchema, introspectSchema } from "@graphql-tools/wrap";
 import makeRemoteTransport from "../remoteTransport"
-import { batchDelegateToSchema } from "@graphql-tools/batch-delegate";
-import { applySchemaTransforms, delegateToSchema } from '@graphql-tools/delegate';
+import { delegateToSchema } from '@graphql-tools/delegate';
 import { TransformQuery } from "@graphql-tools/wrap";
 import { Kind } from "graphql";
 import { transformedSchemas } from '../schema';
 import { AddFieldToRequestTransform } from "../gql-utils";
-import { transformSchema } from 'apollo-server-express';
 
 function getConnectionTypes(prefix) {
   return `
