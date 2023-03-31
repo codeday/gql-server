@@ -1,0 +1,7 @@
+type Query {
+  status: Boolean
+}
+
+type Mutation {
+  subscribe(list: String!, email: String!, firstName: String, lastName: String, fields: JSONObject): String
+}

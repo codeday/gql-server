@@ -14,6 +14,7 @@ import createCalendarSchema from './remotes/calendar';
 import createLabsSchema from './remotes/labs';
 import createAdvisorsSchema from './remotes/advisors';
 import createTwitchSchema from './remotes/twitch';
+import createEmailSchema from './remotes/email';
 import createGeoSchema from './remotes/geo';
 import createClearSchema from "./remotes/clear";
 import createAccountSchema from './remotes/account';
@@ -24,7 +25,7 @@ const port = process.env.PORT || 4000;
 
 async function buildSchema() {
   console.log('Fetching sub-schemas...');
-  const [blog, showYourWork, showcase, calendar, labs, advisors, clear, cms, account, geo, twitch, github] =
+  const [blog, showYourWork, showcase, calendar, labs, advisors, clear, cms, account, geo, email, twitch, github] =
     await Promise.all([
       await createWordpressSchema(process.env.WORDPRESS_URL || 'https://wp.codeday.org/graphql'),
       await createDiscordPostsSchema(process.env.SHOWYOURWORK_URL || 'http://discord-posts.codeday.cloud'),
@@ -42,6 +43,7 @@ async function buildSchema() {
         process.env.MAXMIND_ACCOUNT,
         process.env.MAXMIND_KEY
       ),
+      await createEmailSchema(),
       await createTwitchSchema(
         process.env.TWITCH_CHANNEL,
         process.env.TWITCH_CLIENT_ID,
@@ -60,6 +62,7 @@ async function buildSchema() {
     showYourWork,
     showcase,
     calendar,
+    email,
     twitch,
     labs,
     advisors,
