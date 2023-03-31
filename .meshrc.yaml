@@ -1,0 +1,5 @@
+sources:
+  - name: Account
+    handler:
+      graphql:
+        endpoint: {env.ACCOUNT_URL}
