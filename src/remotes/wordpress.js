@@ -1,9 +1,10 @@
 import {
-  FilterRootFields, FilterInputObjectFields, RenameObjectFields, RenameInterfaceFields,
+  FilterRootFields, FilterInputObjectFields, RenameObjectFields, RenameInterfaceFields, wrapSchema, introspectSchema,
 } from '@graphql-tools/wrap';
 import { loadSchema } from '@graphql-tools/load';
 import { UrlLoader } from '@graphql-tools/url-loader';
 import { delegateToSchema } from '@graphql-tools/delegate';
+import makeRemoteTransport from '../remoteTransport';
 
 function getConnectionTypes(prefix) {
   return `
@@ -44,9 +45,11 @@ function getConnectionResolvers(prefix, schemas) {
 
 export default async function createWordpressSchema(uri) {
   console.log(` * wordpress(${uri})`);
-  const schema = await loadSchema(uri, { loaders: [new UrlLoader()] });
-  return {
-    schema,
+  // const schema = await loadSchema(uri, { loaders: [new UrlLoader()] });
+  const { executor } = makeRemoteTransport(uri);
+  const schema = wrapSchema({
+    schema: await introspectSchema(executor),
+    executor,
     transforms: [
       new FilterRootFields((operation, name) => (name === 'post' || name === 'posts' || name === 'createComment')),
       new FilterInputObjectFields((_, __, { type }) => type && String(type).indexOf('PostStatusEnum') === -1),
@@ -57,6 +60,9 @@ export default async function createWordpressSchema(uri) {
         ['MediaItem', 'Post', 'Page'].includes(typeName) && fieldName === 'author' ? 'wpAuthor' : fieldName
       )),
     ],
+  });
+  return {
+    schema,
     getConnectionTypes,
     getConnectionResolvers,
   };
