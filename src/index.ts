@@ -17,7 +17,23 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { GRAPHQL_WS, SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
 import { GRAPHQL_TRANSPORT_WS_PROTOCOL } from 'graphql-ws';
-import { buildSchema } from './schema.js';
+import { createContentfulSubschema, createAccountSchema } from './remote/index.js';
+import { createSchema } from './schema.js';
+
+async function buildSchema() {
+  console.log('Fetching sub-schemas...');
+  const [cms, account] = await Promise.all([
+    createContentfulSubschema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN),
+    createAccountSchema(
+      process.env.ACCOUNT_URL || 'http://account-gql.codeday.cloud/graphql',
+      process.env.ACCOUNT_WS || 'ws://account-gql.codeday.cloud/graphql',
+    ),
+  ]);
+  return createSchema({
+    cms,
+    account,
+  });
+}
 
 // const schema = makeExecutableSchema({ typeDefs, resolvers });
 const schema = await buildSchema();

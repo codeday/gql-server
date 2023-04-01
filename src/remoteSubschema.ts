@@ -4,6 +4,7 @@ import { buildHTTPExecutor } from '@graphql-tools/executor-http';
 import { schemaFromExecutor } from '@graphql-tools/wrap';
 import { createClient } from 'graphql-ws';
 import { WebSocket } from 'ws';
+import { SubschemaInfo } from './schema.js';
 
 class WebSocketWithHeaders extends WebSocket {
   constructor(address, protocols) {
@@ -51,14 +52,20 @@ function buildCombinedExecutor(endpoint: string | RemoteSchemaEndpoint, options:
 
 export async function createRemoteSubschema(
   endpoint: string | RemoteSchemaEndpoint,
-  options: RemoteSubschemaExecutorConfig & Omit<SubschemaConfig, 'schema' | 'executor'> = {},
-): Promise<SubschemaConfig> {
-  const { headers, ...rest } = options;
+  options: RemoteSubschemaExecutorConfig &
+    Omit<SubschemaConfig, 'schema' | 'executor'> &
+    Omit<Partial<SubschemaInfo>, 'schema'> = {},
+): Promise<SubschemaInfo> {
+  const { headers, createTypeDefs = () => [], createResolvers = () => [], ...rest } = options;
 
   const executor = buildCombinedExecutor(endpoint, { headers });
   return {
-    schema: await schemaFromExecutor(executor),
-    executor,
-    ...rest,
+    subschema: {
+      schema: await schemaFromExecutor(executor),
+      executor,
+      ...rest,
+    },
+    createResolvers,
+    createTypeDefs,
   };
 }
