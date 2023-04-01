@@ -8,4 +8,7 @@ module.exports = {
   rules: {
     'react-hooks/rules-of-hooks': 'off',
   },
+  globals: {
+    NodeJS: true,
+  },
 };

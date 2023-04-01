@@ -6,16 +6,16 @@ import { createClient } from 'graphql-ws';
 import { WebSocket } from 'ws';
 import { SubschemaInfo } from './schema.js';
 
-class WebSocketWithHeaders extends WebSocket {
-  constructor(address, protocols) {
-    super(address, protocols, {
-      headers: {
-        'User-Agent': 'graphql-ws client',
-        'X-Custom-Header': 'hello world',
-      },
-    });
-  }
-}
+// class WebSocketWithHeaders extends WebSocket {
+//   constructor(address, protocols) {
+//     super(address, protocols, {
+//       headers: {
+//         'User-Agent': 'graphql-ws client',
+//         'X-Custom-Header': 'hello world',
+//       },
+//     });
+//   }
+// }
 
 interface RemoteSchemaEndpoint {
   httpEndpoint: string;
@@ -37,7 +37,7 @@ function buildCombinedExecutor(endpoint: string | RemoteSchemaEndpoint, options:
 
   const wsClient = createClient({
     url: endpoint.wsEndpoint,
-    webSocketImpl: WebSocketWithHeaders,
+    webSocketImpl: WebSocket,
   });
 
   const wsExecutor = buildGraphQLWSExecutor(wsClient);
@@ -50,13 +50,40 @@ function buildCombinedExecutor(endpoint: string | RemoteSchemaEndpoint, options:
   };
 }
 
+export class RemoteSubschema {
+  constructor(
+    public endpoint: string | RemoteSchemaEndpoint,
+    public options: RemoteSubschemaExecutorConfig &
+      Omit<SubschemaConfig, 'schema' | 'executor'> &
+      Omit<Partial<SubschemaInfo>, 'schema'> = {},
+  ) {
+    this.endpoint = endpoint;
+    this.options = options;
+  }
+
+  async createSubschema() {
+    const { headers, createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = this.options;
+
+    const executor = buildCombinedExecutor(this.endpoint, { headers });
+    return {
+      subschema: {
+        schema: await schemaFromExecutor(executor),
+        executor,
+        ...rest,
+      },
+      createResolvers,
+      createTypeDefs,
+    };
+  }
+}
+
 export async function createRemoteSubschema(
   endpoint: string | RemoteSchemaEndpoint,
   options: RemoteSubschemaExecutorConfig &
     Omit<SubschemaConfig, 'schema' | 'executor'> &
     Omit<Partial<SubschemaInfo>, 'schema'> = {},
 ): Promise<SubschemaInfo> {
-  const { headers, createTypeDefs = () => [], createResolvers = () => [], ...rest } = options;
+  const { headers, createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = options;
 
   const executor = buildCombinedExecutor(endpoint, { headers });
   return {

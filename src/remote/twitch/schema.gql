@@ -1,0 +1,12 @@
+type Query {
+  live: LiveStatus
+}
+
+type LiveStatus {
+  title: String!
+  username: String!
+  url: String!
+  startedAt: String!
+  viewerCount: Int!
+  thumbnail(width: Int!, height: Int!): String!
+}

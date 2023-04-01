@@ -1,0 +1,7 @@
+type Query {
+  contributors(owner: String, repository: String!, path: String, branch: String): [Contributor]
+}
+
+type Contributor {
+  username: String!
+}

@@ -13,56 +13,43 @@ import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
-import { makeExecutableSchema } from '@graphql-tools/schema';
 import { GRAPHQL_WS, SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
 import { GRAPHQL_TRANSPORT_WS_PROTOCOL } from 'graphql-ws';
-import { createContentfulSubschema, createAccountSchema } from './remote/index.js';
-import { createSchema } from './schema.js';
+import { SchemaLoader } from './schema.js';
 
-async function buildSchema() {
-  console.log('Fetching sub-schemas...');
-  const [cms, account] = await Promise.all([
-    createContentfulSubschema('d5pti1xheuyu', process.env.CONTENTFUL_TOKEN),
-    createAccountSchema(
-      process.env.ACCOUNT_URL || 'http://account-gql.codeday.cloud/graphql',
-      process.env.ACCOUNT_WS || 'ws://account-gql.codeday.cloud/graphql',
-    ),
-  ]);
-  return createSchema({
-    cms,
-    account,
-  });
-}
+interface Context {}
 
-// const schema = makeExecutableSchema({ typeDefs, resolvers });
-const schema = await buildSchema();
+const loader = new SchemaLoader();
+await loader.reload();
+loader.autoRefresh(1000 * 60 * 15);
 
 const app = express();
 const httpServer = createServer(app);
 
 // graphql-ws
 const graphqlWs = new WebSocketServer({ noServer: true });
-useServer({ schema }, graphqlWs);
+useServer({ schema: loader.schema }, graphqlWs);
 
 // subscriptions-transport-ws
 const subTransWs = new WebSocketServer({ noServer: true });
 SubscriptionServer.create(
   {
-    schema,
+    schema: loader.schema,
     execute,
     subscribe,
   },
   subTransWs,
 );
 
-const graphQLWsServerCleanup = useServer({ schema }, graphqlWs);
-const subTransWsServerCleanup = useServer({ schema }, subTransWs);
+const graphQLWsServerCleanup = useServer({ schema: loader.schema }, graphqlWs);
+const subTransWsServerCleanup = useServer({ schema: loader.schema }, subTransWs);
 
-const server = new ApolloServer({
-  schema,
+const server = new ApolloServer<Context>({
+  schema: loader.schema,
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
+    // ApolloServerPluginInlineTrace(),
     {
       async serverWillStart() {
         return {
