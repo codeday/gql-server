@@ -9,10 +9,8 @@ import { OperationTypeNode } from 'graphql';
 import { fileURLToPath } from 'node:url';
 import LruCache from 'lru-cache';
 import { SubschemaInfo } from '../../schema.js';
-import { GithubQueryResolvers } from '../../generated/graphql.js';
+import { GithubQueryResolvers } from '../../../generated/graphql.js';
 import { api } from '../../utils/fetch-api.js';
-
-// const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
 
 function createTypeDefs(prefix) {
   return `
@@ -22,9 +20,9 @@ function createTypeDefs(prefix) {
   `;
 }
 
-function createResolvers(prefix, schemas) {
+function createResolvers(schemas) {
   return {
-    [`${prefix}Contributor`]: {
+    GithubContributor: {
       account: {
         selectionSet: '{ username }',
         resolve(parent, args, context, info) {
@@ -86,7 +84,6 @@ export async function createGithubSubschema(token): Promise<SubschemaInfo> {
     async contributors(_, { owner, repository, branch = 'main', path }, __, info) {
       const cacheKey = `${owner}/${repository}/${branch || 'main'}/${path}`;
       if (!lru.has(cacheKey)) {
-        // info.cacheControl.setCacheHint({ maxAge: 60 * 5 });
         const result = await api<GithubQuery>(`https://api.github.com/graphql`, {
           method: 'POST',
           body: JSON.stringify({
@@ -104,25 +101,20 @@ export async function createGithubSubschema(token): Promise<SubschemaInfo> {
           },
         });
 
-        // const resp = await result.json();
-
+        console.log('result: ', result);
         const allContributors = result?.repository?.object?.history?.nodes?.map((n) => n.author?.user?.login);
-        // return [...new Set(allContributors)].map((username) => ({ username }));
         lru.set(cacheKey, [...new Set(allContributors)]);
       }
       return lru.get(cacheKey).map((username) => ({ username }));
     },
   };
 
-  // const schema = makeExecutableSchema({
-  //   typeDefs,
-  //   resolvers,
-  // });
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
 
   return {
     subschema: { schema },
     createResolvers,
     createTypeDefs,
+    prefix: 'github',
   };
 }

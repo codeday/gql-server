@@ -43,5 +43,6 @@ export async function createEmailSubschema(): Promise<SubschemaInfo> {
   return {
     subschema: { schema },
     createTypeDefs: () => [JSONObjectDefinition],
+    prefix: "email"
   };
 }

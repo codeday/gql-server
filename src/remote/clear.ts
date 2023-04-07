@@ -1,11 +1,9 @@
-import { IResolvers } from '@graphql-tools/utils';
 import { TransformQuery } from '@graphql-tools/wrap';
 import { delegateToSchema, SubschemaConfig } from '@graphql-tools/delegate';
 import { Kind } from 'graphql';
-import { Resolvers, ResolversTypes } from '../generated/graphql.js';
-import { SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
-import { AddFieldToRequestTransform } from '../utils/gql-utils.js';
+import { ResolversWithPrefix } from '../schema.js';
+import { addToSelectionSet } from '../utils/selectionsets.js';
 
 const createTypeDefs = (prefix) => `
 extend type ${prefix}Event {
@@ -22,16 +20,16 @@ extend type ${prefix}PublicPerson {
 }
   `;
 
-function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConfig }): Resolvers {
+function createResolvers(schemas: { [key: string]: SubschemaConfig }): ResolversWithPrefix<'Clear'> {
   return {
-    [`${prefix}Event`]: {
+    ClearEvent: {
       region: {
         selectionSet: '{ contentfulWebname }',
         async resolve(parent, args, context, info) {
           if (!parent.contentfulWebname) return null;
           return delegateToSchema({
             schema: schemas.cms,
-            // operation: OperationTypeNode.QUERY,
+            operation: OperationTypeNode.QUERY,
             fieldName: 'regions',
             context,
             info,
@@ -43,7 +41,6 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
               ...args,
             },
             transforms: [
-              new AddFieldToRequestTransform(schemas.cms, 'Region', 'webname'),
               new TransformQuery({
                 path: ['regions'],
                 queryTransformer: (subtree) => ({
@@ -52,7 +49,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
                     {
                       kind: Kind.FIELD,
                       name: { kind: Kind.NAME, value: 'items' },
-                      selectionSet: subtree,
+                      selectionSet: addToSelectionSet(subtree, '{ webname }'),
                     },
                   ],
                 }),
@@ -68,7 +65,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
         async resolve(parent, args, context, info) {
           return delegateToSchema({
             schema: schemas.cms,
-            // operation: OperationTypeNode.QUERY,
+            operation: OperationTypeNode.QUERY,
             fieldName: 'eventRestrictions',
             args: {
               where: {
@@ -100,14 +97,14 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
       },
     },
 
-    [`${prefix}EventGroup`]: {
+    ClearEventGroup: {
       cmsEventGroup: {
         selectionSet: '{ contentfulId }',
         async resolve(parent, args, context, info) {
           if (!parent.contentfulId) return null;
           return delegateToSchema({
             schema: schemas.cms,
-            // operation: OperationTypeNode.QUERY,
+            operation: OperationTypeNode.QUERY,
             fieldName: 'events',
             context,
             info,
@@ -139,13 +136,13 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
       },
     },
 
-    [`${prefix}PublicPerson`]: {
+    ClearPublicPerson: {
       account: {
         selectionSet: '{ username }',
         resolve(parent, args, context, info) {
           return delegateToSchema({
             schema: schemas.account,
-            // operation: OperationTypeNode.QUERY,
+            operation: OperationTypeNode.QUERY,
             fieldName: 'getUser',
             args: {
               where: {
@@ -160,7 +157,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
     },
   };
 }
-export async function createClearSubschema(url: string): Promise<SubschemaInfo> {
+export async function createClearSubschema(url: string) {
   console.log(` * clear(${url})`);
-  return createRemoteSubschema(url, { createResolvers, createTypeDefs });
+  return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'Clear' });
 }

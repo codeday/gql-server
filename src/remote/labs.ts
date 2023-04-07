@@ -16,7 +16,7 @@ function createTypeDefs(prefix) {
   `;
 }
 
-function createResolvers(prefix, schemas) {
+function createResolvers(schemas) {
   const resolve = (k) => (parent, args, context, info) =>
     parent[k]
       ? delegateToSchema({
@@ -33,13 +33,13 @@ function createResolvers(prefix, schemas) {
         })
       : null;
   return {
-    [`${prefix}Student`]: {
+    [`LabsStudent`]: {
       account: {
         selectionSet: '{ username }',
         resolve: resolve('username'),
       },
     },
-    [`${prefix}Mentor`]: {
+    [`LabsMentor`]: {
       account: {
         selectionSet: '{ username }',
         resolve: resolve('username'),
@@ -54,21 +54,5 @@ function createResolvers(prefix, schemas) {
 
 export async function createLabsSubschema(url): Promise<SubschemaInfo> {
   console.log(` * labs(${url})`);
-  return createRemoteSubschema(url, { createResolvers, createTypeDefs });
+  return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'Labs' });
 }
-
-// export default async function createLabsSchema(uri) {
-//   console.log(` * labs(${uri})`);
-//   const { executor, subscriber } = makeRemoteTransport(uri);
-//   const schema = wrapSchema({
-//     schema: await introspectSchema(executor),
-//     executor,
-//     subscriber,
-//   });
-//   return {
-//     schema,
-//     transforms: [],
-//     getConnectionTypes,
-//     getConnectionResolvers,
-//   };
-// }

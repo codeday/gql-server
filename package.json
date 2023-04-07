@@ -41,6 +41,7 @@
     "@maxmind/geoip2-node": "^3.5.0",
     "@types/node-fetch": "^2.6.3",
     "add": "^2.0.6",
+    "apollo-transform-utils": "^0.0.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

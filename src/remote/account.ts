@@ -1,13 +1,16 @@
-import { SubschemaConfig, delegateToSchema } from '@graphql-tools/delegate';
-import { RenameObjectFields, TransformQuery } from '@graphql-tools/wrap';
+import { delegateToSchema } from '@graphql-tools/delegate';
+import { TransformQuery } from '@graphql-tools/wrap';
 import { batchDelegateToSchema } from '@graphql-tools/batch-delegate';
 import { Kind, OperationTypeNode } from 'graphql';
-import { Resolvers } from '../generated/graphql.js';
 import { SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
-import { AddFieldToRequestTransform } from '../utils/gql-utils.js';
+import { addToSelectionSet } from '../utils/selectionsets.js';
 
-function createTypeDefs(prefix) {
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
+
+type AccountSubschema = SubschemaInfo<'Account'>;
+
+const createTypeDefs: AccountSubschema['createTypeDefs'] = (prefix) => {
   return `
     extend type ${prefix}Badge {
       details: CmsBadge
@@ -17,29 +20,28 @@ function createTypeDefs(prefix) {
       sites: [CmsSite]
     }
   `;
-}
+};
 
-function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConfig }): Resolvers {
+const createResolvers: AccountSubschema['createResolvers'] = (schemas) => {
   return {
-    [`${prefix}Badge`]: {
+    AccountBadge: {
       details: {
         selectionSet: '{ id }',
-        async resolve(parent, args, context, info) {
+        async resolve(parent, _args, context, info) {
           return batchDelegateToSchema({
             schema: schemas.cms,
             operation: OperationTypeNode.QUERY,
-            fieldName: 'badgeCollection',
+            fieldName: 'badges',
             key: parent.id,
             argsFromKeys: (ids) => ({
-              where: { OR: [...ids?.map((id) => ({ id }))] },
+              where: { OR: [...(ids || []).map((id) => ({ id }))] },
             }),
             context,
             info,
             valuesFromResults: (results, keys) => keys?.map((key) => results.find((result) => result?.id === key)),
             transforms: [
-              new AddFieldToRequestTransform(schemas.cms, 'Badge', 'id'),
               new TransformQuery({
-                path: ['badgeCollection'],
+                path: ['badges'],
                 queryTransformer: (subtree) => ({
                   kind: Kind.SELECTION_SET,
                   selections: [
@@ -49,7 +51,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
                         kind: Kind.NAME,
                         value: 'items',
                       },
-                      selectionSet: subtree,
+                      selectionSet: addToSelectionSet(subtree, '{ id }'),
                     },
                   ],
                 }),
@@ -60,10 +62,10 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
         },
       },
     },
-    [`${prefix}User`]: {
+    AccountUser: {
       sites: {
         selectionSet: '{ roles }',
-        async resolve(parent, args, context, info) {
+        async resolve(parent, _args, context, info) {
           return delegateToSchema({
             schema: schemas.cms,
             operation: OperationTypeNode.QUERY,
@@ -105,9 +107,9 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
       },
     },
   };
-}
+};
 
-export async function createAccountSubschema(httpEndpoint, wsEndpoint): Promise<SubschemaInfo> {
+export async function createAccountSubschema(httpEndpoint, wsEndpoint) {
   console.log(` * account(${httpEndpoint})`);
-  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs });
+  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs, prefix: 'Account' });
 }

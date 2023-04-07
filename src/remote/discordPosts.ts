@@ -11,9 +11,9 @@ function createTypeDefs(prefix) {
   `;
 }
 
-function createResolvers(prefix, schemas) {
+function createResolvers(schemas) {
   return {
-    [`${prefix}DiscordMessage`]: {
+    [`ShowYourWorkDiscordMessage`]: {
       author: {
         selectionSet: '{ userId }',
         resolve(parent, args, context, info) {
@@ -37,16 +37,4 @@ function createResolvers(prefix, schemas) {
 
 export async function createDiscordPostsSubschema(url): Promise<SubschemaInfo> {
   console.log(` * discordPosts(${url})`);
-  return createRemoteSubschema(url, { createResolvers, createTypeDefs });
-}
-
-// export default async function createDiscordPostsSchema(uri) {
-//   console.log(` * discordPosts(${uri})`);
-//   const schema = await loadSchema(uri, { loaders: [new UrlLoader()] });
-//   return {
-//     schema,
-//     transforms: [],
-//     getConnectionTypes,
-//     getConnectionResolvers,
-//   };
-// }
+  return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'ShowYourWork' });

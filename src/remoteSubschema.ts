@@ -3,19 +3,8 @@ import { buildGraphQLWSExecutor } from '@graphql-tools/executor-graphql-ws';
 import { buildHTTPExecutor } from '@graphql-tools/executor-http';
 import { schemaFromExecutor } from '@graphql-tools/wrap';
 import { createClient } from 'graphql-ws';
-import { WebSocket } from 'ws';
+import WebSocket from 'ws';
 import { SubschemaInfo } from './schema.js';
-
-// class WebSocketWithHeaders extends WebSocket {
-//   constructor(address, protocols) {
-//     super(address, protocols, {
-//       headers: {
-//         'User-Agent': 'graphql-ws client',
-//         'X-Custom-Header': 'hello world',
-//       },
-//     });
-//   }
-// }
 
 interface RemoteSchemaEndpoint {
   httpEndpoint: string;
@@ -50,12 +39,12 @@ function buildCombinedExecutor(endpoint: string | RemoteSchemaEndpoint, options:
   };
 }
 
-export class RemoteSubschema {
+export class RemoteSubschema<Prefix extends string> {
   constructor(
     public endpoint: string | RemoteSchemaEndpoint,
     public options: RemoteSubschemaExecutorConfig &
       Omit<SubschemaConfig, 'schema' | 'executor'> &
-      Omit<Partial<SubschemaInfo>, 'schema'> = {},
+      Omit<Partial<SubschemaInfo<Prefix>>, 'schema'> = {},
   ) {
     this.endpoint = endpoint;
     this.options = options;
@@ -77,13 +66,12 @@ export class RemoteSubschema {
   }
 }
 
-export async function createRemoteSubschema(
+export async function createRemoteSubschema<Prefix extends string | '' = ''>(
   endpoint: string | RemoteSchemaEndpoint,
   options: RemoteSubschemaExecutorConfig &
-    Omit<SubschemaConfig, 'schema' | 'executor'> &
-    Omit<Partial<SubschemaInfo>, 'schema'> = {},
-): Promise<SubschemaInfo> {
-  const { headers, createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = options;
+    Omit<SubschemaConfig, 'schema' | 'executor'> & { prefix: Prefix } & Omit<Partial<SubschemaInfo<Prefix>>, 'schema'>,
+): Promise<SubschemaInfo<Prefix>> {
+  const { headers, prefix = '', createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = options;
 
   const executor = buildCombinedExecutor(endpoint, { headers });
   return {
@@ -92,7 +80,8 @@ export async function createRemoteSubschema(
       executor,
       ...rest,
     },
-    createResolvers,
+    createResolvers: createResolvers as SubschemaInfo<Prefix>['createResolvers'],
     createTypeDefs,
+    prefix: prefix.toLowerCase() as Prefix,
   };
 }

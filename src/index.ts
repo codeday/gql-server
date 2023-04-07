@@ -1,3 +1,4 @@
+/* eslint-disable no-promise-executor-return */
 /* eslint-disable import/first */
 import * as dotenv from 'dotenv';
 
@@ -49,7 +50,6 @@ const server = new ApolloServer<Context>({
   schema: loader.schema,
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
-    // ApolloServerPluginInlineTrace(),
     {
       async serverWillStart() {
         return {
@@ -95,5 +95,7 @@ app.use(
 
 const PORT = 4000;
 
-await new Promise<void>((resolve) => httpServer.listen({ port: PORT }, resolve));
+
+// @ts-ignore
+await new Promise<any>((resolve) => httpServer.listen({ port: PORT }, resolve));
 console.log(`🚀 Server ready at http://localhost:4000/graphql`);

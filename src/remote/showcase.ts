@@ -2,10 +2,10 @@ import { TransformQuery } from '@graphql-tools/wrap';
 import { delegateToSchema, SubschemaConfig } from '@graphql-tools/delegate';
 import { Kind, OperationTypeNode } from 'graphql';
 import { batchDelegateToSchema } from '@graphql-tools/batch-delegate';
-import { ShowcasePhoto, Resolvers, ShowcaseProjectResolvers, ShowcaseProject } from '../generated/graphql.js';
+import { ShowcasePhoto, Resolvers, ShowcaseProjectResolvers, ShowcaseProject } from '../../generated/graphql.js';
 import { SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
-import { AddFieldToRequestTransform } from '../utils/gql-utils.js';
+import { addToSelectionSet } from '../utils/selectionsets.js';
 
 const createTypeDefs = (prefix) => `
 extend type ${prefix}Member {
@@ -47,7 +47,6 @@ function projectPhotoResolvers<T, V extends ShowcaseProject & ShowcasePhoto>(sch
           info,
           valuesFromResults: (results, keys) => keys.map((key) => results.find((result) => result.webname === key)),
           transforms: [
-            new AddFieldToRequestTransform(schemas.cms, 'Program', 'webname'),
             new TransformQuery({
               path: ['programCollection'],
               queryTransformer: (subtree) => ({
@@ -59,7 +58,7 @@ function projectPhotoResolvers<T, V extends ShowcaseProject & ShowcasePhoto>(sch
                       kind: Kind.NAME,
                       value: 'items',
                     },
-                    selectionSet: subtree,
+                    selectionSet: addToSelectionSet(subtree, '{ webname }'),
                   },
                 ],
               }),
@@ -92,7 +91,6 @@ function projectPhotoResolvers<T, V extends ShowcaseProject & ShowcasePhoto>(sch
           info,
           valuesFromResults: (results, keys) => keys.map((key) => results.find((result) => result.id === key)),
           transforms: [
-            new AddFieldToRequestTransform(schemas.cms, 'Event', 'id'),
             new TransformQuery({
               path: ['eventCollection'],
               queryTransformer: (subtree) => ({
@@ -104,7 +102,7 @@ function projectPhotoResolvers<T, V extends ShowcaseProject & ShowcasePhoto>(sch
                       kind: Kind.NAME,
                       value: 'items',
                     },
-                    selectionSet: subtree,
+                    selectionSet: addToSelectionSet(subtree, '{ id }'),
                   },
                 ],
               }),
@@ -131,7 +129,6 @@ function projectPhotoResolvers<T, V extends ShowcaseProject & ShowcasePhoto>(sch
           info,
           valuesFromResults: (results, keys) => keys.map((key) => results.find((result) => result.webname === key)),
           transforms: [
-            new AddFieldToRequestTransform(schemas.cms, 'Region', 'webname'),
             new TransformQuery({
               path: ['regionCollection'],
               queryTransformer: (subtree) => ({
@@ -140,7 +137,7 @@ function projectPhotoResolvers<T, V extends ShowcaseProject & ShowcasePhoto>(sch
                   {
                     kind: Kind.FIELD,
                     name: { kind: Kind.NAME, value: 'items' },
-                    selectionSet: subtree,
+                    selectionSet: addToSelectionSet(subtree, '{ webname }'),
                   },
                 ],
               }),
@@ -152,9 +149,9 @@ function projectPhotoResolvers<T, V extends ShowcaseProject & ShowcasePhoto>(sch
     },
   };
 }
-function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConfig }): Resolvers {
+function createResolvers(schemas: { [key: string]: SubschemaConfig }): Resolvers {
   return {
-    [`${prefix}Member`]: {
+    [`ShowcaseMember`]: {
       account: {
         selectionSet: '{ username }',
         resolve(parent, args, context, info) {
@@ -174,7 +171,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
         },
       },
     },
-    [`${prefix}Award`]: {
+    [`ShowcaseAward`]: {
       info: {
         selectionSet: '{ type }',
         async resolve(parent, args, context, info) {
@@ -190,7 +187,6 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
             info,
             valuesFromResults: (results, keys) => keys.map((key) => results.find((result) => result.id === key)),
             transforms: [
-              new AddFieldToRequestTransform(schemas.cms, 'Award', 'id'),
               new TransformQuery({
                 path: ['awardCollection'],
                 queryTransformer: (subtree) => ({
@@ -202,7 +198,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
                         kind: Kind.NAME,
                         value: 'items',
                       },
-                      selectionSet: subtree,
+                      selectionSet: addToSelectionSet(subtree, '{ id }'),
                     },
                   ],
                 }),
@@ -220,5 +216,5 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
 
 export async function createShowcaseSubschema(httpEndpoint: string, wsEndpoint: string): Promise<SubschemaInfo> {
   console.log(` * showcase(${httpEndpoint})`);
-  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs });
+  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs, prefix: 'Showcase' });
 }

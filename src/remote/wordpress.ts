@@ -17,9 +17,9 @@ function createTypeDefs(prefix) {
   `;
 }
 
-function createResolvers(prefix, schemas) {
+function createResolvers(schemas) {
   return {
-    [`${prefix}Post`]: {
+    [`BlogPost`]: {
       author: {
         selectionSet: '{ wpAuthor { node { slug } } authorOverride { username title } }',
         async resolve(parent, args, context, info) {
@@ -60,25 +60,5 @@ export async function createWordpressSubschema(url: string): Promise<SubschemaIn
     ),
   ];
 
-  return createRemoteSubschema(url, { createResolvers, createTypeDefs, transforms });
+  return createRemoteSubschema(url, { createResolvers, createTypeDefs, transforms, prefix: 'Blog' });
 }
-
-// export default async function createWordpressSchema(uri) {
-//   console.log(` * wordpress(${uri})`);
-//   const schema = await loadSchema(uri, { loaders: [new UrlLoader()] });
-//   return {
-//     schema,
-//     transforms: [
-//       new FilterRootFields((operation, name) => name === 'post' || name === 'posts' || name === 'createComment'),
-//       new FilterInputObjectFields((_, __, { type }) => type && String(type).indexOf('PostStatusEnum') === -1),
-//       new RenameInterfaceFields((typeName, fieldName) =>
-//         typeName === 'NodeWithAuthor' && fieldName === 'author' ? 'wpAuthor' : fieldName,
-//       ),
-//       new RenameObjectFields((typeName, fieldName) =>
-//         ['MediaItem', 'Post', 'Page'].includes(typeName) && fieldName === 'author' ? 'wpAuthor' : fieldName,
-//       ),
-//     ],
-//     getConnectionTypes,
-//     getConnectionResolvers,
-//   };
-// }

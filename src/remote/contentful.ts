@@ -1,9 +1,9 @@
 import { RenameObjectFields } from '@graphql-tools/wrap';
 import { delegateToSchema, SubschemaConfig } from '@graphql-tools/delegate';
 import { OperationTypeNode } from 'graphql';
-import { SubschemaInfo } from '../schema.js';
+import { ResolversWithPrefix, SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
-import { Resolvers } from '../generated/graphql.js';
+import { Resolvers } from '../../generated/graphql.js';
 
 const createTypeDefs = (prefix) => `
 extend type ${prefix}Asset {
@@ -18,9 +18,9 @@ extend type ${prefix}Region {
 }
   `;
 
-function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConfig }): Resolvers {
+function createResolvers(schemas): ResolversWithPrefix<'Cms'> {
   return {
-    [`${prefix}HiringCompany`]: {
+    [`CmsHiringCompany`]: {
       alumniReferralAccounts: {
         selectionSet: '{ alumniReferrals }',
         async resolve(parent, _, context, info) {
@@ -47,7 +47,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
       },
     },
 
-    [`${prefix}Region`]: {
+    [`CmsRegion`]: {
       pastPhotos: {
         selectionSet: '{ webname }',
         async resolve(parent, args, context, info) {
@@ -87,7 +87,7 @@ function createResolvers(prefix: string, schemas: { [key: string]: SubschemaConf
       },
     },
 
-    [`${prefix}Asset`]: {
+    [`CmsAsset`]: {
       url: {
         selectionSet: '{ __selectionSetContentfulBaseUrl: contentfulBaseUrl, __selectionSetUrl: url }',
         resolve(parent, args) {
@@ -149,5 +149,6 @@ export async function createContentfulSubschema(space: string, token: string): P
     transforms,
     createTypeDefs,
     createResolvers,
+    prefix: 'Cms',
   });
 }
