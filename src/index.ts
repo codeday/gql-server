@@ -96,6 +96,5 @@ app.use(
 const PORT = 4000;
 
 
-// @ts-ignore
-await new Promise<any>((resolve) => httpServer.listen({ port: PORT }, resolve));
+await new Promise<any>((resolve) => httpServer.listen({ port: PORT }, resolve as () => void));
 console.log(`🚀 Server ready at http://localhost:4000/graphql`);
