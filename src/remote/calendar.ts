@@ -3,5 +3,5 @@ import { createRemoteSubschema } from '../remoteSubschema.js';
 
 export async function createCalendarSubschema(url) {
   console.log(` * calendar(${url})`);
-  return createRemoteSubschema(url, { prefix: 'Calendar' });
+  return createRemoteSubschema(url, { prefix: 'calendar' });
 }

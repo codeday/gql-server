@@ -54,5 +54,5 @@ function createResolvers(schemas) {
 
 export async function createLabsSubschema(url): Promise<SubschemaInfo> {
   console.log(` * labs(${url})`);
-  return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'Labs' });
+  return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'labs' });
 }

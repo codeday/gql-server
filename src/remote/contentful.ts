@@ -150,6 +150,6 @@ export async function createContentfulSubschema(space: string, token: string): P
     transforms,
     createTypeDefs,
     createResolvers,
-    prefix: 'Cms',
+    prefix: 'cms',
   });
 }

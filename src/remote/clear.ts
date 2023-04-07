@@ -159,5 +159,5 @@ function createResolvers(schemas: { [key: string]: SubschemaConfig }): Resolvers
 }
 export async function createClearSubschema(url: string) {
   console.log(` * clear(${url})`);
-  return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'Clear' });
+  return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'clear' });
 }

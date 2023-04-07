@@ -60,5 +60,5 @@ export async function createWordpressSubschema(url: string): Promise<SubschemaIn
     ),
   ];
 
-  return createRemoteSubschema(url, { createResolvers, createTypeDefs, transforms, prefix: 'Blog' });
+  return createRemoteSubschema(url, { createResolvers, createTypeDefs, transforms, prefix: 'blog' });
 }

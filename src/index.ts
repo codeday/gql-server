@@ -97,4 +97,4 @@ const PORT = 4000;
 
 
 await new Promise<any>((resolve) => httpServer.listen({ port: PORT }, resolve as () => void));
-console.log(`🚀 Server ready at http://localhost:4000/graphql`);
+console.log(`🚀 Server ready at http://localhost:4000`);

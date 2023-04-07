@@ -101,7 +101,6 @@ export async function createGithubSubschema(token): Promise<SubschemaInfo> {
           },
         });
 
-        console.log('result: ', result);
         const allContributors = result?.repository?.object?.history?.nodes?.map((n) => n.author?.user?.login);
         lru.set(cacheKey, [...new Set(allContributors)]);
       }

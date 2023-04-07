@@ -216,5 +216,5 @@ function createResolvers(schemas: { [key: string]: SubschemaConfig }): Resolvers
 
 export async function createShowcaseSubschema(httpEndpoint: string, wsEndpoint: string): Promise<SubschemaInfo> {
   console.log(` * showcase(${httpEndpoint})`);
-  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs, prefix: 'Showcase' });
+  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs, prefix: 'showcase' });
 }

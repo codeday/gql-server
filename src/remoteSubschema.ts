@@ -93,12 +93,12 @@ export async function createRemoteSubschema<Prefix extends string | '' = ''>(
     transforms,
     ...rest,
   };
-  subschema.transforms.push(...namespaceTransforms(prefix.toLowerCase(), subschema));
+  subschema.transforms.push(...namespaceTransforms(prefix, subschema));
 
   return {
     subschema,
     createResolvers: createResolvers as SubschemaInfo<Prefix>['createResolvers'],
     createTypeDefs,
-    prefix: prefix.toLowerCase() as Prefix,
+    prefix: prefix as Prefix,
   };
 }
