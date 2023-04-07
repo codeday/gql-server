@@ -142,6 +142,7 @@ export class SchemaLoader {
     this.stopAutoRefresh();
     this.intervalId = setTimeout(async () => {
       await this.reload();
+      console.log("refreshed schemas!")
       this.intervalId = null;
       this.autoRefresh(interval);
     }, interval);

@@ -18,12 +18,13 @@ import { GRAPHQL_WS, SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
 import { GRAPHQL_TRANSPORT_WS_PROTOCOL } from 'graphql-ws';
 import { SchemaLoader } from './schema.js';
+import { LoggingPlugin } from './utils.js';
 
 interface Context {}
 
 const loader = new SchemaLoader();
 await loader.reload();
-loader.autoRefresh(1000 * 60 * 15);
+loader.autoRefresh(1000 * 60 * 5);
 
 const app = express();
 const httpServer = createServer(app);
@@ -60,6 +61,7 @@ const server = new ApolloServer<Context>({
         };
       },
     },
+    LoggingPlugin
   ],
 });
 await server.start();
@@ -97,4 +99,4 @@ const PORT = 4000;
 
 
 await new Promise<any>((resolve) => httpServer.listen({ port: PORT }, resolve as () => void));
-console.log(`🚀 Server ready at http://localhost:4000`);
+console.log(`🚀 Server ready at http://localhost:4000/`);
