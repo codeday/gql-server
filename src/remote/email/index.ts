@@ -5,7 +5,7 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { SubschemaInfo } from '../../schema.js';
+import { SubschemaInfo, createLocalSubschema } from '../../schema.js';
 
 export async function createEmailSubschema(): Promise<SubschemaInfo> {
   const baseSchema = await loadSchema(
@@ -39,10 +39,10 @@ export async function createEmailSubschema(): Promise<SubschemaInfo> {
   };
 
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
-
-  return {
-    subschema: { schema },
-    createTypeDefs: () => [JSONObjectDefinition],
-    prefix: "email"
-  };
+  return createLocalSubschema({ schema, prefix: 'email', createTypeDefs: () => [JSONObjectDefinition] });
+  // return {
+  //   subschema: { schema },
+  //   createTypeDefs: () => [JSONObjectDefinition],
+  //   prefix: 'email',
+  // };
 }

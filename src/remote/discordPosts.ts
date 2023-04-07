@@ -1,7 +1,7 @@
 import { delegateToSchema } from '@graphql-tools/delegate';
 import { OperationTypeNode } from 'graphql';
 import { createRemoteSubschema } from '../remoteSubschema.js';
-import { SubschemaInfo } from '../schema.js';
+import { ResolversWithPrefix, SubschemaInfo } from '../schema.js';
 
 function createTypeDefs(prefix) {
   return `
@@ -11,7 +11,7 @@ function createTypeDefs(prefix) {
   `;
 }
 
-function createResolvers(schemas) {
+function createResolvers(schemas): ResolversWithPrefix<'ShowYourWork'> {
   return {
     [`ShowYourWorkDiscordMessage`]: {
       author: {

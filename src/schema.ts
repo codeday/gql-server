@@ -36,19 +36,39 @@ export interface SubschemaInfo<Prefix extends string = string, TResolvers extend
   createResolvers?: (subschemaInfo?: { [key: string]: SubschemaConfig }) => ResolversWithPrefix<Prefix, TResolvers>;
 }
 
-function namescapeTransforms(prefix: string, schema: SubschemaConfig) {
+export function namespaceTransforms(prefix: string, schema: SubschemaConfig | GraphQLSchema) {
   if (!prefix) return [];
+  const _schema = schema instanceof GraphQLSchema ? schema : schema.schema;
   const fieldPrefix = prefix.charAt(0).toLowerCase() + prefix.slice(1);
   const typePrefix = prefix.charAt(0).toUpperCase() + prefix.slice(1);
   const renameFields = ['Query', 'Mutation'];
   const wrapFields = renameFields
     .map((fieldType) => {
-      const fieldName = schema.schema[`get${fieldType}Type`]()?.name;
+      const fieldName = _schema[`get${fieldType}Type`]()?.name;
       if (!fieldName) return;
       return new WrapType(fieldName, `${typePrefix}${fieldName}`, fieldPrefix);
     })
     .filter((field) => field);
   return [new RenameTypes((name) => (name === 'Upload' ? name : `${typePrefix}${name}`)), ...wrapFields];
+}
+
+export function createLocalSubschema<Prefix extends string | '' = ''>(
+  options: SubschemaConfig & { prefix: Prefix } & Omit<Partial<SubschemaInfo<Prefix>>, 'subschema'>,
+): SubschemaInfo {
+  const {
+    schema,
+    prefix = '',
+    createTypeDefs = () => [],
+    createResolvers = () => ({}),
+    transforms = [],
+    ...rest
+  } = options;
+  return {
+    subschema: { schema, transforms: [...namespaceTransforms(prefix, schema)], ...rest },
+    createResolvers: createResolvers as SubschemaInfo<Prefix>['createResolvers'],
+    createTypeDefs,
+    prefix: prefix.toLowerCase() as Prefix,
+  };
 }
 
 export async function fetchSubschemaInfo() {
@@ -83,10 +103,7 @@ export function createSchema(subschemasInfo: SubschemaInfo<any, any>[]) {
   const subschemaInfo = [...subschemasInfo];
   const resolvers = [];
   const typeDefs = [];
-  subschemaInfo.forEach(({ subschema, prefix }) => {
-    // eslint-disable-next-line no-param-reassign
-    subschema.transforms = [...(subschema.transforms || []), ...namescapeTransforms(prefix, subschema)];
-  });
+
   const subschemas = subschemaInfo.map((info) => info.subschema);
   subschemaInfo.forEach(({ createTypeDefs, createResolvers, prefix }) => {
     if (createTypeDefs) typeDefs.push(createTypeDefs(prefix.charAt(0).toUpperCase() + prefix.slice(1)));

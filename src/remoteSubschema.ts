@@ -1,10 +1,12 @@
 import { SubschemaConfig } from '@graphql-tools/delegate';
 import { buildGraphQLWSExecutor } from '@graphql-tools/executor-graphql-ws';
 import { buildHTTPExecutor } from '@graphql-tools/executor-http';
-import { schemaFromExecutor } from '@graphql-tools/wrap';
+import { RenameTypes, WrapType, schemaFromExecutor } from '@graphql-tools/wrap';
 import { createClient } from 'graphql-ws';
 import WebSocket from 'ws';
 import { SubschemaInfo } from './schema.js';
+import { GraphQLSchema } from 'graphql';
+import { namespaceTransforms } from './schema.js';
 
 interface RemoteSchemaEndpoint {
   httpEndpoint: string;
@@ -69,17 +71,32 @@ export class RemoteSubschema<Prefix extends string> {
 export async function createRemoteSubschema<Prefix extends string | '' = ''>(
   endpoint: string | RemoteSchemaEndpoint,
   options: RemoteSubschemaExecutorConfig &
-    Omit<SubschemaConfig, 'schema' | 'executor'> & { prefix: Prefix } & Omit<Partial<SubschemaInfo<Prefix>>, 'schema'>,
+    Omit<SubschemaConfig, 'schema' | 'executor'> & { prefix: Prefix } & Omit<
+      Partial<SubschemaInfo<Prefix>>,
+      'subschema'
+    >,
 ): Promise<SubschemaInfo<Prefix>> {
-  const { headers, prefix = '', createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = options;
+  const {
+    headers,
+    prefix = '',
+    createTypeDefs = () => [],
+    createResolvers = () => ({}),
+    transforms = [],
+    ...rest
+  } = options;
 
   const executor = buildCombinedExecutor(endpoint, { headers });
+
+  const subschema = {
+    schema: await schemaFromExecutor(executor),
+    executor,
+    transforms,
+    ...rest,
+  };
+  subschema.transforms.push(...namespaceTransforms(prefix.toLowerCase(), subschema));
+
   return {
-    subschema: {
-      schema: await schemaFromExecutor(executor),
-      executor,
-      ...rest,
-    },
+    subschema,
     createResolvers: createResolvers as SubschemaInfo<Prefix>['createResolvers'],
     createTypeDefs,
     prefix: prefix.toLowerCase() as Prefix,

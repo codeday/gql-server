@@ -13,8 +13,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  AdvisorsDateTime: any;
-  AdvisorsJSONObject: any;
+  AdvisorDateTime: any;
+  AdvisorJSONObject: any;
   CalendarDateTime: any;
   CalendarJSONObject: any;
   ClearDateTime: any;
@@ -32,8 +32,8 @@ export type Scalars = {
   LabsDateTime: any;
   LabsJSON: any;
   LabsJSONObject: any;
-  ShowYourWorkDateTime: any;
   ShowcaseDateTime: any;
+  ShowyourworkDateTime: any;
   Upload: any;
 };
 
@@ -62,6 +62,14 @@ export type AccountDiscordInformation = {
   username: Scalars['String'];
 };
 
+export type AccountDiscordTokenInfoInput = {
+  accessToken: Scalars['String'];
+  expiresIn: Scalars['Float'];
+  refreshToken: Scalars['String'];
+  scope: Scalars['String'];
+  tokenType?: InputMaybe<Scalars['String']>;
+};
+
 export type AccountDisplayedBadgeInput = {
   id: Scalars['ID'];
   order: Scalars['Int'];
@@ -75,6 +83,7 @@ export type AccountMutation = {
   linkDiscord: Scalars['Boolean'];
   pizzaOrTurtleCult: Scalars['Boolean'];
   revokeBadge: Scalars['Boolean'];
+  setDiscordToken: Scalars['Boolean'];
   setDisplayedBadges: Scalars['Boolean'];
   unlinkDiscord: Scalars['Boolean'];
   updateUser: Scalars['Boolean'];
@@ -118,6 +127,12 @@ export type AccountMutationRevokeBadgeArgs = {
 };
 
 
+export type AccountMutationSetDiscordTokenArgs = {
+  tokenInfo: AccountDiscordTokenInfoInput;
+  where: AccountUserWhereInput;
+};
+
+
 export type AccountMutationSetDisplayedBadgesArgs = {
   badges?: InputMaybe<Array<AccountDisplayedBadgeInput>>;
   where: AccountUserWhereInput;
@@ -147,12 +162,19 @@ export enum AccountPizzaOrTurtle {
 
 export type AccountQuery = {
   __typename?: 'AccountQuery';
+  getDiscordToken?: Maybe<Scalars['String']>;
   getDiscordUsers: Array<Maybe<AccountUser>>;
   getUser?: Maybe<AccountUser>;
   roleUsers: Array<Maybe<AccountUser>>;
   roles: Array<Maybe<AccountRole>>;
   searchUsers: Array<Maybe<AccountUser>>;
   userRoles: Array<Maybe<AccountRole>>;
+};
+
+
+export type AccountQueryGetDiscordTokenArgs = {
+  discordId: Scalars['String'];
+  refresh?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -220,9 +242,9 @@ export type AccountUpdateUserInput = {
 export type AccountUser = {
   __typename?: 'AccountUser';
   acceptTos?: Maybe<Scalars['Boolean']>;
-  badges?: Maybe<Array<Maybe<AccountBadge>>>;
+  badges: Array<AccountBadge>;
   bio?: Maybe<Scalars['String']>;
-  blocked?: Maybe<Scalars['Boolean']>;
+  blocked: Scalars['Boolean'];
   discordId?: Maybe<Scalars['String']>;
   discordInformation?: Maybe<AccountDiscordInformation>;
   displayNameFormat?: Maybe<Scalars['String']>;
@@ -235,10 +257,10 @@ export type AccountUser = {
   phoneNumber?: Maybe<Scalars['String']>;
   picture?: Maybe<Scalars['String']>;
   pronoun?: Maybe<Scalars['String']>;
-  roles?: Maybe<Array<Maybe<AccountRole>>>;
+  roles: Array<AccountRole>;
   sites?: Maybe<Array<Maybe<CmsSite>>>;
   title?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 
@@ -284,8 +306,8 @@ export type AccountUserWhereInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
-export type AdvisorsAdvisor = {
-  __typename?: 'AdvisorsAdvisor';
+export type AdvisorAdvisor = {
+  __typename?: 'AdvisorAdvisor';
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
@@ -293,171 +315,171 @@ export type AdvisorsAdvisor = {
   resumesPerWeek: Scalars['Float'];
 };
 
-export type AdvisorsAdvisorCreateInput = {
+export type AdvisorAdvisorCreateInput = {
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
-  limits: AdvisorsAdvisorLimitInput;
-  type: AdvisorsAdvisorType;
+  limits: AdvisorAdvisorLimitInput;
+  type: AdvisorAdvisorType;
   username?: InputMaybe<Scalars['String']>;
 };
 
-export type AdvisorsAdvisorLimitInput = {
+export type AdvisorAdvisorLimitInput = {
   interviewsPerWeek: Scalars['Float'];
   resumesPerWeek: Scalars['Float'];
 };
 
-export enum AdvisorsAdvisorType {
+export enum AdvisorAdvisorType {
   Hr = 'HR',
   Technical = 'TECHNICAL'
 }
 
-export type AdvisorsAdvisorWhereInput = {
+export type AdvisorAdvisorWhereInput = {
   email?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['String']>;
   username?: InputMaybe<Scalars['String']>;
 };
 
-export type AdvisorsEventParticipation = {
-  __typename?: 'AdvisorsEventParticipation';
+export type AdvisorEventParticipation = {
+  __typename?: 'AdvisorEventParticipation';
   awardIds: Array<Scalars['String']>;
   eventId: Scalars['String'];
   id: Scalars['String'];
-  profile: AdvisorsProfile;
+  profile: AdvisorProfile;
 };
 
-export type AdvisorsEventParticipationCreateInput = {
+export type AdvisorEventParticipationCreateInput = {
   awardIds?: InputMaybe<Array<Scalars['String']>>;
   eventId: Scalars['String'];
 };
 
-export type AdvisorsMutation = {
-  __typename?: 'AdvisorsMutation';
+export type AdvisorMutation = {
+  __typename?: 'AdvisorMutation';
   createAdvisor: Scalars['Boolean'];
-  createEventParticipation: AdvisorsEventParticipation;
-  createProfile: AdvisorsProfile;
-  createRecommendation: AdvisorsRecommendation;
+  createEventParticipation: AdvisorEventParticipation;
+  createProfile: AdvisorProfile;
+  createRecommendation: AdvisorRecommendation;
   createRequest: Scalars['Boolean'];
-  createTag: AdvisorsTag;
+  createTag: AdvisorTag;
   deleteTag: Scalars['Boolean'];
   editAdvisorLimits: Scalars['Boolean'];
-  editProfile: AdvisorsProfile;
-  editRecommendation: AdvisorsRecommendation;
-  getAdvisors: Array<AdvisorsAdvisor>;
+  editProfile: AdvisorProfile;
+  editRecommendation: AdvisorRecommendation;
+  getAdvisors: Array<AdvisorAdvisor>;
   respondRequest: Scalars['Boolean'];
 };
 
 
-export type AdvisorsMutationCreateAdvisorArgs = {
-  data: AdvisorsAdvisorCreateInput;
+export type AdvisorMutationCreateAdvisorArgs = {
+  data: AdvisorAdvisorCreateInput;
 };
 
 
-export type AdvisorsMutationCreateEventParticipationArgs = {
-  data: AdvisorsEventParticipationCreateInput;
+export type AdvisorMutationCreateEventParticipationArgs = {
+  data: AdvisorEventParticipationCreateInput;
   username: Scalars['String'];
 };
 
 
-export type AdvisorsMutationCreateProfileArgs = {
-  data: AdvisorsProfileCreateInput;
+export type AdvisorMutationCreateProfileArgs = {
+  data: AdvisorProfileCreateInput;
   username?: InputMaybe<Scalars['String']>;
 };
 
 
-export type AdvisorsMutationCreateRecommendationArgs = {
+export type AdvisorMutationCreateRecommendationArgs = {
   authorUsername?: InputMaybe<Scalars['String']>;
-  data: AdvisorsRecommendationCreateInput;
+  data: AdvisorRecommendationCreateInput;
   username: Scalars['String'];
 };
 
 
-export type AdvisorsMutationCreateRequestArgs = {
+export type AdvisorMutationCreateRequestArgs = {
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   resume?: InputMaybe<Scalars['Upload']>;
-  type: AdvisorsRequestType;
+  type: AdvisorRequestType;
 };
 
 
-export type AdvisorsMutationCreateTagArgs = {
-  data: AdvisorsTagCreateInput;
+export type AdvisorMutationCreateTagArgs = {
+  data: AdvisorTagCreateInput;
 };
 
 
-export type AdvisorsMutationDeleteTagArgs = {
+export type AdvisorMutationDeleteTagArgs = {
   id: Scalars['String'];
 };
 
 
-export type AdvisorsMutationEditAdvisorLimitsArgs = {
-  limits: AdvisorsAdvisorLimitInput;
-  where: AdvisorsAdvisorWhereInput;
+export type AdvisorMutationEditAdvisorLimitsArgs = {
+  limits: AdvisorAdvisorLimitInput;
+  where: AdvisorAdvisorWhereInput;
 };
 
 
-export type AdvisorsMutationEditProfileArgs = {
-  data: AdvisorsProfileEditInput;
+export type AdvisorMutationEditProfileArgs = {
+  data: AdvisorProfileEditInput;
   username?: InputMaybe<Scalars['String']>;
 };
 
 
-export type AdvisorsMutationEditRecommendationArgs = {
-  data: AdvisorsRecommendationEditInput;
+export type AdvisorMutationEditRecommendationArgs = {
+  data: AdvisorRecommendationEditInput;
   id: Scalars['String'];
 };
 
 
-export type AdvisorsMutationRespondRequestArgs = {
+export type AdvisorMutationRespondRequestArgs = {
   file?: InputMaybe<Scalars['Upload']>;
   request: Scalars['String'];
-  response?: InputMaybe<Scalars['AdvisorsJSONObject']>;
+  response?: InputMaybe<Scalars['AdvisorJSONObject']>;
 };
 
-export type AdvisorsPendingRequests = {
-  __typename?: 'AdvisorsPendingRequests';
+export type AdvisorPendingRequests = {
+  __typename?: 'AdvisorPendingRequests';
   pendingRequests: Scalars['Float'];
-  requestType: AdvisorsRequestType;
+  requestType: AdvisorRequestType;
 };
 
-export type AdvisorsProfile = {
-  __typename?: 'AdvisorsProfile';
+export type AdvisorProfile = {
+  __typename?: 'AdvisorProfile';
   bio?: Maybe<Scalars['String']>;
-  createdAt: Scalars['AdvisorsDateTime'];
+  createdAt: Scalars['AdvisorDateTime'];
   email: Scalars['String'];
-  eventParticipation: Array<AdvisorsEventParticipation>;
-  experience: Array<AdvisorsTag>;
+  eventParticipation: Array<AdvisorEventParticipation>;
+  experience: Array<AdvisorTag>;
   familyName: Scalars['String'];
   givenName: Scalars['String'];
-  gradHighSchoolAt?: Maybe<Scalars['AdvisorsDateTime']>;
-  gradUniversityAt?: Maybe<Scalars['AdvisorsDateTime']>;
-  recommendations: Array<AdvisorsRecommendation>;
-  searchFullTimeAt?: Maybe<Scalars['AdvisorsDateTime']>;
+  gradHighSchoolAt?: Maybe<Scalars['AdvisorDateTime']>;
+  gradUniversityAt?: Maybe<Scalars['AdvisorDateTime']>;
+  recommendations: Array<AdvisorRecommendation>;
+  searchFullTimeAt?: Maybe<Scalars['AdvisorDateTime']>;
   searchInternships: Scalars['Boolean'];
   searchOpen: Scalars['Boolean'];
   underrepresentedEthnicity: Scalars['Boolean'];
   underrepresentedGender: Scalars['Boolean'];
-  updatedAt: Scalars['AdvisorsDateTime'];
+  updatedAt: Scalars['AdvisorDateTime'];
   urlGithub?: Maybe<Scalars['String']>;
   urlLinkedIn?: Maybe<Scalars['String']>;
   urlResume?: Maybe<Scalars['String']>;
   urlWebsite?: Maybe<Scalars['String']>;
   username: Scalars['String'];
-  workFteAt?: Maybe<Scalars['AdvisorsDateTime']>;
-  workInternAt?: Maybe<Scalars['AdvisorsDateTime']>;
+  workFteAt?: Maybe<Scalars['AdvisorDateTime']>;
+  workInternAt?: Maybe<Scalars['AdvisorDateTime']>;
 };
 
-export type AdvisorsProfileCreateInput = {
+export type AdvisorProfileCreateInput = {
   bio?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   experience?: InputMaybe<Array<Scalars['String']>>;
   familyName: Scalars['String'];
   givenName: Scalars['String'];
-  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
-  gradUniversityAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  gradUniversityAt?: InputMaybe<Scalars['AdvisorDateTime']>;
   resume?: InputMaybe<Scalars['Upload']>;
-  searchFullTimeAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  searchFullTimeAt?: InputMaybe<Scalars['AdvisorDateTime']>;
   searchInternships?: InputMaybe<Scalars['Boolean']>;
   searchOpen?: InputMaybe<Scalars['Boolean']>;
   underrepresentedEthnicity?: InputMaybe<Scalars['Boolean']>;
@@ -465,20 +487,20 @@ export type AdvisorsProfileCreateInput = {
   urlGithub?: InputMaybe<Scalars['String']>;
   urlLinkedIn?: InputMaybe<Scalars['String']>;
   urlWebsite?: InputMaybe<Scalars['String']>;
-  workFteAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
-  workInternAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  workFteAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  workInternAt?: InputMaybe<Scalars['AdvisorDateTime']>;
 };
 
-export type AdvisorsProfileEditInput = {
+export type AdvisorProfileEditInput = {
   bio?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
   experience?: InputMaybe<Array<Scalars['String']>>;
   familyName?: InputMaybe<Scalars['String']>;
   givenName?: InputMaybe<Scalars['String']>;
-  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
-  gradUniversityAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  gradUniversityAt?: InputMaybe<Scalars['AdvisorDateTime']>;
   resume?: InputMaybe<Scalars['Upload']>;
-  searchFullTimeAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  searchFullTimeAt?: InputMaybe<Scalars['AdvisorDateTime']>;
   searchInternships?: InputMaybe<Scalars['Boolean']>;
   searchOpen?: InputMaybe<Scalars['Boolean']>;
   underrepresentedEthnicity?: InputMaybe<Scalars['Boolean']>;
@@ -486,101 +508,101 @@ export type AdvisorsProfileEditInput = {
   urlGithub?: InputMaybe<Scalars['String']>;
   urlLinkedIn?: InputMaybe<Scalars['String']>;
   urlWebsite?: InputMaybe<Scalars['String']>;
-  workFteAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
-  workInternAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  workFteAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  workInternAt?: InputMaybe<Scalars['AdvisorDateTime']>;
 };
 
-export type AdvisorsQuery = {
-  __typename?: 'AdvisorsQuery';
+export type AdvisorQuery = {
+  __typename?: 'AdvisorQuery';
   buildResumePackage: Scalars['String'];
-  getRequest: AdvisorsRequest;
-  getRequestAssignment: AdvisorsRequestAssignment;
-  pendingRequests: Array<AdvisorsPendingRequests>;
-  profile: AdvisorsProfile;
-  remainingRequests: Array<AdvisorsRemainingRequestsType>;
-  servedRequests: Array<AdvisorsRequestCount>;
-  submittedRequests: Array<AdvisorsRequestCount>;
-  tags: Array<AdvisorsTag>;
+  getRequest: AdvisorRequest;
+  getRequestAssignment: AdvisorRequestAssignment;
+  pendingRequests: Array<AdvisorPendingRequests>;
+  profile: AdvisorProfile;
+  remainingRequests: Array<AdvisorRemainingRequestsType>;
+  servedRequests: Array<AdvisorRequestCount>;
+  submittedRequests: Array<AdvisorRequestCount>;
+  tags: Array<AdvisorTag>;
 };
 
 
-export type AdvisorsQueryBuildResumePackageArgs = {
+export type AdvisorQueryBuildResumePackageArgs = {
   username: Scalars['String'];
 };
 
 
-export type AdvisorsQueryGetRequestArgs = {
+export type AdvisorQueryGetRequestArgs = {
   request: Scalars['String'];
 };
 
 
-export type AdvisorsQueryGetRequestAssignmentArgs = {
+export type AdvisorQueryGetRequestAssignmentArgs = {
   request: Scalars['String'];
 };
 
 
-export type AdvisorsQueryProfileArgs = {
+export type AdvisorQueryProfileArgs = {
   username?: InputMaybe<Scalars['String']>;
 };
 
 
-export type AdvisorsQueryServedRequestsArgs = {
-  where?: InputMaybe<AdvisorsRequestCountWhereInput>;
+export type AdvisorQueryServedRequestsArgs = {
+  where?: InputMaybe<AdvisorRequestCountWhereInput>;
 };
 
 
-export type AdvisorsQuerySubmittedRequestsArgs = {
-  where?: InputMaybe<AdvisorsRequestCountWhereInput>;
+export type AdvisorQuerySubmittedRequestsArgs = {
+  where?: InputMaybe<AdvisorRequestCountWhereInput>;
 };
 
 
-export type AdvisorsQueryTagsArgs = {
-  type?: InputMaybe<AdvisorsTagType>;
+export type AdvisorQueryTagsArgs = {
+  type?: InputMaybe<AdvisorTagType>;
 };
 
-export type AdvisorsRecommendation = {
-  __typename?: 'AdvisorsRecommendation';
-  createdAt: Scalars['AdvisorsDateTime'];
+export type AdvisorRecommendation = {
+  __typename?: 'AdvisorRecommendation';
+  createdAt: Scalars['AdvisorDateTime'];
   employer: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   id: Scalars['String'];
-  profile: AdvisorsProfile;
+  profile: AdvisorProfile;
   recommendation?: Maybe<Scalars['String']>;
   relation: Scalars['String'];
-  skillEngineering?: Maybe<AdvisorsRecommendationRating>;
-  skillInterpersonal?: Maybe<AdvisorsRecommendationRating>;
-  skillTechnical?: Maybe<AdvisorsRecommendationRating>;
+  skillEngineering?: Maybe<AdvisorRecommendationRating>;
+  skillInterpersonal?: Maybe<AdvisorRecommendationRating>;
+  skillTechnical?: Maybe<AdvisorRecommendationRating>;
   title: Scalars['String'];
-  updatedAt: Scalars['AdvisorsDateTime'];
+  updatedAt: Scalars['AdvisorDateTime'];
   username?: Maybe<Scalars['String']>;
 };
 
-export type AdvisorsRecommendationCreateInput = {
+export type AdvisorRecommendationCreateInput = {
   employer: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   recommendation?: InputMaybe<Scalars['String']>;
   relation: Scalars['String'];
-  skillEngineering?: InputMaybe<AdvisorsRecommendationRating>;
-  skillInterpersonal?: InputMaybe<AdvisorsRecommendationRating>;
-  skillTechnical?: InputMaybe<AdvisorsRecommendationRating>;
+  skillEngineering?: InputMaybe<AdvisorRecommendationRating>;
+  skillInterpersonal?: InputMaybe<AdvisorRecommendationRating>;
+  skillTechnical?: InputMaybe<AdvisorRecommendationRating>;
   title: Scalars['String'];
 };
 
-export type AdvisorsRecommendationEditInput = {
+export type AdvisorRecommendationEditInput = {
   employer?: InputMaybe<Scalars['String']>;
   familyName?: InputMaybe<Scalars['String']>;
   givenName?: InputMaybe<Scalars['String']>;
   recommendation?: InputMaybe<Scalars['String']>;
   relation?: InputMaybe<Scalars['String']>;
-  skillEngineering?: InputMaybe<AdvisorsRecommendationRating>;
-  skillInterpersonal?: InputMaybe<AdvisorsRecommendationRating>;
-  skillTechnical?: InputMaybe<AdvisorsRecommendationRating>;
+  skillEngineering?: InputMaybe<AdvisorRecommendationRating>;
+  skillInterpersonal?: InputMaybe<AdvisorRecommendationRating>;
+  skillTechnical?: InputMaybe<AdvisorRecommendationRating>;
   title?: InputMaybe<Scalars['String']>;
 };
 
-export enum AdvisorsRecommendationRating {
+export enum AdvisorRecommendationRating {
   InternBelow = 'INTERN_BELOW',
   InternExceeds = 'INTERN_EXCEEDS',
   InternMeets = 'INTERN_MEETS',
@@ -588,38 +610,38 @@ export enum AdvisorsRecommendationRating {
   NewGradExceeds = 'NEW_GRAD_EXCEEDS'
 }
 
-export type AdvisorsRemainingRequestsByAdvisorType = {
-  __typename?: 'AdvisorsRemainingRequestsByAdvisorType';
-  advisorType: AdvisorsAdvisorType;
+export type AdvisorRemainingRequestsByAdvisorType = {
+  __typename?: 'AdvisorRemainingRequestsByAdvisorType';
+  advisorType: AdvisorAdvisorType;
   remainingRequests: Scalars['Float'];
 };
 
-export type AdvisorsRemainingRequestsType = {
-  __typename?: 'AdvisorsRemainingRequestsType';
-  advisorTypes: Array<AdvisorsRemainingRequestsByAdvisorType>;
-  requestType: AdvisorsRequestType;
+export type AdvisorRemainingRequestsType = {
+  __typename?: 'AdvisorRemainingRequestsType';
+  advisorTypes: Array<AdvisorRemainingRequestsByAdvisorType>;
+  requestType: AdvisorRequestType;
   totalRemainingRequests: Scalars['Float'];
 };
 
-export type AdvisorsRequest = {
-  __typename?: 'AdvisorsRequest';
+export type AdvisorRequest = {
+  __typename?: 'AdvisorRequest';
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   resumeUrl?: Maybe<Scalars['String']>;
-  type: AdvisorsRequestType;
+  type: AdvisorRequestType;
   username: Scalars['String'];
 };
 
-export type AdvisorsRequestAssignment = {
-  __typename?: 'AdvisorsRequestAssignment';
-  request: AdvisorsRequest;
-  response?: Maybe<Scalars['AdvisorsJSONObject']>;
+export type AdvisorRequestAssignment = {
+  __typename?: 'AdvisorRequestAssignment';
+  request: AdvisorRequest;
+  response?: Maybe<Scalars['AdvisorJSONObject']>;
   responseFile?: Maybe<Scalars['String']>;
 };
 
-export type AdvisorsRequestCount = {
-  __typename?: 'AdvisorsRequestCount';
+export type AdvisorRequestCount = {
+  __typename?: 'AdvisorRequestCount';
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
@@ -628,32 +650,32 @@ export type AdvisorsRequestCount = {
   username?: Maybe<Scalars['String']>;
 };
 
-export type AdvisorsRequestCountWhereInput = {
+export type AdvisorRequestCountWhereInput = {
   domain?: InputMaybe<Scalars['String']>;
   emails?: InputMaybe<Array<Scalars['String']>>;
   usernames?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export enum AdvisorsRequestType {
+export enum AdvisorRequestType {
   Interview = 'INTERVIEW',
   Resume = 'RESUME'
 }
 
-export type AdvisorsTag = {
-  __typename?: 'AdvisorsTag';
+export type AdvisorTag = {
+  __typename?: 'AdvisorTag';
   displayName: Scalars['String'];
   id: Scalars['String'];
-  profiles: Array<AdvisorsProfile>;
-  type: AdvisorsTagType;
+  profiles: Array<AdvisorProfile>;
+  type: AdvisorTagType;
 };
 
-export type AdvisorsTagCreateInput = {
+export type AdvisorTagCreateInput = {
   displayName: Scalars['String'];
   id: Scalars['String'];
-  type: AdvisorsTagType;
+  type: AdvisorTagType;
 };
 
-export enum AdvisorsTagType {
+export enum AdvisorTagType {
   Interest = 'INTEREST',
   Technology = 'TECHNOLOGY'
 }
@@ -25019,7 +25041,7 @@ export type LabsTrackRecommendation = {
 export type Mutation = {
   __typename?: 'Mutation';
   account: AccountMutation;
-  advisors: AdvisorsMutation;
+  advisor: AdvisorMutation;
   blog: BlogRootMutation;
   calendar: CalendarMutation;
   clear: ClearMutation;
@@ -25031,7 +25053,7 @@ export type Mutation = {
 export type Query = {
   __typename?: 'Query';
   account: AccountQuery;
-  advisors: AdvisorsQuery;
+  advisor: AdvisorQuery;
   blog: BlogRootQuery;
   calendar: CalendarQuery;
   clear: ClearQuery;
@@ -25040,52 +25062,10 @@ export type Query = {
   geo: GeoQuery;
   github: GithubQuery;
   labs: LabsQuery;
-  showYourWork: ShowYourWorkQuery;
   showcase: ShowcaseQuery;
+  showyourwork: ShowyourworkQuery;
   twitch: TwitchQuery;
 };
-
-export type ShowYourWorkDiscordMessage = {
-  __typename?: 'ShowYourWorkDiscordMessage';
-  author?: Maybe<AccountUser>;
-  createdAt: Scalars['ShowYourWorkDateTime'];
-  id: Scalars['String'];
-  imageUrl: Scalars['String'];
-  text: Scalars['String'];
-  userId: Scalars['String'];
-  videoUrl?: Maybe<Scalars['String']>;
-};
-
-
-export type ShowYourWorkDiscordMessageImageUrlArgs = {
-  fillBlur?: InputMaybe<Scalars['Boolean']>;
-  height?: InputMaybe<Scalars['Float']>;
-  strategy?: InputMaybe<ShowYourWorkResizeStrategy>;
-  width?: InputMaybe<Scalars['Float']>;
-};
-
-export type ShowYourWorkQuery = {
-  __typename?: 'ShowYourWorkQuery';
-  messages: Array<ShowYourWorkDiscordMessage>;
-};
-
-
-export type ShowYourWorkQueryMessagesArgs = {
-  skip?: InputMaybe<Scalars['Float']>;
-  take?: InputMaybe<Scalars['Float']>;
-};
-
-export enum ShowYourWorkResizeStrategy {
-  Clamp = 'CLAMP',
-  Clip = 'CLIP',
-  Crop = 'CROP',
-  Facearea = 'FACEAREA',
-  Fill = 'FILL',
-  Fillmax = 'FILLMAX',
-  Max = 'MAX',
-  Min = 'MIN',
-  Scale = 'SCALE'
-}
 
 export type ShowcaseAddReactionsInput = {
   count: Scalars['Float'];
@@ -25686,6 +25666,48 @@ export enum ShowcaseResizeStrategy {
   Scale = 'SCALE'
 }
 
+export type ShowyourworkDiscordMessage = {
+  __typename?: 'ShowyourworkDiscordMessage';
+  author?: Maybe<AccountUser>;
+  createdAt: Scalars['ShowyourworkDateTime'];
+  id: Scalars['String'];
+  imageUrl: Scalars['String'];
+  text: Scalars['String'];
+  userId: Scalars['String'];
+  videoUrl?: Maybe<Scalars['String']>;
+};
+
+
+export type ShowyourworkDiscordMessageImageUrlArgs = {
+  fillBlur?: InputMaybe<Scalars['Boolean']>;
+  height?: InputMaybe<Scalars['Float']>;
+  strategy?: InputMaybe<ShowyourworkResizeStrategy>;
+  width?: InputMaybe<Scalars['Float']>;
+};
+
+export type ShowyourworkQuery = {
+  __typename?: 'ShowyourworkQuery';
+  messages: Array<ShowyourworkDiscordMessage>;
+};
+
+
+export type ShowyourworkQueryMessagesArgs = {
+  skip?: InputMaybe<Scalars['Float']>;
+  take?: InputMaybe<Scalars['Float']>;
+};
+
+export enum ShowyourworkResizeStrategy {
+  Clamp = 'CLAMP',
+  Clip = 'CLIP',
+  Crop = 'CROP',
+  Facearea = 'FACEAREA',
+  Fill = 'FILL',
+  Fillmax = 'FILLMAX',
+  Max = 'MAX',
+  Min = 'MIN',
+  Scale = 'SCALE'
+}
+
 export type Subscription = {
   __typename?: 'Subscription';
   memberAdded: ShowcaseMember;
@@ -25841,6 +25863,7 @@ export type ResolversTypes = ResolversObject<{
   AccountBadge: ResolverTypeWrapper<AccountBadge>;
   AccountBadgeInput: AccountBadgeInput;
   AccountDiscordInformation: ResolverTypeWrapper<AccountDiscordInformation>;
+  AccountDiscordTokenInfoInput: AccountDiscordTokenInfoInput;
   AccountDisplayedBadgeInput: AccountDisplayedBadgeInput;
   AccountMutation: ResolverTypeWrapper<AccountMutation>;
   AccountPizzaOrTurtle: AccountPizzaOrTurtle;
@@ -25854,35 +25877,35 @@ export type ResolversTypes = ResolversObject<{
   AccountUserPictureTransformInput: AccountUserPictureTransformInput;
   AccountUserSearch: AccountUserSearch;
   AccountUserWhereInput: AccountUserWhereInput;
-  AdvisorsAdvisor: ResolverTypeWrapper<AdvisorsAdvisor>;
-  AdvisorsAdvisorCreateInput: AdvisorsAdvisorCreateInput;
-  AdvisorsAdvisorLimitInput: AdvisorsAdvisorLimitInput;
-  AdvisorsAdvisorType: AdvisorsAdvisorType;
-  AdvisorsAdvisorWhereInput: AdvisorsAdvisorWhereInput;
-  AdvisorsDateTime: ResolverTypeWrapper<Scalars['AdvisorsDateTime']>;
-  AdvisorsEventParticipation: ResolverTypeWrapper<AdvisorsEventParticipation>;
-  AdvisorsEventParticipationCreateInput: AdvisorsEventParticipationCreateInput;
-  AdvisorsJSONObject: ResolverTypeWrapper<Scalars['AdvisorsJSONObject']>;
-  AdvisorsMutation: ResolverTypeWrapper<AdvisorsMutation>;
-  AdvisorsPendingRequests: ResolverTypeWrapper<AdvisorsPendingRequests>;
-  AdvisorsProfile: ResolverTypeWrapper<AdvisorsProfile>;
-  AdvisorsProfileCreateInput: AdvisorsProfileCreateInput;
-  AdvisorsProfileEditInput: AdvisorsProfileEditInput;
-  AdvisorsQuery: ResolverTypeWrapper<AdvisorsQuery>;
-  AdvisorsRecommendation: ResolverTypeWrapper<AdvisorsRecommendation>;
-  AdvisorsRecommendationCreateInput: AdvisorsRecommendationCreateInput;
-  AdvisorsRecommendationEditInput: AdvisorsRecommendationEditInput;
-  AdvisorsRecommendationRating: AdvisorsRecommendationRating;
-  AdvisorsRemainingRequestsByAdvisorType: ResolverTypeWrapper<AdvisorsRemainingRequestsByAdvisorType>;
-  AdvisorsRemainingRequestsType: ResolverTypeWrapper<AdvisorsRemainingRequestsType>;
-  AdvisorsRequest: ResolverTypeWrapper<AdvisorsRequest>;
-  AdvisorsRequestAssignment: ResolverTypeWrapper<AdvisorsRequestAssignment>;
-  AdvisorsRequestCount: ResolverTypeWrapper<AdvisorsRequestCount>;
-  AdvisorsRequestCountWhereInput: AdvisorsRequestCountWhereInput;
-  AdvisorsRequestType: AdvisorsRequestType;
-  AdvisorsTag: ResolverTypeWrapper<AdvisorsTag>;
-  AdvisorsTagCreateInput: AdvisorsTagCreateInput;
-  AdvisorsTagType: AdvisorsTagType;
+  AdvisorAdvisor: ResolverTypeWrapper<AdvisorAdvisor>;
+  AdvisorAdvisorCreateInput: AdvisorAdvisorCreateInput;
+  AdvisorAdvisorLimitInput: AdvisorAdvisorLimitInput;
+  AdvisorAdvisorType: AdvisorAdvisorType;
+  AdvisorAdvisorWhereInput: AdvisorAdvisorWhereInput;
+  AdvisorDateTime: ResolverTypeWrapper<Scalars['AdvisorDateTime']>;
+  AdvisorEventParticipation: ResolverTypeWrapper<AdvisorEventParticipation>;
+  AdvisorEventParticipationCreateInput: AdvisorEventParticipationCreateInput;
+  AdvisorJSONObject: ResolverTypeWrapper<Scalars['AdvisorJSONObject']>;
+  AdvisorMutation: ResolverTypeWrapper<AdvisorMutation>;
+  AdvisorPendingRequests: ResolverTypeWrapper<AdvisorPendingRequests>;
+  AdvisorProfile: ResolverTypeWrapper<AdvisorProfile>;
+  AdvisorProfileCreateInput: AdvisorProfileCreateInput;
+  AdvisorProfileEditInput: AdvisorProfileEditInput;
+  AdvisorQuery: ResolverTypeWrapper<AdvisorQuery>;
+  AdvisorRecommendation: ResolverTypeWrapper<AdvisorRecommendation>;
+  AdvisorRecommendationCreateInput: AdvisorRecommendationCreateInput;
+  AdvisorRecommendationEditInput: AdvisorRecommendationEditInput;
+  AdvisorRecommendationRating: AdvisorRecommendationRating;
+  AdvisorRemainingRequestsByAdvisorType: ResolverTypeWrapper<AdvisorRemainingRequestsByAdvisorType>;
+  AdvisorRemainingRequestsType: ResolverTypeWrapper<AdvisorRemainingRequestsType>;
+  AdvisorRequest: ResolverTypeWrapper<AdvisorRequest>;
+  AdvisorRequestAssignment: ResolverTypeWrapper<AdvisorRequestAssignment>;
+  AdvisorRequestCount: ResolverTypeWrapper<AdvisorRequestCount>;
+  AdvisorRequestCountWhereInput: AdvisorRequestCountWhereInput;
+  AdvisorRequestType: AdvisorRequestType;
+  AdvisorTag: ResolverTypeWrapper<AdvisorTag>;
+  AdvisorTagCreateInput: AdvisorTagCreateInput;
+  AdvisorTagType: AdvisorTagType;
   BlogAcfFieldGroup: ResolversTypes['BlogCategory_Display'] | ResolversTypes['BlogPost_Authoroverride'] | ResolversTypes['BlogPost_Marketing'] | ResolversTypes['BlogPost_Release'];
   BlogAvatar: ResolverTypeWrapper<BlogAvatar>;
   BlogAvatarRatingEnum: BlogAvatarRatingEnum;
@@ -27151,10 +27174,6 @@ export type ResolversTypes = ResolversObject<{
   LabsTrackRecommendation: ResolverTypeWrapper<LabsTrackRecommendation>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
-  ShowYourWorkDateTime: ResolverTypeWrapper<Scalars['ShowYourWorkDateTime']>;
-  ShowYourWorkDiscordMessage: ResolverTypeWrapper<ShowYourWorkDiscordMessage>;
-  ShowYourWorkQuery: ResolverTypeWrapper<ShowYourWorkQuery>;
-  ShowYourWorkResizeStrategy: ShowYourWorkResizeStrategy;
   ShowcaseAddReactionsInput: ShowcaseAddReactionsInput;
   ShowcaseAward: ResolverTypeWrapper<ShowcaseAward>;
   ShowcaseCreateJudgingPoolInput: ShowcaseCreateJudgingPoolInput;
@@ -27192,6 +27211,10 @@ export type ResolversTypes = ResolversObject<{
   ShowcaseReactionCount: ResolverTypeWrapper<ShowcaseReactionCount>;
   ShowcaseReactionType: ShowcaseReactionType;
   ShowcaseResizeStrategy: ShowcaseResizeStrategy;
+  ShowyourworkDateTime: ResolverTypeWrapper<Scalars['ShowyourworkDateTime']>;
+  ShowyourworkDiscordMessage: ResolverTypeWrapper<ShowyourworkDiscordMessage>;
+  ShowyourworkQuery: ResolverTypeWrapper<ShowyourworkQuery>;
+  ShowyourworkResizeStrategy: ShowyourworkResizeStrategy;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
   TwitchLiveStatus: ResolverTypeWrapper<TwitchLiveStatus>;
@@ -27204,6 +27227,7 @@ export type ResolversParentTypes = ResolversObject<{
   AccountBadge: AccountBadge;
   AccountBadgeInput: AccountBadgeInput;
   AccountDiscordInformation: AccountDiscordInformation;
+  AccountDiscordTokenInfoInput: AccountDiscordTokenInfoInput;
   AccountDisplayedBadgeInput: AccountDisplayedBadgeInput;
   AccountMutation: AccountMutation;
   AccountQuery: AccountQuery;
@@ -27215,31 +27239,31 @@ export type ResolversParentTypes = ResolversObject<{
   AccountUserPictureTransformInput: AccountUserPictureTransformInput;
   AccountUserSearch: AccountUserSearch;
   AccountUserWhereInput: AccountUserWhereInput;
-  AdvisorsAdvisor: AdvisorsAdvisor;
-  AdvisorsAdvisorCreateInput: AdvisorsAdvisorCreateInput;
-  AdvisorsAdvisorLimitInput: AdvisorsAdvisorLimitInput;
-  AdvisorsAdvisorWhereInput: AdvisorsAdvisorWhereInput;
-  AdvisorsDateTime: Scalars['AdvisorsDateTime'];
-  AdvisorsEventParticipation: AdvisorsEventParticipation;
-  AdvisorsEventParticipationCreateInput: AdvisorsEventParticipationCreateInput;
-  AdvisorsJSONObject: Scalars['AdvisorsJSONObject'];
-  AdvisorsMutation: AdvisorsMutation;
-  AdvisorsPendingRequests: AdvisorsPendingRequests;
-  AdvisorsProfile: AdvisorsProfile;
-  AdvisorsProfileCreateInput: AdvisorsProfileCreateInput;
-  AdvisorsProfileEditInput: AdvisorsProfileEditInput;
-  AdvisorsQuery: AdvisorsQuery;
-  AdvisorsRecommendation: AdvisorsRecommendation;
-  AdvisorsRecommendationCreateInput: AdvisorsRecommendationCreateInput;
-  AdvisorsRecommendationEditInput: AdvisorsRecommendationEditInput;
-  AdvisorsRemainingRequestsByAdvisorType: AdvisorsRemainingRequestsByAdvisorType;
-  AdvisorsRemainingRequestsType: AdvisorsRemainingRequestsType;
-  AdvisorsRequest: AdvisorsRequest;
-  AdvisorsRequestAssignment: AdvisorsRequestAssignment;
-  AdvisorsRequestCount: AdvisorsRequestCount;
-  AdvisorsRequestCountWhereInput: AdvisorsRequestCountWhereInput;
-  AdvisorsTag: AdvisorsTag;
-  AdvisorsTagCreateInput: AdvisorsTagCreateInput;
+  AdvisorAdvisor: AdvisorAdvisor;
+  AdvisorAdvisorCreateInput: AdvisorAdvisorCreateInput;
+  AdvisorAdvisorLimitInput: AdvisorAdvisorLimitInput;
+  AdvisorAdvisorWhereInput: AdvisorAdvisorWhereInput;
+  AdvisorDateTime: Scalars['AdvisorDateTime'];
+  AdvisorEventParticipation: AdvisorEventParticipation;
+  AdvisorEventParticipationCreateInput: AdvisorEventParticipationCreateInput;
+  AdvisorJSONObject: Scalars['AdvisorJSONObject'];
+  AdvisorMutation: AdvisorMutation;
+  AdvisorPendingRequests: AdvisorPendingRequests;
+  AdvisorProfile: AdvisorProfile;
+  AdvisorProfileCreateInput: AdvisorProfileCreateInput;
+  AdvisorProfileEditInput: AdvisorProfileEditInput;
+  AdvisorQuery: AdvisorQuery;
+  AdvisorRecommendation: AdvisorRecommendation;
+  AdvisorRecommendationCreateInput: AdvisorRecommendationCreateInput;
+  AdvisorRecommendationEditInput: AdvisorRecommendationEditInput;
+  AdvisorRemainingRequestsByAdvisorType: AdvisorRemainingRequestsByAdvisorType;
+  AdvisorRemainingRequestsType: AdvisorRemainingRequestsType;
+  AdvisorRequest: AdvisorRequest;
+  AdvisorRequestAssignment: AdvisorRequestAssignment;
+  AdvisorRequestCount: AdvisorRequestCount;
+  AdvisorRequestCountWhereInput: AdvisorRequestCountWhereInput;
+  AdvisorTag: AdvisorTag;
+  AdvisorTagCreateInput: AdvisorTagCreateInput;
   BlogAcfFieldGroup: ResolversParentTypes['BlogCategory_Display'] | ResolversParentTypes['BlogPost_Authoroverride'] | ResolversParentTypes['BlogPost_Marketing'] | ResolversParentTypes['BlogPost_Release'];
   BlogAvatar: BlogAvatar;
   BlogCategory: BlogCategory;
@@ -28415,9 +28439,6 @@ export type ResolversParentTypes = ResolversObject<{
   LabsTrackRecommendation: LabsTrackRecommendation;
   Mutation: {};
   Query: {};
-  ShowYourWorkDateTime: Scalars['ShowYourWorkDateTime'];
-  ShowYourWorkDiscordMessage: ShowYourWorkDiscordMessage;
-  ShowYourWorkQuery: ShowYourWorkQuery;
   ShowcaseAddReactionsInput: ShowcaseAddReactionsInput;
   ShowcaseAward: ShowcaseAward;
   ShowcaseCreateJudgingPoolInput: ShowcaseCreateJudgingPoolInput;
@@ -28446,6 +28467,9 @@ export type ResolversParentTypes = ResolversObject<{
   ShowcaseProjectsWhere: ShowcaseProjectsWhere;
   ShowcaseQuery: ShowcaseQuery;
   ShowcaseReactionCount: ShowcaseReactionCount;
+  ShowyourworkDateTime: Scalars['ShowyourworkDateTime'];
+  ShowyourworkDiscordMessage: ShowyourworkDiscordMessage;
+  ShowyourworkQuery: ShowyourworkQuery;
   String: Scalars['String'];
   Subscription: {};
   TwitchLiveStatus: TwitchLiveStatus;
@@ -28478,6 +28502,7 @@ export type AccountMutationResolvers<ContextType = any, ParentType extends Resol
   linkDiscord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationLinkDiscordArgs, 'discordId' | 'userId'>>;
   pizzaOrTurtleCult?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationPizzaOrTurtleCultArgs, 'pizzaOrTurtle' | 'where'>>;
   revokeBadge?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationRevokeBadgeArgs, 'badge' | 'where'>>;
+  setDiscordToken?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationSetDiscordTokenArgs, 'tokenInfo' | 'where'>>;
   setDisplayedBadges?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationSetDisplayedBadgesArgs, 'where'>>;
   unlinkDiscord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationUnlinkDiscordArgs, 'userId'>>;
   updateUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationUpdateUserArgs, 'updates' | 'username'>>;
@@ -28486,6 +28511,7 @@ export type AccountMutationResolvers<ContextType = any, ParentType extends Resol
 }>;
 
 export type AccountQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountQuery'] = ResolversParentTypes['AccountQuery']> = ResolversObject<{
+  getDiscordToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<AccountQueryGetDiscordTokenArgs, 'discordId'>>;
   getDiscordUsers?: Resolver<Array<Maybe<ResolversTypes['AccountUser']>>, ParentType, ContextType>;
   getUser?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType, RequireFields<AccountQueryGetUserArgs, 'where'>>;
   roleUsers?: Resolver<Array<Maybe<ResolversTypes['AccountUser']>>, ParentType, ContextType, RequireFields<AccountQueryRoleUsersArgs, 'roleId'>>;
@@ -28524,9 +28550,9 @@ export type AccountSubscriptionUserResolvers<ContextType = any, ParentType exten
 
 export type AccountUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountUser'] = ResolversParentTypes['AccountUser']> = ResolversObject<{
   acceptTos?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  badges?: Resolver<Maybe<Array<Maybe<ResolversTypes['AccountBadge']>>>, ParentType, ContextType, Partial<AccountUserBadgesArgs>>;
+  badges?: Resolver<Array<ResolversTypes['AccountBadge']>, ParentType, ContextType, Partial<AccountUserBadgesArgs>>;
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  blocked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  blocked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   discordId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   discordInformation?: Resolver<Maybe<ResolversTypes['AccountDiscordInformation']>, ParentType, ContextType>;
   displayNameFormat?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -28539,14 +28565,14 @@ export type AccountUserResolvers<ContextType = any, ParentType extends Resolvers
   phoneNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   picture?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<AccountUserPictureArgs>>;
   pronoun?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['AccountRole']>>>, ParentType, ContextType>;
+  roles?: Resolver<Array<ResolversTypes['AccountRole']>, ParentType, ContextType>;
   sites?: Resolver<Maybe<Array<Maybe<ResolversTypes['CmsSite']>>>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsAdvisorResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsAdvisor'] = ResolversParentTypes['AdvisorsAdvisor']> = ResolversObject<{
+export type AdvisorAdvisorResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorAdvisor'] = ResolversParentTypes['AdvisorAdvisor']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -28555,133 +28581,133 @@ export type AdvisorsAdvisorResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export interface AdvisorsDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorsDateTime'], any> {
-  name: 'AdvisorsDateTime';
+export interface AdvisorDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorDateTime'], any> {
+  name: 'AdvisorDateTime';
 }
 
-export type AdvisorsEventParticipationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsEventParticipation'] = ResolversParentTypes['AdvisorsEventParticipation']> = ResolversObject<{
+export type AdvisorEventParticipationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorEventParticipation'] = ResolversParentTypes['AdvisorEventParticipation']> = ResolversObject<{
   awardIds?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  profile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType>;
+  profile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export interface AdvisorsJsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorsJSONObject'], any> {
-  name: 'AdvisorsJSONObject';
+export interface AdvisorJsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorJSONObject'], any> {
+  name: 'AdvisorJSONObject';
 }
 
-export type AdvisorsMutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsMutation'] = ResolversParentTypes['AdvisorsMutation']> = ResolversObject<{
-  createAdvisor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateAdvisorArgs, 'data'>>;
-  createEventParticipation?: Resolver<ResolversTypes['AdvisorsEventParticipation'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateEventParticipationArgs, 'data' | 'username'>>;
-  createProfile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateProfileArgs, 'data'>>;
-  createRecommendation?: Resolver<ResolversTypes['AdvisorsRecommendation'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateRecommendationArgs, 'data' | 'username'>>;
-  createRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateRequestArgs, 'email' | 'familyName' | 'givenName' | 'type'>>;
-  createTag?: Resolver<ResolversTypes['AdvisorsTag'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateTagArgs, 'data'>>;
-  deleteTag?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationDeleteTagArgs, 'id'>>;
-  editAdvisorLimits?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationEditAdvisorLimitsArgs, 'limits' | 'where'>>;
-  editProfile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType, RequireFields<AdvisorsMutationEditProfileArgs, 'data'>>;
-  editRecommendation?: Resolver<ResolversTypes['AdvisorsRecommendation'], ParentType, ContextType, RequireFields<AdvisorsMutationEditRecommendationArgs, 'data' | 'id'>>;
-  getAdvisors?: Resolver<Array<ResolversTypes['AdvisorsAdvisor']>, ParentType, ContextType>;
-  respondRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationRespondRequestArgs, 'request'>>;
+export type AdvisorMutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorMutation'] = ResolversParentTypes['AdvisorMutation']> = ResolversObject<{
+  createAdvisor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationCreateAdvisorArgs, 'data'>>;
+  createEventParticipation?: Resolver<ResolversTypes['AdvisorEventParticipation'], ParentType, ContextType, RequireFields<AdvisorMutationCreateEventParticipationArgs, 'data' | 'username'>>;
+  createProfile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType, RequireFields<AdvisorMutationCreateProfileArgs, 'data'>>;
+  createRecommendation?: Resolver<ResolversTypes['AdvisorRecommendation'], ParentType, ContextType, RequireFields<AdvisorMutationCreateRecommendationArgs, 'data' | 'username'>>;
+  createRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationCreateRequestArgs, 'email' | 'familyName' | 'givenName' | 'type'>>;
+  createTag?: Resolver<ResolversTypes['AdvisorTag'], ParentType, ContextType, RequireFields<AdvisorMutationCreateTagArgs, 'data'>>;
+  deleteTag?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationDeleteTagArgs, 'id'>>;
+  editAdvisorLimits?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationEditAdvisorLimitsArgs, 'limits' | 'where'>>;
+  editProfile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType, RequireFields<AdvisorMutationEditProfileArgs, 'data'>>;
+  editRecommendation?: Resolver<ResolversTypes['AdvisorRecommendation'], ParentType, ContextType, RequireFields<AdvisorMutationEditRecommendationArgs, 'data' | 'id'>>;
+  getAdvisors?: Resolver<Array<ResolversTypes['AdvisorAdvisor']>, ParentType, ContextType>;
+  respondRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationRespondRequestArgs, 'request'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsPendingRequestsResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsPendingRequests'] = ResolversParentTypes['AdvisorsPendingRequests']> = ResolversObject<{
+export type AdvisorPendingRequestsResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorPendingRequests'] = ResolversParentTypes['AdvisorPendingRequests']> = ResolversObject<{
   pendingRequests?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  requestType?: Resolver<ResolversTypes['AdvisorsRequestType'], ParentType, ContextType>;
+  requestType?: Resolver<ResolversTypes['AdvisorRequestType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsProfile'] = ResolversParentTypes['AdvisorsProfile']> = ResolversObject<{
+export type AdvisorProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorProfile'] = ResolversParentTypes['AdvisorProfile']> = ResolversObject<{
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  eventParticipation?: Resolver<Array<ResolversTypes['AdvisorsEventParticipation']>, ParentType, ContextType>;
-  experience?: Resolver<Array<ResolversTypes['AdvisorsTag']>, ParentType, ContextType>;
+  eventParticipation?: Resolver<Array<ResolversTypes['AdvisorEventParticipation']>, ParentType, ContextType>;
+  experience?: Resolver<Array<ResolversTypes['AdvisorTag']>, ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  gradHighSchoolAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
-  gradUniversityAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
-  recommendations?: Resolver<Array<ResolversTypes['AdvisorsRecommendation']>, ParentType, ContextType>;
-  searchFullTimeAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
+  gradHighSchoolAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
+  gradUniversityAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
+  recommendations?: Resolver<Array<ResolversTypes['AdvisorRecommendation']>, ParentType, ContextType>;
+  searchFullTimeAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
   searchInternships?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   searchOpen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   underrepresentedEthnicity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   underrepresentedGender?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
   urlGithub?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   urlLinkedIn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   urlResume?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   urlWebsite?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  workFteAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
-  workInternAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
+  workFteAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
+  workInternAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsQuery'] = ResolversParentTypes['AdvisorsQuery']> = ResolversObject<{
-  buildResumePackage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<AdvisorsQueryBuildResumePackageArgs, 'username'>>;
-  getRequest?: Resolver<ResolversTypes['AdvisorsRequest'], ParentType, ContextType, RequireFields<AdvisorsQueryGetRequestArgs, 'request'>>;
-  getRequestAssignment?: Resolver<ResolversTypes['AdvisorsRequestAssignment'], ParentType, ContextType, RequireFields<AdvisorsQueryGetRequestAssignmentArgs, 'request'>>;
-  pendingRequests?: Resolver<Array<ResolversTypes['AdvisorsPendingRequests']>, ParentType, ContextType>;
-  profile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType, Partial<AdvisorsQueryProfileArgs>>;
-  remainingRequests?: Resolver<Array<ResolversTypes['AdvisorsRemainingRequestsType']>, ParentType, ContextType>;
-  servedRequests?: Resolver<Array<ResolversTypes['AdvisorsRequestCount']>, ParentType, ContextType, Partial<AdvisorsQueryServedRequestsArgs>>;
-  submittedRequests?: Resolver<Array<ResolversTypes['AdvisorsRequestCount']>, ParentType, ContextType, Partial<AdvisorsQuerySubmittedRequestsArgs>>;
-  tags?: Resolver<Array<ResolversTypes['AdvisorsTag']>, ParentType, ContextType, Partial<AdvisorsQueryTagsArgs>>;
+export type AdvisorQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorQuery'] = ResolversParentTypes['AdvisorQuery']> = ResolversObject<{
+  buildResumePackage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<AdvisorQueryBuildResumePackageArgs, 'username'>>;
+  getRequest?: Resolver<ResolversTypes['AdvisorRequest'], ParentType, ContextType, RequireFields<AdvisorQueryGetRequestArgs, 'request'>>;
+  getRequestAssignment?: Resolver<ResolversTypes['AdvisorRequestAssignment'], ParentType, ContextType, RequireFields<AdvisorQueryGetRequestAssignmentArgs, 'request'>>;
+  pendingRequests?: Resolver<Array<ResolversTypes['AdvisorPendingRequests']>, ParentType, ContextType>;
+  profile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType, Partial<AdvisorQueryProfileArgs>>;
+  remainingRequests?: Resolver<Array<ResolversTypes['AdvisorRemainingRequestsType']>, ParentType, ContextType>;
+  servedRequests?: Resolver<Array<ResolversTypes['AdvisorRequestCount']>, ParentType, ContextType, Partial<AdvisorQueryServedRequestsArgs>>;
+  submittedRequests?: Resolver<Array<ResolversTypes['AdvisorRequestCount']>, ParentType, ContextType, Partial<AdvisorQuerySubmittedRequestsArgs>>;
+  tags?: Resolver<Array<ResolversTypes['AdvisorTag']>, ParentType, ContextType, Partial<AdvisorQueryTagsArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsRecommendationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRecommendation'] = ResolversParentTypes['AdvisorsRecommendation']> = ResolversObject<{
-  createdAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
+export type AdvisorRecommendationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRecommendation'] = ResolversParentTypes['AdvisorRecommendation']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
   employer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  profile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType>;
+  profile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType>;
   recommendation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  skillEngineering?: Resolver<Maybe<ResolversTypes['AdvisorsRecommendationRating']>, ParentType, ContextType>;
-  skillInterpersonal?: Resolver<Maybe<ResolversTypes['AdvisorsRecommendationRating']>, ParentType, ContextType>;
-  skillTechnical?: Resolver<Maybe<ResolversTypes['AdvisorsRecommendationRating']>, ParentType, ContextType>;
+  skillEngineering?: Resolver<Maybe<ResolversTypes['AdvisorRecommendationRating']>, ParentType, ContextType>;
+  skillInterpersonal?: Resolver<Maybe<ResolversTypes['AdvisorRecommendationRating']>, ParentType, ContextType>;
+  skillTechnical?: Resolver<Maybe<ResolversTypes['AdvisorRecommendationRating']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsRemainingRequestsByAdvisorTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRemainingRequestsByAdvisorType'] = ResolversParentTypes['AdvisorsRemainingRequestsByAdvisorType']> = ResolversObject<{
-  advisorType?: Resolver<ResolversTypes['AdvisorsAdvisorType'], ParentType, ContextType>;
+export type AdvisorRemainingRequestsByAdvisorTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRemainingRequestsByAdvisorType'] = ResolversParentTypes['AdvisorRemainingRequestsByAdvisorType']> = ResolversObject<{
+  advisorType?: Resolver<ResolversTypes['AdvisorAdvisorType'], ParentType, ContextType>;
   remainingRequests?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsRemainingRequestsTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRemainingRequestsType'] = ResolversParentTypes['AdvisorsRemainingRequestsType']> = ResolversObject<{
-  advisorTypes?: Resolver<Array<ResolversTypes['AdvisorsRemainingRequestsByAdvisorType']>, ParentType, ContextType>;
-  requestType?: Resolver<ResolversTypes['AdvisorsRequestType'], ParentType, ContextType>;
+export type AdvisorRemainingRequestsTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRemainingRequestsType'] = ResolversParentTypes['AdvisorRemainingRequestsType']> = ResolversObject<{
+  advisorTypes?: Resolver<Array<ResolversTypes['AdvisorRemainingRequestsByAdvisorType']>, ParentType, ContextType>;
+  requestType?: Resolver<ResolversTypes['AdvisorRequestType'], ParentType, ContextType>;
   totalRemainingRequests?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsRequestResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRequest'] = ResolversParentTypes['AdvisorsRequest']> = ResolversObject<{
+export type AdvisorRequestResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRequest'] = ResolversParentTypes['AdvisorRequest']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resumeUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['AdvisorsRequestType'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['AdvisorRequestType'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsRequestAssignmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRequestAssignment'] = ResolversParentTypes['AdvisorsRequestAssignment']> = ResolversObject<{
-  request?: Resolver<ResolversTypes['AdvisorsRequest'], ParentType, ContextType>;
-  response?: Resolver<Maybe<ResolversTypes['AdvisorsJSONObject']>, ParentType, ContextType>;
+export type AdvisorRequestAssignmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRequestAssignment'] = ResolversParentTypes['AdvisorRequestAssignment']> = ResolversObject<{
+  request?: Resolver<ResolversTypes['AdvisorRequest'], ParentType, ContextType>;
+  response?: Resolver<Maybe<ResolversTypes['AdvisorJSONObject']>, ParentType, ContextType>;
   responseFile?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsRequestCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRequestCount'] = ResolversParentTypes['AdvisorsRequestCount']> = ResolversObject<{
+export type AdvisorRequestCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRequestCount'] = ResolversParentTypes['AdvisorRequestCount']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -28691,11 +28717,11 @@ export type AdvisorsRequestCountResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorsTagResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsTag'] = ResolversParentTypes['AdvisorsTag']> = ResolversObject<{
+export type AdvisorTagResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorTag'] = ResolversParentTypes['AdvisorTag']> = ResolversObject<{
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  profiles?: Resolver<Array<ResolversTypes['AdvisorsProfile']>, ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['AdvisorsTagType'], ParentType, ContextType>;
+  profiles?: Resolver<Array<ResolversTypes['AdvisorProfile']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['AdvisorTagType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33957,7 +33983,7 @@ export type LabsTrackRecommendationResolvers<ContextType = any, ParentType exten
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   account?: Resolver<ResolversTypes['AccountMutation'], ParentType, ContextType>;
-  advisors?: Resolver<ResolversTypes['AdvisorsMutation'], ParentType, ContextType>;
+  advisor?: Resolver<ResolversTypes['AdvisorMutation'], ParentType, ContextType>;
   blog?: Resolver<ResolversTypes['BlogRootMutation'], ParentType, ContextType>;
   calendar?: Resolver<ResolversTypes['CalendarMutation'], ParentType, ContextType>;
   clear?: Resolver<ResolversTypes['ClearMutation'], ParentType, ContextType>;
@@ -33968,7 +33994,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   account?: Resolver<ResolversTypes['AccountQuery'], ParentType, ContextType>;
-  advisors?: Resolver<ResolversTypes['AdvisorsQuery'], ParentType, ContextType>;
+  advisor?: Resolver<ResolversTypes['AdvisorQuery'], ParentType, ContextType>;
   blog?: Resolver<ResolversTypes['BlogRootQuery'], ParentType, ContextType>;
   calendar?: Resolver<ResolversTypes['CalendarQuery'], ParentType, ContextType>;
   clear?: Resolver<ResolversTypes['ClearQuery'], ParentType, ContextType>;
@@ -33977,29 +34003,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   geo?: Resolver<ResolversTypes['GeoQuery'], ParentType, ContextType>;
   github?: Resolver<ResolversTypes['GithubQuery'], ParentType, ContextType>;
   labs?: Resolver<ResolversTypes['LabsQuery'], ParentType, ContextType>;
-  showYourWork?: Resolver<ResolversTypes['ShowYourWorkQuery'], ParentType, ContextType>;
   showcase?: Resolver<ResolversTypes['ShowcaseQuery'], ParentType, ContextType>;
+  showyourwork?: Resolver<ResolversTypes['ShowyourworkQuery'], ParentType, ContextType>;
   twitch?: Resolver<ResolversTypes['TwitchQuery'], ParentType, ContextType>;
-}>;
-
-export interface ShowYourWorkDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ShowYourWorkDateTime'], any> {
-  name: 'ShowYourWorkDateTime';
-}
-
-export type ShowYourWorkDiscordMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowYourWorkDiscordMessage'] = ResolversParentTypes['ShowYourWorkDiscordMessage']> = ResolversObject<{
-  author?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['ShowYourWorkDateTime'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType, Partial<ShowYourWorkDiscordMessageImageUrlArgs>>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type ShowYourWorkQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowYourWorkQuery'] = ResolversParentTypes['ShowYourWorkQuery']> = ResolversObject<{
-  messages?: Resolver<Array<ResolversTypes['ShowYourWorkDiscordMessage']>, ParentType, ContextType, Partial<ShowYourWorkQueryMessagesArgs>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type ShowcaseAwardResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowcaseAward'] = ResolversParentTypes['ShowcaseAward']> = ResolversObject<{
@@ -34225,6 +34231,26 @@ export type ShowcaseReactionCountResolvers<ContextType = any, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export interface ShowyourworkDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ShowyourworkDateTime'], any> {
+  name: 'ShowyourworkDateTime';
+}
+
+export type ShowyourworkDiscordMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowyourworkDiscordMessage'] = ResolversParentTypes['ShowyourworkDiscordMessage']> = ResolversObject<{
+  author?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['ShowyourworkDateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType, Partial<ShowyourworkDiscordMessageImageUrlArgs>>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ShowyourworkQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowyourworkQuery'] = ResolversParentTypes['ShowyourworkQuery']> = ResolversObject<{
+  messages?: Resolver<Array<ResolversTypes['ShowyourworkDiscordMessage']>, ParentType, ContextType, Partial<ShowyourworkQueryMessagesArgs>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
   memberAdded?: SubscriptionResolver<ResolversTypes['ShowcaseMember'], "memberAdded", ParentType, ContextType, Partial<SubscriptionMemberAddedArgs>>;
   memberRemoved?: SubscriptionResolver<ResolversTypes['ShowcaseMember'], "memberRemoved", ParentType, ContextType, Partial<SubscriptionMemberRemovedArgs>>;
@@ -34268,21 +34294,21 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   AccountSubscriptionBadge?: AccountSubscriptionBadgeResolvers<ContextType>;
   AccountSubscriptionUser?: AccountSubscriptionUserResolvers<ContextType>;
   AccountUser?: AccountUserResolvers<ContextType>;
-  AdvisorsAdvisor?: AdvisorsAdvisorResolvers<ContextType>;
-  AdvisorsDateTime?: GraphQLScalarType;
-  AdvisorsEventParticipation?: AdvisorsEventParticipationResolvers<ContextType>;
-  AdvisorsJSONObject?: GraphQLScalarType;
-  AdvisorsMutation?: AdvisorsMutationResolvers<ContextType>;
-  AdvisorsPendingRequests?: AdvisorsPendingRequestsResolvers<ContextType>;
-  AdvisorsProfile?: AdvisorsProfileResolvers<ContextType>;
-  AdvisorsQuery?: AdvisorsQueryResolvers<ContextType>;
-  AdvisorsRecommendation?: AdvisorsRecommendationResolvers<ContextType>;
-  AdvisorsRemainingRequestsByAdvisorType?: AdvisorsRemainingRequestsByAdvisorTypeResolvers<ContextType>;
-  AdvisorsRemainingRequestsType?: AdvisorsRemainingRequestsTypeResolvers<ContextType>;
-  AdvisorsRequest?: AdvisorsRequestResolvers<ContextType>;
-  AdvisorsRequestAssignment?: AdvisorsRequestAssignmentResolvers<ContextType>;
-  AdvisorsRequestCount?: AdvisorsRequestCountResolvers<ContextType>;
-  AdvisorsTag?: AdvisorsTagResolvers<ContextType>;
+  AdvisorAdvisor?: AdvisorAdvisorResolvers<ContextType>;
+  AdvisorDateTime?: GraphQLScalarType;
+  AdvisorEventParticipation?: AdvisorEventParticipationResolvers<ContextType>;
+  AdvisorJSONObject?: GraphQLScalarType;
+  AdvisorMutation?: AdvisorMutationResolvers<ContextType>;
+  AdvisorPendingRequests?: AdvisorPendingRequestsResolvers<ContextType>;
+  AdvisorProfile?: AdvisorProfileResolvers<ContextType>;
+  AdvisorQuery?: AdvisorQueryResolvers<ContextType>;
+  AdvisorRecommendation?: AdvisorRecommendationResolvers<ContextType>;
+  AdvisorRemainingRequestsByAdvisorType?: AdvisorRemainingRequestsByAdvisorTypeResolvers<ContextType>;
+  AdvisorRemainingRequestsType?: AdvisorRemainingRequestsTypeResolvers<ContextType>;
+  AdvisorRequest?: AdvisorRequestResolvers<ContextType>;
+  AdvisorRequestAssignment?: AdvisorRequestAssignmentResolvers<ContextType>;
+  AdvisorRequestCount?: AdvisorRequestCountResolvers<ContextType>;
+  AdvisorTag?: AdvisorTagResolvers<ContextType>;
   BlogAcfFieldGroup?: BlogAcfFieldGroupResolvers<ContextType>;
   BlogAvatar?: BlogAvatarResolvers<ContextType>;
   BlogCategory?: BlogCategoryResolvers<ContextType>;
@@ -34786,9 +34812,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LabsTrackRecommendation?: LabsTrackRecommendationResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  ShowYourWorkDateTime?: GraphQLScalarType;
-  ShowYourWorkDiscordMessage?: ShowYourWorkDiscordMessageResolvers<ContextType>;
-  ShowYourWorkQuery?: ShowYourWorkQueryResolvers<ContextType>;
   ShowcaseAward?: ShowcaseAwardResolvers<ContextType>;
   ShowcaseDateTime?: GraphQLScalarType;
   ShowcaseJudgement?: ShowcaseJudgementResolvers<ContextType>;
@@ -34807,6 +34830,9 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ShowcaseProject?: ShowcaseProjectResolvers<ContextType>;
   ShowcaseQuery?: ShowcaseQueryResolvers<ContextType>;
   ShowcaseReactionCount?: ShowcaseReactionCountResolvers<ContextType>;
+  ShowyourworkDateTime?: GraphQLScalarType;
+  ShowyourworkDiscordMessage?: ShowyourworkDiscordMessageResolvers<ContextType>;
+  ShowyourworkQuery?: ShowyourworkQueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   TwitchLiveStatus?: TwitchLiveStatusResolvers<ContextType>;
   TwitchQuery?: TwitchQueryResolvers<ContextType>;

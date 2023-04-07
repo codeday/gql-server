@@ -8,7 +8,7 @@ import { loadSchema, loadSchemaSync } from '@graphql-tools/load';
 import { OperationTypeNode } from 'graphql';
 import { fileURLToPath } from 'node:url';
 import LruCache from 'lru-cache';
-import { SubschemaInfo } from '../../schema.js';
+import { SubschemaInfo, createLocalSubschema } from '../../schema.js';
 import { GithubQueryResolvers } from '../../generated/graphql.js';
 import { api } from '../../utils/fetch-api.js';
 
@@ -110,11 +110,12 @@ export async function createGithubSubschema(token): Promise<SubschemaInfo> {
   };
 
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
+  return createLocalSubschema({ schema, createResolvers, createTypeDefs, prefix: 'github' });
 
-  return {
-    subschema: { schema },
-    createResolvers,
-    createTypeDefs,
-    prefix: 'github',
-  };
+  // return {
+  //   subschema: { schema },
+  //   createResolvers,
+  //   createTypeDefs,
+  //   prefix: 'github',
+  // };
 }

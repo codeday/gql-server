@@ -6,7 +6,7 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 import { fileURLToPath } from 'node:url';
 import { TwitchQueryResolvers } from '../../generated/graphql.js';
-import { SubschemaInfo } from '../../schema.js';
+import { SubschemaInfo, createLocalSubschema } from '../../schema.js';
 import { api } from '../../utils/fetch-api.js';
 
 type Stream = {
@@ -61,9 +61,9 @@ export async function createTwitchSubschema(username, clientId, clientSecret): P
   };
 
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
-
-  return {
-    subschema: { schema },
-    prefix: 'twitch',
-  };
+  return createLocalSubschema({ schema, prefix: 'twitch' });
+  // return {
+  //   subschema: { schema, },
+  //   prefix: 'twitch',
+  // };
 }
