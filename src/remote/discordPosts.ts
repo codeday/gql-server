@@ -38,3 +38,4 @@ function createResolvers(schemas) {
 export async function createDiscordPostsSubschema(url): Promise<SubschemaInfo> {
   console.log(` * discordPosts(${url})`);
   return createRemoteSubschema(url, { createResolvers, createTypeDefs, prefix: 'ShowYourWork' });
+}

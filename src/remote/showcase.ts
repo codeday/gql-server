@@ -2,7 +2,7 @@ import { TransformQuery } from '@graphql-tools/wrap';
 import { delegateToSchema, SubschemaConfig } from '@graphql-tools/delegate';
 import { Kind, OperationTypeNode } from 'graphql';
 import { batchDelegateToSchema } from '@graphql-tools/batch-delegate';
-import { ShowcasePhoto, Resolvers, ShowcaseProjectResolvers, ShowcaseProject } from '../../generated/graphql.js';
+import { ShowcasePhoto, Resolvers, ShowcaseProjectResolvers, ShowcaseProject } from '../generated/graphql.js';
 import { SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
 import { addToSelectionSet } from '../utils/selectionsets.js';

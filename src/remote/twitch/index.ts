@@ -5,7 +5,7 @@ import { addResolversToSchema } from '@graphql-tools/schema';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 import { fileURLToPath } from 'node:url';
-import { TwitchQueryResolvers } from '../../../generated/graphql.js';
+import { TwitchQueryResolvers } from '../../generated/graphql.js';
 import { SubschemaInfo } from '../../schema.js';
 import { api } from '../../utils/fetch-api.js';
 

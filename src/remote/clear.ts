@@ -1,6 +1,6 @@
 import { TransformQuery } from '@graphql-tools/wrap';
 import { delegateToSchema, SubschemaConfig } from '@graphql-tools/delegate';
-import { Kind } from 'graphql';
+import { Kind, OperationTypeNode } from 'graphql';
 import { createRemoteSubschema } from '../remoteSubschema.js';
 import { ResolversWithPrefix } from '../schema.js';
 import { addToSelectionSet } from '../utils/selectionsets.js';

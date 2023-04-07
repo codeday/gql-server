@@ -9,7 +9,7 @@ import { OperationTypeNode } from 'graphql';
 import { fileURLToPath } from 'node:url';
 import LruCache from 'lru-cache';
 import { SubschemaInfo } from '../../schema.js';
-import { GithubQueryResolvers } from '../../../generated/graphql.js';
+import { GithubQueryResolvers } from '../../generated/graphql.js';
 import { api } from '../../utils/fetch-api.js';
 
 function createTypeDefs(prefix) {

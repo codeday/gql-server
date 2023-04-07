@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { WebServiceClient } from '@maxmind/geoip2-node';
 import LruCache from 'lru-cache';
 import { SubschemaInfo } from '../../schema.js';
-import { GeoGeoResult, GeoQueryResolvers } from '../../../generated/graphql.js';
+import { GeoGeoResult, GeoQueryResolvers } from '../../generated/graphql.js';
 
 const cache = new LruCache({ max: 1024 * 5, ttl: 1000 * 60 * 60 * 24 });
 

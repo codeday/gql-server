@@ -3,7 +3,7 @@ import { delegateToSchema, SubschemaConfig } from '@graphql-tools/delegate';
 import { OperationTypeNode } from 'graphql';
 import { ResolversWithPrefix, SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
-import { Resolvers } from '../../generated/graphql.js';
+import { Resolvers } from '../generated/graphql.js';
 
 const createTypeDefs = (prefix) => `
 extend type ${prefix}Asset {
@@ -115,6 +115,7 @@ function createResolvers(schemas): ResolversWithPrefix<'Cms'> {
             .join('&');
 
           // eslint-disable-next-line no-underscore-dangle
+          // @ts-ignore
           const baseUrl = (parent.__selectionSetContentfulBaseUrl || parent.__selectionSetUrl)?.replace(
             'images.ctfassets.net',
             'f2.codeday.org',

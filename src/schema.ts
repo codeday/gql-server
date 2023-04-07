@@ -20,7 +20,7 @@ import {
   createTwitchSubschema,
   createEmailSubschema,
 } from './remote/index.js';
-import { Resolvers } from '../generated/graphql.js';
+import { Resolvers } from './generated/graphql.js';
 
 type NoStringIndex<T> = { [K in keyof T as string extends K ? never : K]: T[K] };
 type HomomorphicProps<T> = NoStringIndex<{ [K in keyof T]: T[K] }>;
