@@ -92,12 +92,6 @@ export default async () => {
     }),
   });
 
-  setInterval(async () => {
-    console.log(`Reloading schema...`);
-    apollo.schema = await buildSchema();
-    console.log(`...schema reloaded. (Subscriptions not reloaded.)`);
-  }, 1000 * 60 * 15);
-
   const app = Express();
   app.use(graphqlUploadExpress({ maxFileSize: 250 * 1024 * 1024, maxFiles: 3 }));
   apollo.applyMiddleware({ app, path: '/' });
