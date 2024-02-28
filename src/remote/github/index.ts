@@ -110,11 +110,4 @@ export async function createGithubSubschema(token): Promise<SubschemaInfo> {
 
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
   return createLocalSubschema({ schema, createResolvers, createTypeDefs, prefix: 'github' });
-
-  // return {
-  //   subschema: { schema },
-  //   createResolvers,
-  //   createTypeDefs,
-  //   prefix: 'github',
-  // };
 }

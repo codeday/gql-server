@@ -47,8 +47,4 @@ export async function createGeoSubschema(account, key): Promise<SubschemaInfo> {
 
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
   return createLocalSubschema({schema, prefix: 'geo'})
-  // return {
-  //   subschema: { schema },
-  //   prefix: "geo"
-  // };
 }

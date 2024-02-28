@@ -62,8 +62,4 @@ export async function createTwitchSubschema(username, clientId, clientSecret): P
 
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
   return createLocalSubschema({ schema, prefix: 'twitch' });
-  // return {
-  //   subschema: { schema, },
-  //   prefix: 'twitch',
-  // };
 }
