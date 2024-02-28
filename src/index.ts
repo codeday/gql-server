@@ -61,7 +61,7 @@ const server = new ApolloServer<Context>({
         };
       },
     },
-    LoggingPlugin
+    LoggingPlugin,
   ],
 });
 await server.start();
@@ -91,12 +91,11 @@ app.use(
   cors<cors.CorsRequest>(),
   bodyParser.json(),
   expressMiddleware(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
+    context: async ({ req }) => ({ headers: req.headers }),
   }),
 );
 
 const PORT = 4000;
-
 
 await new Promise<any>((resolve) => httpServer.listen({ port: PORT }, resolve as () => void));
 console.log(`🚀 Server ready at http://localhost:4000/`);

@@ -7,7 +7,8 @@
     "build": "tsc",
     "postbuild": "copyfiles -u 1 \"src/**/*.gql\" dist",
     "start": "node ./dist/index.js",
-    "dev": "nodemon --exec ts-node ./src/index.ts --project ./tsconfig.json",
+    "dev-old": "nodemon --exec ts-node ./src/index.ts --project ./tsconfig.json",
+    "dev": "nodemon --exec tsx src/index.ts",
     "codegen": "graphql-codegen --config codegen.ts",
     "codegen-watch": "graphql-codegen --watch 'src/**/*.ts --config codegen.ts",
     "watch": "concurrently --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"yarn graphql-codegen --watch 'src/**/*.ts'\"  \"yarn tsc -w \" \"yarn nodemon ./dist/index.js \""
@@ -72,6 +73,7 @@
     "prettier": "^2.8.7",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
+    "tsx": "^4.7.1",
     "typescript": "^5.0.3"
   },
   "prettier": "@codeday/prettier-config"

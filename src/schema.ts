@@ -38,6 +38,7 @@ export interface SubschemaInfo<Prefix extends string = string, TResolvers extend
 
 export function namespaceTransforms(prefix: string, schema: SubschemaConfig | GraphQLSchema) {
   if (!prefix) return [];
+  // eslint-disable-next-line no-underscore-dangle
   const _schema = schema instanceof GraphQLSchema ? schema : schema.schema;
   const fieldPrefix = prefix.charAt(0).toLowerCase() + prefix.slice(1);
   const typePrefix = prefix.charAt(0).toUpperCase() + prefix.slice(1);
@@ -117,7 +118,7 @@ export function createSchema(subschemasInfo: SubschemaInfo<any, any>[]) {
   return stitchSchemas({
     subschemas,
     typeDefs,
-    resolvers: resolvers,
+    resolvers,
     inheritResolversFromInterfaces: true,
     mergeDirectives: true,
     mergeTypes: true,
@@ -142,7 +143,7 @@ export class SchemaLoader {
     this.stopAutoRefresh();
     this.intervalId = setTimeout(async () => {
       await this.reload();
-      console.log("refreshed schemas!")
+      console.log('refreshed schemas!');
       this.intervalId = null;
       this.autoRefresh(interval);
     }, interval);

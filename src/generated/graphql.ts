@@ -13,8 +13,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  AdvisorDateTime: any;
-  AdvisorJSONObject: any;
+  AdvisorsDateTime: any;
+  AdvisorsJSONObject: any;
   CalendarDateTime: any;
   CalendarJSONObject: any;
   ClearDateTime: any;
@@ -32,8 +32,8 @@ export type Scalars = {
   LabsDateTime: any;
   LabsJSON: any;
   LabsJSONObject: any;
+  ShowYourWorkDateTime: any;
   ShowcaseDateTime: any;
-  ShowyourworkDateTime: any;
   Upload: any;
 };
 
@@ -62,14 +62,6 @@ export type AccountDiscordInformation = {
   username: Scalars['String'];
 };
 
-export type AccountDiscordTokenInfoInput = {
-  accessToken: Scalars['String'];
-  expiresIn: Scalars['Float'];
-  refreshToken: Scalars['String'];
-  scope: Scalars['String'];
-  tokenType?: InputMaybe<Scalars['String']>;
-};
-
 export type AccountDisplayedBadgeInput = {
   id: Scalars['ID'];
   order: Scalars['Int'];
@@ -83,7 +75,6 @@ export type AccountMutation = {
   linkDiscord: Scalars['Boolean'];
   pizzaOrTurtleCult: Scalars['Boolean'];
   revokeBadge: Scalars['Boolean'];
-  setDiscordToken: Scalars['Boolean'];
   setDisplayedBadges: Scalars['Boolean'];
   unlinkDiscord: Scalars['Boolean'];
   updateUser: Scalars['Boolean'];
@@ -127,12 +118,6 @@ export type AccountMutationRevokeBadgeArgs = {
 };
 
 
-export type AccountMutationSetDiscordTokenArgs = {
-  tokenInfo: AccountDiscordTokenInfoInput;
-  where: AccountUserWhereInput;
-};
-
-
 export type AccountMutationSetDisplayedBadgesArgs = {
   badges?: InputMaybe<Array<AccountDisplayedBadgeInput>>;
   where: AccountUserWhereInput;
@@ -162,19 +147,12 @@ export enum AccountPizzaOrTurtle {
 
 export type AccountQuery = {
   __typename?: 'AccountQuery';
-  getDiscordToken?: Maybe<Scalars['String']>;
   getDiscordUsers: Array<Maybe<AccountUser>>;
   getUser?: Maybe<AccountUser>;
   roleUsers: Array<Maybe<AccountUser>>;
   roles: Array<Maybe<AccountRole>>;
   searchUsers: Array<Maybe<AccountUser>>;
   userRoles: Array<Maybe<AccountRole>>;
-};
-
-
-export type AccountQueryGetDiscordTokenArgs = {
-  discordId: Scalars['String'];
-  refresh?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -242,9 +220,9 @@ export type AccountUpdateUserInput = {
 export type AccountUser = {
   __typename?: 'AccountUser';
   acceptTos?: Maybe<Scalars['Boolean']>;
-  badges: Array<AccountBadge>;
+  badges?: Maybe<Array<AccountBadge>>;
   bio?: Maybe<Scalars['String']>;
-  blocked: Scalars['Boolean'];
+  blocked?: Maybe<Scalars['Boolean']>;
   discordId?: Maybe<Scalars['String']>;
   discordInformation?: Maybe<AccountDiscordInformation>;
   displayNameFormat?: Maybe<Scalars['String']>;
@@ -257,7 +235,7 @@ export type AccountUser = {
   phoneNumber?: Maybe<Scalars['String']>;
   picture?: Maybe<Scalars['String']>;
   pronoun?: Maybe<Scalars['String']>;
-  roles: Array<AccountRole>;
+  roles?: Maybe<Array<AccountRole>>;
   sites?: Maybe<Array<Maybe<CmsSite>>>;
   title?: Maybe<Scalars['String']>;
   username: Scalars['String'];
@@ -306,8 +284,8 @@ export type AccountUserWhereInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
-export type AdvisorAdvisor = {
-  __typename?: 'AdvisorAdvisor';
+export type AdvisorsAdvisor = {
+  __typename?: 'AdvisorsAdvisor';
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
@@ -315,171 +293,171 @@ export type AdvisorAdvisor = {
   resumesPerWeek: Scalars['Float'];
 };
 
-export type AdvisorAdvisorCreateInput = {
+export type AdvisorsAdvisorCreateInput = {
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
-  limits: AdvisorAdvisorLimitInput;
-  type: AdvisorAdvisorType;
+  limits: AdvisorsAdvisorLimitInput;
+  type: AdvisorsAdvisorType;
   username?: InputMaybe<Scalars['String']>;
 };
 
-export type AdvisorAdvisorLimitInput = {
+export type AdvisorsAdvisorLimitInput = {
   interviewsPerWeek: Scalars['Float'];
   resumesPerWeek: Scalars['Float'];
 };
 
-export enum AdvisorAdvisorType {
+export enum AdvisorsAdvisorType {
   Hr = 'HR',
   Technical = 'TECHNICAL'
 }
 
-export type AdvisorAdvisorWhereInput = {
+export type AdvisorsAdvisorWhereInput = {
   email?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['String']>;
   username?: InputMaybe<Scalars['String']>;
 };
 
-export type AdvisorEventParticipation = {
-  __typename?: 'AdvisorEventParticipation';
+export type AdvisorsEventParticipation = {
+  __typename?: 'AdvisorsEventParticipation';
   awardIds: Array<Scalars['String']>;
   eventId: Scalars['String'];
   id: Scalars['String'];
-  profile: AdvisorProfile;
+  profile: AdvisorsProfile;
 };
 
-export type AdvisorEventParticipationCreateInput = {
+export type AdvisorsEventParticipationCreateInput = {
   awardIds?: InputMaybe<Array<Scalars['String']>>;
   eventId: Scalars['String'];
 };
 
-export type AdvisorMutation = {
-  __typename?: 'AdvisorMutation';
+export type AdvisorsMutation = {
+  __typename?: 'AdvisorsMutation';
   createAdvisor: Scalars['Boolean'];
-  createEventParticipation: AdvisorEventParticipation;
-  createProfile: AdvisorProfile;
-  createRecommendation: AdvisorRecommendation;
+  createEventParticipation: AdvisorsEventParticipation;
+  createProfile: AdvisorsProfile;
+  createRecommendation: AdvisorsRecommendation;
   createRequest: Scalars['Boolean'];
-  createTag: AdvisorTag;
+  createTag: AdvisorsTag;
   deleteTag: Scalars['Boolean'];
   editAdvisorLimits: Scalars['Boolean'];
-  editProfile: AdvisorProfile;
-  editRecommendation: AdvisorRecommendation;
-  getAdvisors: Array<AdvisorAdvisor>;
+  editProfile: AdvisorsProfile;
+  editRecommendation: AdvisorsRecommendation;
+  getAdvisors: Array<AdvisorsAdvisor>;
   respondRequest: Scalars['Boolean'];
 };
 
 
-export type AdvisorMutationCreateAdvisorArgs = {
-  data: AdvisorAdvisorCreateInput;
+export type AdvisorsMutationCreateAdvisorArgs = {
+  data: AdvisorsAdvisorCreateInput;
 };
 
 
-export type AdvisorMutationCreateEventParticipationArgs = {
-  data: AdvisorEventParticipationCreateInput;
+export type AdvisorsMutationCreateEventParticipationArgs = {
+  data: AdvisorsEventParticipationCreateInput;
   username: Scalars['String'];
 };
 
 
-export type AdvisorMutationCreateProfileArgs = {
-  data: AdvisorProfileCreateInput;
+export type AdvisorsMutationCreateProfileArgs = {
+  data: AdvisorsProfileCreateInput;
   username?: InputMaybe<Scalars['String']>;
 };
 
 
-export type AdvisorMutationCreateRecommendationArgs = {
+export type AdvisorsMutationCreateRecommendationArgs = {
   authorUsername?: InputMaybe<Scalars['String']>;
-  data: AdvisorRecommendationCreateInput;
+  data: AdvisorsRecommendationCreateInput;
   username: Scalars['String'];
 };
 
 
-export type AdvisorMutationCreateRequestArgs = {
+export type AdvisorsMutationCreateRequestArgs = {
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   resume?: InputMaybe<Scalars['Upload']>;
-  type: AdvisorRequestType;
+  type: AdvisorsRequestType;
 };
 
 
-export type AdvisorMutationCreateTagArgs = {
-  data: AdvisorTagCreateInput;
+export type AdvisorsMutationCreateTagArgs = {
+  data: AdvisorsTagCreateInput;
 };
 
 
-export type AdvisorMutationDeleteTagArgs = {
+export type AdvisorsMutationDeleteTagArgs = {
   id: Scalars['String'];
 };
 
 
-export type AdvisorMutationEditAdvisorLimitsArgs = {
-  limits: AdvisorAdvisorLimitInput;
-  where: AdvisorAdvisorWhereInput;
+export type AdvisorsMutationEditAdvisorLimitsArgs = {
+  limits: AdvisorsAdvisorLimitInput;
+  where: AdvisorsAdvisorWhereInput;
 };
 
 
-export type AdvisorMutationEditProfileArgs = {
-  data: AdvisorProfileEditInput;
+export type AdvisorsMutationEditProfileArgs = {
+  data: AdvisorsProfileEditInput;
   username?: InputMaybe<Scalars['String']>;
 };
 
 
-export type AdvisorMutationEditRecommendationArgs = {
-  data: AdvisorRecommendationEditInput;
+export type AdvisorsMutationEditRecommendationArgs = {
+  data: AdvisorsRecommendationEditInput;
   id: Scalars['String'];
 };
 
 
-export type AdvisorMutationRespondRequestArgs = {
+export type AdvisorsMutationRespondRequestArgs = {
   file?: InputMaybe<Scalars['Upload']>;
   request: Scalars['String'];
-  response?: InputMaybe<Scalars['AdvisorJSONObject']>;
+  response?: InputMaybe<Scalars['AdvisorsJSONObject']>;
 };
 
-export type AdvisorPendingRequests = {
-  __typename?: 'AdvisorPendingRequests';
+export type AdvisorsPendingRequests = {
+  __typename?: 'AdvisorsPendingRequests';
   pendingRequests: Scalars['Float'];
-  requestType: AdvisorRequestType;
+  requestType: AdvisorsRequestType;
 };
 
-export type AdvisorProfile = {
-  __typename?: 'AdvisorProfile';
+export type AdvisorsProfile = {
+  __typename?: 'AdvisorsProfile';
   bio?: Maybe<Scalars['String']>;
-  createdAt: Scalars['AdvisorDateTime'];
+  createdAt: Scalars['AdvisorsDateTime'];
   email: Scalars['String'];
-  eventParticipation: Array<AdvisorEventParticipation>;
-  experience: Array<AdvisorTag>;
+  eventParticipation: Array<AdvisorsEventParticipation>;
+  experience: Array<AdvisorsTag>;
   familyName: Scalars['String'];
   givenName: Scalars['String'];
-  gradHighSchoolAt?: Maybe<Scalars['AdvisorDateTime']>;
-  gradUniversityAt?: Maybe<Scalars['AdvisorDateTime']>;
-  recommendations: Array<AdvisorRecommendation>;
-  searchFullTimeAt?: Maybe<Scalars['AdvisorDateTime']>;
+  gradHighSchoolAt?: Maybe<Scalars['AdvisorsDateTime']>;
+  gradUniversityAt?: Maybe<Scalars['AdvisorsDateTime']>;
+  recommendations: Array<AdvisorsRecommendation>;
+  searchFullTimeAt?: Maybe<Scalars['AdvisorsDateTime']>;
   searchInternships: Scalars['Boolean'];
   searchOpen: Scalars['Boolean'];
   underrepresentedEthnicity: Scalars['Boolean'];
   underrepresentedGender: Scalars['Boolean'];
-  updatedAt: Scalars['AdvisorDateTime'];
+  updatedAt: Scalars['AdvisorsDateTime'];
   urlGithub?: Maybe<Scalars['String']>;
   urlLinkedIn?: Maybe<Scalars['String']>;
   urlResume?: Maybe<Scalars['String']>;
   urlWebsite?: Maybe<Scalars['String']>;
   username: Scalars['String'];
-  workFteAt?: Maybe<Scalars['AdvisorDateTime']>;
-  workInternAt?: Maybe<Scalars['AdvisorDateTime']>;
+  workFteAt?: Maybe<Scalars['AdvisorsDateTime']>;
+  workInternAt?: Maybe<Scalars['AdvisorsDateTime']>;
 };
 
-export type AdvisorProfileCreateInput = {
+export type AdvisorsProfileCreateInput = {
   bio?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   experience?: InputMaybe<Array<Scalars['String']>>;
   familyName: Scalars['String'];
   givenName: Scalars['String'];
-  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorDateTime']>;
-  gradUniversityAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  gradUniversityAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
   resume?: InputMaybe<Scalars['Upload']>;
-  searchFullTimeAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  searchFullTimeAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
   searchInternships?: InputMaybe<Scalars['Boolean']>;
   searchOpen?: InputMaybe<Scalars['Boolean']>;
   underrepresentedEthnicity?: InputMaybe<Scalars['Boolean']>;
@@ -487,20 +465,20 @@ export type AdvisorProfileCreateInput = {
   urlGithub?: InputMaybe<Scalars['String']>;
   urlLinkedIn?: InputMaybe<Scalars['String']>;
   urlWebsite?: InputMaybe<Scalars['String']>;
-  workFteAt?: InputMaybe<Scalars['AdvisorDateTime']>;
-  workInternAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  workFteAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  workInternAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
 };
 
-export type AdvisorProfileEditInput = {
+export type AdvisorsProfileEditInput = {
   bio?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
   experience?: InputMaybe<Array<Scalars['String']>>;
   familyName?: InputMaybe<Scalars['String']>;
   givenName?: InputMaybe<Scalars['String']>;
-  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorDateTime']>;
-  gradUniversityAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  gradHighSchoolAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  gradUniversityAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
   resume?: InputMaybe<Scalars['Upload']>;
-  searchFullTimeAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  searchFullTimeAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
   searchInternships?: InputMaybe<Scalars['Boolean']>;
   searchOpen?: InputMaybe<Scalars['Boolean']>;
   underrepresentedEthnicity?: InputMaybe<Scalars['Boolean']>;
@@ -508,101 +486,101 @@ export type AdvisorProfileEditInput = {
   urlGithub?: InputMaybe<Scalars['String']>;
   urlLinkedIn?: InputMaybe<Scalars['String']>;
   urlWebsite?: InputMaybe<Scalars['String']>;
-  workFteAt?: InputMaybe<Scalars['AdvisorDateTime']>;
-  workInternAt?: InputMaybe<Scalars['AdvisorDateTime']>;
+  workFteAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
+  workInternAt?: InputMaybe<Scalars['AdvisorsDateTime']>;
 };
 
-export type AdvisorQuery = {
-  __typename?: 'AdvisorQuery';
+export type AdvisorsQuery = {
+  __typename?: 'AdvisorsQuery';
   buildResumePackage: Scalars['String'];
-  getRequest: AdvisorRequest;
-  getRequestAssignment: AdvisorRequestAssignment;
-  pendingRequests: Array<AdvisorPendingRequests>;
-  profile: AdvisorProfile;
-  remainingRequests: Array<AdvisorRemainingRequestsType>;
-  servedRequests: Array<AdvisorRequestCount>;
-  submittedRequests: Array<AdvisorRequestCount>;
-  tags: Array<AdvisorTag>;
+  getRequest: AdvisorsRequest;
+  getRequestAssignment: AdvisorsRequestAssignment;
+  pendingRequests: Array<AdvisorsPendingRequests>;
+  profile: AdvisorsProfile;
+  remainingRequests: Array<AdvisorsRemainingRequestsType>;
+  servedRequests: Array<AdvisorsRequestCount>;
+  submittedRequests: Array<AdvisorsRequestCount>;
+  tags: Array<AdvisorsTag>;
 };
 
 
-export type AdvisorQueryBuildResumePackageArgs = {
+export type AdvisorsQueryBuildResumePackageArgs = {
   username: Scalars['String'];
 };
 
 
-export type AdvisorQueryGetRequestArgs = {
+export type AdvisorsQueryGetRequestArgs = {
   request: Scalars['String'];
 };
 
 
-export type AdvisorQueryGetRequestAssignmentArgs = {
+export type AdvisorsQueryGetRequestAssignmentArgs = {
   request: Scalars['String'];
 };
 
 
-export type AdvisorQueryProfileArgs = {
+export type AdvisorsQueryProfileArgs = {
   username?: InputMaybe<Scalars['String']>;
 };
 
 
-export type AdvisorQueryServedRequestsArgs = {
-  where?: InputMaybe<AdvisorRequestCountWhereInput>;
+export type AdvisorsQueryServedRequestsArgs = {
+  where?: InputMaybe<AdvisorsRequestCountWhereInput>;
 };
 
 
-export type AdvisorQuerySubmittedRequestsArgs = {
-  where?: InputMaybe<AdvisorRequestCountWhereInput>;
+export type AdvisorsQuerySubmittedRequestsArgs = {
+  where?: InputMaybe<AdvisorsRequestCountWhereInput>;
 };
 
 
-export type AdvisorQueryTagsArgs = {
-  type?: InputMaybe<AdvisorTagType>;
+export type AdvisorsQueryTagsArgs = {
+  type?: InputMaybe<AdvisorsTagType>;
 };
 
-export type AdvisorRecommendation = {
-  __typename?: 'AdvisorRecommendation';
-  createdAt: Scalars['AdvisorDateTime'];
+export type AdvisorsRecommendation = {
+  __typename?: 'AdvisorsRecommendation';
+  createdAt: Scalars['AdvisorsDateTime'];
   employer: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   id: Scalars['String'];
-  profile: AdvisorProfile;
+  profile: AdvisorsProfile;
   recommendation?: Maybe<Scalars['String']>;
   relation: Scalars['String'];
-  skillEngineering?: Maybe<AdvisorRecommendationRating>;
-  skillInterpersonal?: Maybe<AdvisorRecommendationRating>;
-  skillTechnical?: Maybe<AdvisorRecommendationRating>;
+  skillEngineering?: Maybe<AdvisorsRecommendationRating>;
+  skillInterpersonal?: Maybe<AdvisorsRecommendationRating>;
+  skillTechnical?: Maybe<AdvisorsRecommendationRating>;
   title: Scalars['String'];
-  updatedAt: Scalars['AdvisorDateTime'];
+  updatedAt: Scalars['AdvisorsDateTime'];
   username?: Maybe<Scalars['String']>;
 };
 
-export type AdvisorRecommendationCreateInput = {
+export type AdvisorsRecommendationCreateInput = {
   employer: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   recommendation?: InputMaybe<Scalars['String']>;
   relation: Scalars['String'];
-  skillEngineering?: InputMaybe<AdvisorRecommendationRating>;
-  skillInterpersonal?: InputMaybe<AdvisorRecommendationRating>;
-  skillTechnical?: InputMaybe<AdvisorRecommendationRating>;
+  skillEngineering?: InputMaybe<AdvisorsRecommendationRating>;
+  skillInterpersonal?: InputMaybe<AdvisorsRecommendationRating>;
+  skillTechnical?: InputMaybe<AdvisorsRecommendationRating>;
   title: Scalars['String'];
 };
 
-export type AdvisorRecommendationEditInput = {
+export type AdvisorsRecommendationEditInput = {
   employer?: InputMaybe<Scalars['String']>;
   familyName?: InputMaybe<Scalars['String']>;
   givenName?: InputMaybe<Scalars['String']>;
   recommendation?: InputMaybe<Scalars['String']>;
   relation?: InputMaybe<Scalars['String']>;
-  skillEngineering?: InputMaybe<AdvisorRecommendationRating>;
-  skillInterpersonal?: InputMaybe<AdvisorRecommendationRating>;
-  skillTechnical?: InputMaybe<AdvisorRecommendationRating>;
+  skillEngineering?: InputMaybe<AdvisorsRecommendationRating>;
+  skillInterpersonal?: InputMaybe<AdvisorsRecommendationRating>;
+  skillTechnical?: InputMaybe<AdvisorsRecommendationRating>;
   title?: InputMaybe<Scalars['String']>;
 };
 
-export enum AdvisorRecommendationRating {
+export enum AdvisorsRecommendationRating {
   InternBelow = 'INTERN_BELOW',
   InternExceeds = 'INTERN_EXCEEDS',
   InternMeets = 'INTERN_MEETS',
@@ -610,38 +588,38 @@ export enum AdvisorRecommendationRating {
   NewGradExceeds = 'NEW_GRAD_EXCEEDS'
 }
 
-export type AdvisorRemainingRequestsByAdvisorType = {
-  __typename?: 'AdvisorRemainingRequestsByAdvisorType';
-  advisorType: AdvisorAdvisorType;
+export type AdvisorsRemainingRequestsByAdvisorType = {
+  __typename?: 'AdvisorsRemainingRequestsByAdvisorType';
+  advisorType: AdvisorsAdvisorType;
   remainingRequests: Scalars['Float'];
 };
 
-export type AdvisorRemainingRequestsType = {
-  __typename?: 'AdvisorRemainingRequestsType';
-  advisorTypes: Array<AdvisorRemainingRequestsByAdvisorType>;
-  requestType: AdvisorRequestType;
+export type AdvisorsRemainingRequestsType = {
+  __typename?: 'AdvisorsRemainingRequestsType';
+  advisorTypes: Array<AdvisorsRemainingRequestsByAdvisorType>;
+  requestType: AdvisorsRequestType;
   totalRemainingRequests: Scalars['Float'];
 };
 
-export type AdvisorRequest = {
-  __typename?: 'AdvisorRequest';
+export type AdvisorsRequest = {
+  __typename?: 'AdvisorsRequest';
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
   resumeUrl?: Maybe<Scalars['String']>;
-  type: AdvisorRequestType;
+  type: AdvisorsRequestType;
   username: Scalars['String'];
 };
 
-export type AdvisorRequestAssignment = {
-  __typename?: 'AdvisorRequestAssignment';
-  request: AdvisorRequest;
-  response?: Maybe<Scalars['AdvisorJSONObject']>;
+export type AdvisorsRequestAssignment = {
+  __typename?: 'AdvisorsRequestAssignment';
+  request: AdvisorsRequest;
+  response?: Maybe<Scalars['AdvisorsJSONObject']>;
   responseFile?: Maybe<Scalars['String']>;
 };
 
-export type AdvisorRequestCount = {
-  __typename?: 'AdvisorRequestCount';
+export type AdvisorsRequestCount = {
+  __typename?: 'AdvisorsRequestCount';
   email: Scalars['String'];
   familyName: Scalars['String'];
   givenName: Scalars['String'];
@@ -650,32 +628,32 @@ export type AdvisorRequestCount = {
   username?: Maybe<Scalars['String']>;
 };
 
-export type AdvisorRequestCountWhereInput = {
+export type AdvisorsRequestCountWhereInput = {
   domain?: InputMaybe<Scalars['String']>;
   emails?: InputMaybe<Array<Scalars['String']>>;
   usernames?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export enum AdvisorRequestType {
+export enum AdvisorsRequestType {
   Interview = 'INTERVIEW',
   Resume = 'RESUME'
 }
 
-export type AdvisorTag = {
-  __typename?: 'AdvisorTag';
+export type AdvisorsTag = {
+  __typename?: 'AdvisorsTag';
   displayName: Scalars['String'];
   id: Scalars['String'];
-  profiles: Array<AdvisorProfile>;
-  type: AdvisorTagType;
+  profiles: Array<AdvisorsProfile>;
+  type: AdvisorsTagType;
 };
 
-export type AdvisorTagCreateInput = {
+export type AdvisorsTagCreateInput = {
   displayName: Scalars['String'];
   id: Scalars['String'];
-  type: AdvisorTagType;
+  type: AdvisorsTagType;
 };
 
-export enum AdvisorTagType {
+export enum AdvisorsTagType {
   Interest = 'INTEREST',
   Technology = 'TECHNOLOGY'
 }
@@ -7758,6 +7736,18 @@ export type ClearBoolWithAggregatesFilter = {
   not?: InputMaybe<ClearNestedBoolWithAggregatesFilter>;
 };
 
+export type ClearCheckPromoCodeResult = {
+  __typename?: 'ClearCheckPromoCodeResult';
+  discountAmount?: Maybe<Scalars['Float']>;
+  discountType?: Maybe<Scalars['String']>;
+  displayDiscountAmount?: Maybe<Scalars['String']>;
+  displayDiscountName?: Maybe<Scalars['String']>;
+  effectivePrice?: Maybe<Scalars['Float']>;
+  metadata?: Maybe<Scalars['ClearJSONObject']>;
+  remainingUses?: Maybe<Scalars['Float']>;
+  valid: Scalars['Boolean'];
+};
+
 export type ClearDateTimeFieldUpdateOperationsInput = {
   set?: InputMaybe<Scalars['ClearDateTime']>;
 };
@@ -8521,7 +8511,7 @@ export type ClearEvent = {
   adultWaiverId?: Maybe<Scalars['String']>;
   canEarlyBirdRegister: Scalars['Boolean'];
   canRegister: Scalars['Boolean'];
-  checkPromoCode: Scalars['ClearJSONObject'];
+  checkPromoCode: ClearCheckPromoCodeResult;
   cmsEventRestrictions: Array<CmsEventRestriction>;
   contentfulEventRestrictions: Array<Scalars['String']>;
   contentfulWebname?: Maybe<Scalars['String']>;
@@ -11405,16 +11395,38 @@ export type ClearIntWithAggregatesFilter = {
 };
 
 export type ClearJsonNullableFilter = {
+  array_contains?: InputMaybe<Scalars['ClearJSON']>;
+  array_ends_with?: InputMaybe<Scalars['ClearJSON']>;
+  array_starts_with?: InputMaybe<Scalars['ClearJSON']>;
   equals?: InputMaybe<Scalars['ClearJSON']>;
+  gt?: InputMaybe<Scalars['ClearJSON']>;
+  gte?: InputMaybe<Scalars['ClearJSON']>;
+  lt?: InputMaybe<Scalars['ClearJSON']>;
+  lte?: InputMaybe<Scalars['ClearJSON']>;
   not?: InputMaybe<Scalars['ClearJSON']>;
+  path?: InputMaybe<Array<Scalars['String']>>;
+  string_contains?: InputMaybe<Scalars['String']>;
+  string_ends_with?: InputMaybe<Scalars['String']>;
+  string_starts_with?: InputMaybe<Scalars['String']>;
 };
 
 export type ClearJsonNullableWithAggregatesFilter = {
   _count?: InputMaybe<ClearNestedIntNullableFilter>;
   _max?: InputMaybe<ClearNestedJsonNullableFilter>;
   _min?: InputMaybe<ClearNestedJsonNullableFilter>;
+  array_contains?: InputMaybe<Scalars['ClearJSON']>;
+  array_ends_with?: InputMaybe<Scalars['ClearJSON']>;
+  array_starts_with?: InputMaybe<Scalars['ClearJSON']>;
   equals?: InputMaybe<Scalars['ClearJSON']>;
+  gt?: InputMaybe<Scalars['ClearJSON']>;
+  gte?: InputMaybe<Scalars['ClearJSON']>;
+  lt?: InputMaybe<Scalars['ClearJSON']>;
+  lte?: InputMaybe<Scalars['ClearJSON']>;
   not?: InputMaybe<Scalars['ClearJSON']>;
+  path?: InputMaybe<Array<Scalars['String']>>;
+  string_contains?: InputMaybe<Scalars['String']>;
+  string_ends_with?: InputMaybe<Scalars['String']>;
+  string_starts_with?: InputMaybe<Scalars['String']>;
 };
 
 export type ClearMailingListMember = {
@@ -11746,7 +11758,7 @@ export type ClearMutation = {
   deleteVenue?: Maybe<ClearVenue>;
   deleteWebhook?: Maybe<ClearWebhook>;
   finalizePayment: Array<Scalars['String']>;
-  registerForEvent?: Maybe<Scalars['String']>;
+  registerForEvent?: Maybe<ClearRegistrationResponse>;
   requestEventScholarship: Scalars['Boolean'];
   sendInterestedEmail: Scalars['Boolean'];
   sendNotification: Scalars['Boolean'];
@@ -11764,6 +11776,7 @@ export type ClearMutation = {
   setTicketMetadata?: Maybe<ClearTicket>;
   setVenueMetadata?: Maybe<ClearVenue>;
   subscribeToMailingList?: Maybe<ClearMailingListMember>;
+  trackSurveyResponse: Scalars['Boolean'];
   updateEmailTemplate?: Maybe<ClearEmailTemplate>;
   updateEvent?: Maybe<ClearEvent>;
   updateEventGroup?: Maybe<ClearEventGroup>;
@@ -12246,6 +12259,14 @@ export type ClearMutationSetVenueMetadataArgs = {
 export type ClearMutationSubscribeToMailingListArgs = {
   email: Scalars['String'];
   where: ClearEventWhereUniqueInput;
+};
+
+
+export type ClearMutationTrackSurveyResponseArgs = {
+  key: Scalars['String'];
+  privateKey: Scalars['String'];
+  value: Scalars['String'];
+  where: ClearTicketWhereUniqueInput;
 };
 
 
@@ -12776,8 +12797,19 @@ export type ClearNestedIntWithAggregatesFilter = {
 };
 
 export type ClearNestedJsonNullableFilter = {
+  array_contains?: InputMaybe<Scalars['ClearJSON']>;
+  array_ends_with?: InputMaybe<Scalars['ClearJSON']>;
+  array_starts_with?: InputMaybe<Scalars['ClearJSON']>;
   equals?: InputMaybe<Scalars['ClearJSON']>;
+  gt?: InputMaybe<Scalars['ClearJSON']>;
+  gte?: InputMaybe<Scalars['ClearJSON']>;
+  lt?: InputMaybe<Scalars['ClearJSON']>;
+  lte?: InputMaybe<Scalars['ClearJSON']>;
   not?: InputMaybe<Scalars['ClearJSON']>;
+  path?: InputMaybe<Array<Scalars['String']>>;
+  string_contains?: InputMaybe<Scalars['String']>;
+  string_ends_with?: InputMaybe<Scalars['String']>;
+  string_starts_with?: InputMaybe<Scalars['String']>;
 };
 
 export type ClearNestedStringFilter = {
@@ -14129,12 +14161,14 @@ export type ClearQuery = {
   person?: Maybe<ClearPerson>;
   promoCode?: Maybe<ClearPromoCode>;
   promoCodes: Array<ClearPromoCode>;
+  retrieveTicketInfo: ClearTicketLookupResult;
   scheduleItem?: Maybe<ClearScheduleItem>;
   scheduleItems: Array<ClearScheduleItem>;
   sponsor?: Maybe<ClearSponsor>;
   sponsors: Array<ClearSponsor>;
   ticket?: Maybe<ClearTicket>;
   tickets: Array<ClearTicket>;
+  ticketsWithSurveyKey: Array<ClearTicket>;
   venue?: Maybe<ClearVenue>;
   venues: Array<ClearVenue>;
   webhook?: Maybe<ClearWebhook>;
@@ -14640,6 +14674,12 @@ export type ClearQueryPromoCodesArgs = {
 };
 
 
+export type ClearQueryRetrieveTicketInfoArgs = {
+  privateKey: Scalars['String'];
+  where: ClearTicketWhereUniqueInput;
+};
+
+
 export type ClearQueryScheduleItemArgs = {
   where: ClearScheduleItemWhereUniqueInput;
 };
@@ -14685,6 +14725,13 @@ export type ClearQueryTicketsArgs = {
 };
 
 
+export type ClearQueryTicketsWithSurveyKeyArgs = {
+  equals?: InputMaybe<Scalars['String']>;
+  keys: Array<Scalars['String']>;
+  not?: InputMaybe<Scalars['String']>;
+};
+
+
 export type ClearQueryVenueArgs = {
   where: ClearVenueWhereUniqueInput;
 };
@@ -14718,6 +14765,22 @@ export enum ClearQueryMode {
   Default = 'default',
   Insensitive = 'insensitive'
 }
+
+export type ClearRegistrationResponse = {
+  __typename?: 'ClearRegistrationResponse';
+  paymentIntent?: Maybe<Scalars['String']>;
+  tickets: Array<ClearRegistrationResponseTicket>;
+};
+
+export type ClearRegistrationResponseTicket = {
+  __typename?: 'ClearRegistrationResponseTicket';
+  age?: Maybe<Scalars['Float']>;
+  anonymousId: Scalars['String'];
+  firstName: Scalars['String'];
+  id: Scalars['String'];
+  lastName: Scalars['String'];
+  privateKey?: Maybe<Scalars['String']>;
+};
 
 export type ClearScheduleItem = {
   __typename?: 'ClearScheduleItem';
@@ -15968,6 +16031,7 @@ export type ClearTicket = {
   __typename?: 'ClearTicket';
   _count?: Maybe<ClearTicketCount>;
   age?: Maybe<Scalars['Int']>;
+  anonymousId: Scalars['String'];
   checkedIn?: Maybe<Scalars['ClearDateTime']>;
   checkedOut?: Maybe<Scalars['ClearDateTime']>;
   couponCode?: Maybe<Scalars['String']>;
@@ -15977,6 +16041,7 @@ export type ClearTicket = {
   eventId: Scalars['String'];
   firstName: Scalars['String'];
   getMetadata?: Maybe<Scalars['String']>;
+  getSurveyResponses?: Maybe<Scalars['ClearJSONObject']>;
   guardian?: Maybe<ClearPerson>;
   id: Scalars['String'];
   lastName: Scalars['String'];
@@ -15987,9 +16052,11 @@ export type ClearTicket = {
   paymentId?: Maybe<Scalars['String']>;
   personId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  privateKey?: Maybe<Scalars['String']>;
   promoCode?: Maybe<ClearPromoCode>;
   promoCodeId?: Maybe<Scalars['String']>;
   sentEmails: Array<ClearEmailTemplate>;
+  surveyResponses?: Maybe<Scalars['ClearJSON']>;
   type: ClearTicketType;
   updatedAt: Scalars['ClearDateTime'];
   username?: Maybe<Scalars['String']>;
@@ -16004,6 +16071,12 @@ export type ClearTicket = {
 
 export type ClearTicketGetMetadataArgs = {
   key: Scalars['String'];
+};
+
+
+export type ClearTicketGetSurveyResponsesArgs = {
+  exclude?: InputMaybe<Array<Scalars['String']>>;
+  only?: InputMaybe<Array<Scalars['String']>>;
 };
 
 
@@ -16048,7 +16121,9 @@ export type ClearTicketCountAggregate = {
   paymentId: Scalars['Int'];
   personId: Scalars['Int'];
   phone: Scalars['Int'];
+  privateKey: Scalars['Int'];
   promoCodeId: Scalars['Int'];
+  surveyResponses: Scalars['Int'];
   type: Scalars['Int'];
   updatedAt: Scalars['Int'];
   username: Scalars['Int'];
@@ -16075,7 +16150,9 @@ export type ClearTicketCountOrderByAggregateInput = {
   paymentId?: InputMaybe<ClearSortOrder>;
   personId?: InputMaybe<ClearSortOrder>;
   phone?: InputMaybe<ClearSortOrder>;
+  privateKey?: InputMaybe<ClearSortOrder>;
   promoCodeId?: InputMaybe<ClearSortOrder>;
+  surveyResponses?: InputMaybe<ClearSortOrder>;
   type?: InputMaybe<ClearSortOrder>;
   updatedAt?: InputMaybe<ClearSortOrder>;
   username?: InputMaybe<ClearSortOrder>;
@@ -16103,8 +16180,10 @@ export type ClearTicketCreateInput = {
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   payment?: InputMaybe<ClearPaymentCreateNestedOneWithoutTicketsInput>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCode?: InputMaybe<ClearPromoCodeCreateNestedOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateCreateNestedManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16131,7 +16210,9 @@ export type ClearTicketCreateManyEventInput = {
   paymentId?: InputMaybe<Scalars['String']>;
   personId?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCodeId?: InputMaybe<Scalars['String']>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16163,7 +16244,9 @@ export type ClearTicketCreateManyGuardianInput = {
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   paymentId?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCodeId?: InputMaybe<Scalars['String']>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16196,7 +16279,9 @@ export type ClearTicketCreateManyInput = {
   paymentId?: InputMaybe<Scalars['String']>;
   personId?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCodeId?: InputMaybe<Scalars['String']>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16223,7 +16308,9 @@ export type ClearTicketCreateManyPaymentInput = {
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   personId?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCodeId?: InputMaybe<Scalars['String']>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16256,6 +16343,8 @@ export type ClearTicketCreateManyPromoCodeInput = {
   paymentId?: InputMaybe<Scalars['String']>;
   personId?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16346,8 +16435,10 @@ export type ClearTicketCreateWithoutEventInput = {
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   payment?: InputMaybe<ClearPaymentCreateNestedOneWithoutTicketsInput>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCode?: InputMaybe<ClearPromoCodeCreateNestedOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateCreateNestedManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16374,8 +16465,10 @@ export type ClearTicketCreateWithoutGuardianInput = {
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   payment?: InputMaybe<ClearPaymentCreateNestedOneWithoutTicketsInput>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCode?: InputMaybe<ClearPromoCodeCreateNestedOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateCreateNestedManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16402,8 +16495,10 @@ export type ClearTicketCreateWithoutPaymentInput = {
   locale?: InputMaybe<Scalars['String']>;
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCode?: InputMaybe<ClearPromoCodeCreateNestedOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateCreateNestedManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16431,7 +16526,9 @@ export type ClearTicketCreateWithoutPromoCodeInput = {
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   payment?: InputMaybe<ClearPaymentCreateNestedOneWithoutTicketsInput>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   sentEmails?: InputMaybe<ClearEmailTemplateCreateNestedManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16459,7 +16556,9 @@ export type ClearTicketCreateWithoutSentEmailsInput = {
   metadata?: InputMaybe<Scalars['ClearJSON']>;
   payment?: InputMaybe<ClearPaymentCreateNestedOneWithoutTicketsInput>;
   phone?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   promoCode?: InputMaybe<ClearPromoCodeCreateNestedOneWithoutTicketsInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearTicketType>;
   updatedAt?: InputMaybe<Scalars['ClearDateTime']>;
   username?: InputMaybe<Scalars['String']>;
@@ -16493,7 +16592,9 @@ export type ClearTicketGroupBy = {
   paymentId?: Maybe<Scalars['String']>;
   personId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  privateKey?: Maybe<Scalars['String']>;
   promoCodeId?: Maybe<Scalars['String']>;
+  surveyResponses?: Maybe<Scalars['ClearJSON']>;
   type: ClearTicketType;
   updatedAt: Scalars['ClearDateTime'];
   username?: Maybe<Scalars['String']>;
@@ -16509,6 +16610,53 @@ export type ClearTicketListRelationFilter = {
   every?: InputMaybe<ClearTicketWhereInput>;
   none?: InputMaybe<ClearTicketWhereInput>;
   some?: InputMaybe<ClearTicketWhereInput>;
+};
+
+export type ClearTicketLookupResult = {
+  __typename?: 'ClearTicketLookupResult';
+  age?: Maybe<Scalars['Float']>;
+  anonymousId: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  event: ClearEvent;
+  firstName: Scalars['String'];
+  guardian?: Maybe<ClearTicketLookupResultGuardian>;
+  id: Scalars['String'];
+  lastName: Scalars['String'];
+  payment?: Maybe<ClearTicketLookupResultPayment>;
+  phone?: Maybe<Scalars['String']>;
+  privateKey?: Maybe<Scalars['String']>;
+  promoCode?: Maybe<ClearTicketLookupResultPromoCode>;
+  surveyResponses?: Maybe<Scalars['ClearJSONObject']>;
+  username?: Maybe<Scalars['String']>;
+  waiverPdfUrl?: Maybe<Scalars['String']>;
+  waiverSigned: Scalars['Boolean'];
+  waiverUrl?: Maybe<Scalars['String']>;
+  whatsApp?: Maybe<Scalars['String']>;
+};
+
+export type ClearTicketLookupResultGuardian = {
+  __typename?: 'ClearTicketLookupResultGuardian';
+  email?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  phone?: Maybe<Scalars['String']>;
+  whatsApp?: Maybe<Scalars['String']>;
+};
+
+export type ClearTicketLookupResultPayment = {
+  __typename?: 'ClearTicketLookupResultPayment';
+  complete: Scalars['Boolean'];
+  id: Scalars['String'];
+  paymentProvider: Scalars['String'];
+};
+
+export type ClearTicketLookupResultPromoCode = {
+  __typename?: 'ClearTicketLookupResultPromoCode';
+  discountAmount?: Maybe<Scalars['Float']>;
+  discountType?: Maybe<Scalars['String']>;
+  displayDiscountAmount?: Maybe<Scalars['String']>;
+  displayDiscountName?: Maybe<Scalars['String']>;
+  metadata?: Maybe<Scalars['ClearJSONObject']>;
 };
 
 export type ClearTicketMaxAggregate = {
@@ -16527,6 +16675,7 @@ export type ClearTicketMaxAggregate = {
   paymentId?: Maybe<Scalars['String']>;
   personId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  privateKey?: Maybe<Scalars['String']>;
   promoCodeId?: Maybe<Scalars['String']>;
   type?: Maybe<ClearTicketType>;
   updatedAt?: Maybe<Scalars['ClearDateTime']>;
@@ -16554,6 +16703,7 @@ export type ClearTicketMaxOrderByAggregateInput = {
   paymentId?: InputMaybe<ClearSortOrder>;
   personId?: InputMaybe<ClearSortOrder>;
   phone?: InputMaybe<ClearSortOrder>;
+  privateKey?: InputMaybe<ClearSortOrder>;
   promoCodeId?: InputMaybe<ClearSortOrder>;
   type?: InputMaybe<ClearSortOrder>;
   updatedAt?: InputMaybe<ClearSortOrder>;
@@ -16582,6 +16732,7 @@ export type ClearTicketMinAggregate = {
   paymentId?: Maybe<Scalars['String']>;
   personId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  privateKey?: Maybe<Scalars['String']>;
   promoCodeId?: Maybe<Scalars['String']>;
   type?: Maybe<ClearTicketType>;
   updatedAt?: Maybe<Scalars['ClearDateTime']>;
@@ -16609,6 +16760,7 @@ export type ClearTicketMinOrderByAggregateInput = {
   paymentId?: InputMaybe<ClearSortOrder>;
   personId?: InputMaybe<ClearSortOrder>;
   phone?: InputMaybe<ClearSortOrder>;
+  privateKey?: InputMaybe<ClearSortOrder>;
   promoCodeId?: InputMaybe<ClearSortOrder>;
   type?: InputMaybe<ClearSortOrder>;
   updatedAt?: InputMaybe<ClearSortOrder>;
@@ -16645,7 +16797,9 @@ export type ClearTicketOrderByWithAggregationInput = {
   paymentId?: InputMaybe<ClearSortOrder>;
   personId?: InputMaybe<ClearSortOrder>;
   phone?: InputMaybe<ClearSortOrder>;
+  privateKey?: InputMaybe<ClearSortOrder>;
   promoCodeId?: InputMaybe<ClearSortOrder>;
+  surveyResponses?: InputMaybe<ClearSortOrder>;
   type?: InputMaybe<ClearSortOrder>;
   updatedAt?: InputMaybe<ClearSortOrder>;
   username?: InputMaybe<ClearSortOrder>;
@@ -16675,9 +16829,11 @@ export type ClearTicketOrderByWithRelationInput = {
   paymentId?: InputMaybe<ClearSortOrder>;
   personId?: InputMaybe<ClearSortOrder>;
   phone?: InputMaybe<ClearSortOrder>;
+  privateKey?: InputMaybe<ClearSortOrder>;
   promoCode?: InputMaybe<ClearPromoCodeOrderByWithRelationInput>;
   promoCodeId?: InputMaybe<ClearSortOrder>;
   sentEmails?: InputMaybe<ClearEmailTemplateOrderByRelationAggregateInput>;
+  surveyResponses?: InputMaybe<ClearSortOrder>;
   type?: InputMaybe<ClearSortOrder>;
   updatedAt?: InputMaybe<ClearSortOrder>;
   username?: InputMaybe<ClearSortOrder>;
@@ -16705,7 +16861,9 @@ export enum ClearTicketScalarFieldEnum {
   PaymentId = 'paymentId',
   PersonId = 'personId',
   Phone = 'phone',
+  PrivateKey = 'privateKey',
   PromoCodeId = 'promoCodeId',
+  SurveyResponses = 'surveyResponses',
   Type = 'type',
   UpdatedAt = 'updatedAt',
   Username = 'username',
@@ -16735,7 +16893,9 @@ export type ClearTicketScalarWhereInput = {
   paymentId?: InputMaybe<ClearStringNullableFilter>;
   personId?: InputMaybe<ClearStringNullableFilter>;
   phone?: InputMaybe<ClearStringNullableFilter>;
+  privateKey?: InputMaybe<ClearStringNullableFilter>;
   promoCodeId?: InputMaybe<ClearStringNullableFilter>;
+  surveyResponses?: InputMaybe<ClearJsonNullableFilter>;
   type?: InputMaybe<ClearEnumTicketTypeFilter>;
   updatedAt?: InputMaybe<ClearDateTimeFilter>;
   username?: InputMaybe<ClearStringNullableFilter>;
@@ -16765,7 +16925,9 @@ export type ClearTicketScalarWhereWithAggregatesInput = {
   paymentId?: InputMaybe<ClearStringNullableWithAggregatesFilter>;
   personId?: InputMaybe<ClearStringNullableWithAggregatesFilter>;
   phone?: InputMaybe<ClearStringNullableWithAggregatesFilter>;
+  privateKey?: InputMaybe<ClearStringNullableWithAggregatesFilter>;
   promoCodeId?: InputMaybe<ClearStringNullableWithAggregatesFilter>;
+  surveyResponses?: InputMaybe<ClearJsonNullableWithAggregatesFilter>;
   type?: InputMaybe<ClearEnumTicketTypeWithAggregatesFilter>;
   updatedAt?: InputMaybe<ClearDateTimeWithAggregatesFilter>;
   username?: InputMaybe<ClearStringNullableWithAggregatesFilter>;
@@ -16810,8 +16972,10 @@ export type ClearTicketUpdateInput = {
   locale?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   payment?: InputMaybe<ClearPaymentUpdateOneWithoutTicketsInput>;
   phone?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  privateKey?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
   promoCode?: InputMaybe<ClearPromoCodeUpdateOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateUpdateManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearEnumTicketTypeFieldUpdateOperationsInput>;
   updatedAt?: InputMaybe<ClearDateTimeFieldUpdateOperationsInput>;
   username?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
@@ -16835,6 +16999,8 @@ export type ClearTicketUpdateManyMutationInput = {
   lastName?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   locale?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   phone?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  privateKey?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearEnumTicketTypeFieldUpdateOperationsInput>;
   updatedAt?: InputMaybe<ClearDateTimeFieldUpdateOperationsInput>;
   username?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
@@ -16979,8 +17145,10 @@ export type ClearTicketUpdateWithoutEventInput = {
   locale?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   payment?: InputMaybe<ClearPaymentUpdateOneWithoutTicketsInput>;
   phone?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  privateKey?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
   promoCode?: InputMaybe<ClearPromoCodeUpdateOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateUpdateManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearEnumTicketTypeFieldUpdateOperationsInput>;
   updatedAt?: InputMaybe<ClearDateTimeFieldUpdateOperationsInput>;
   username?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
@@ -17006,8 +17174,10 @@ export type ClearTicketUpdateWithoutGuardianInput = {
   locale?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   payment?: InputMaybe<ClearPaymentUpdateOneWithoutTicketsInput>;
   phone?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  privateKey?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
   promoCode?: InputMaybe<ClearPromoCodeUpdateOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateUpdateManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearEnumTicketTypeFieldUpdateOperationsInput>;
   updatedAt?: InputMaybe<ClearDateTimeFieldUpdateOperationsInput>;
   username?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
@@ -17033,8 +17203,10 @@ export type ClearTicketUpdateWithoutPaymentInput = {
   lastName?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   locale?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   phone?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  privateKey?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
   promoCode?: InputMaybe<ClearPromoCodeUpdateOneWithoutTicketsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateUpdateManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearEnumTicketTypeFieldUpdateOperationsInput>;
   updatedAt?: InputMaybe<ClearDateTimeFieldUpdateOperationsInput>;
   username?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
@@ -17061,7 +17233,9 @@ export type ClearTicketUpdateWithoutPromoCodeInput = {
   locale?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   payment?: InputMaybe<ClearPaymentUpdateOneWithoutTicketsInput>;
   phone?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  privateKey?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
   sentEmails?: InputMaybe<ClearEmailTemplateUpdateManyWithoutSentToInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearEnumTicketTypeFieldUpdateOperationsInput>;
   updatedAt?: InputMaybe<ClearDateTimeFieldUpdateOperationsInput>;
   username?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
@@ -17088,7 +17262,9 @@ export type ClearTicketUpdateWithoutSentEmailsInput = {
   locale?: InputMaybe<ClearStringFieldUpdateOperationsInput>;
   payment?: InputMaybe<ClearPaymentUpdateOneWithoutTicketsInput>;
   phone?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
+  privateKey?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
   promoCode?: InputMaybe<ClearPromoCodeUpdateOneWithoutTicketsInput>;
+  surveyResponses?: InputMaybe<Scalars['ClearJSON']>;
   type?: InputMaybe<ClearEnumTicketTypeFieldUpdateOperationsInput>;
   updatedAt?: InputMaybe<ClearDateTimeFieldUpdateOperationsInput>;
   username?: InputMaybe<ClearNullableStringFieldUpdateOperationsInput>;
@@ -17151,9 +17327,11 @@ export type ClearTicketWhereInput = {
   paymentId?: InputMaybe<ClearStringNullableFilter>;
   personId?: InputMaybe<ClearStringNullableFilter>;
   phone?: InputMaybe<ClearStringNullableFilter>;
+  privateKey?: InputMaybe<ClearStringNullableFilter>;
   promoCode?: InputMaybe<ClearPromoCodeRelationFilter>;
   promoCodeId?: InputMaybe<ClearStringNullableFilter>;
   sentEmails?: InputMaybe<ClearEmailTemplateListRelationFilter>;
+  surveyResponses?: InputMaybe<ClearJsonNullableFilter>;
   type?: InputMaybe<ClearEnumTicketTypeFilter>;
   updatedAt?: InputMaybe<ClearDateTimeFilter>;
   username?: InputMaybe<ClearStringNullableFilter>;
@@ -17924,7 +18102,8 @@ export enum ClearWebhookService {
 
 export enum ClearWebhookType {
   All = 'ALL',
-  Digest = 'DIGEST'
+  Digest = 'DIGEST',
+  Watchdog = 'WATCHDOG'
 }
 
 export type ClearWebhookUpdateInput = {
@@ -18088,8 +18267,10 @@ export type CmsAnnouncementOnelineArgs = {
 export type CmsAnnouncementProgramsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsAnnouncementProgramCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsProgramFilter>;
 };
 
 
@@ -18154,6 +18335,7 @@ export type CmsAnnouncementFilter = {
   oneline_not?: InputMaybe<Scalars['String']>;
   oneline_not_contains?: InputMaybe<Scalars['String']>;
   oneline_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  program?: InputMaybe<CmscfProgramNestedFilter>;
   programCollection_exists?: InputMaybe<Scalars['Boolean']>;
   sys?: InputMaybe<CmsSysFilter>;
   title?: InputMaybe<Scalars['String']>;
@@ -18224,6 +18406,33 @@ export type CmsAnnouncementProgramCollection = {
   skip: Scalars['Int'];
   total: Scalars['Int'];
 };
+
+export enum CmsAnnouncementProgramCollectionOrder {
+  ArchivedAsc = 'archived_ASC',
+  ArchivedDesc = 'archived_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  ShortDescriptionAsc = 'shortDescription_ASC',
+  ShortDescriptionDesc = 'shortDescription_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC',
+  VirtualAsc = 'virtual_ASC',
+  VirtualDesc = 'virtual_DESC',
+  VolunteerUrlAsc = 'volunteerUrl_ASC',
+  VolunteerUrlDesc = 'volunteerUrl_DESC',
+  WebnameAsc = 'webname_ASC',
+  WebnameDesc = 'webname_DESC'
+}
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type CmsAsset = {
@@ -18618,8 +18827,10 @@ export type CmsAwardNameArgs = {
 export type CmsAwardProgramsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsAwardProgramsCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsProgramFilter>;
 };
 
 
@@ -18671,6 +18882,7 @@ export type CmsAwardFilter = {
   name_not?: InputMaybe<Scalars['String']>;
   name_not_contains?: InputMaybe<Scalars['String']>;
   name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  programs?: InputMaybe<CmscfProgramNestedFilter>;
   programsCollection_exists?: InputMaybe<Scalars['Boolean']>;
   ranking?: InputMaybe<Scalars['Int']>;
   ranking_exists?: InputMaybe<Scalars['Boolean']>;
@@ -18727,6 +18939,33 @@ export type CmsAwardProgramsCollection = {
   skip: Scalars['Int'];
   total: Scalars['Int'];
 };
+
+export enum CmsAwardProgramsCollectionOrder {
+  ArchivedAsc = 'archived_ASC',
+  ArchivedDesc = 'archived_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  ShortDescriptionAsc = 'shortDescription_ASC',
+  ShortDescriptionDesc = 'shortDescription_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC',
+  VirtualAsc = 'virtual_ASC',
+  VirtualDesc = 'virtual_DESC',
+  VolunteerUrlAsc = 'volunteerUrl_ASC',
+  VolunteerUrlDesc = 'volunteerUrl_DESC',
+  WebnameAsc = 'webname_ASC',
+  WebnameDesc = 'webname_DESC'
+}
 
 /** [See type definition](https://app.contentful.com/spaces/d5pti1xheuyu/content_types/badge) */
 export type CmsBadge = CmsEntry & {
@@ -19077,8 +19316,10 @@ export type CmsCommunityPartnerNameArgs = {
 export type CmsCommunityPartnerRegionsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsCommunityPartnerRegionCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsRegionFilter>;
 };
 
 
@@ -19157,6 +19398,7 @@ export type CmsCommunityPartnerFilter = {
   name_not?: InputMaybe<Scalars['String']>;
   name_not_contains?: InputMaybe<Scalars['String']>;
   name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  region?: InputMaybe<CmscfRegionNestedFilter>;
   regionCollection_exists?: InputMaybe<Scalars['Boolean']>;
   sys?: InputMaybe<CmsSysFilter>;
   url?: InputMaybe<Scalars['String']>;
@@ -19214,6 +19456,53 @@ export type CmsCommunityPartnerRegionCollection = {
   total: Scalars['Int'];
 };
 
+export enum CmsCommunityPartnerRegionCollectionOrder {
+  AbbrAsc = 'abbr_ASC',
+  AbbrDesc = 'abbr_DESC',
+  AccountingNameAsc = 'accountingName_ASC',
+  AccountingNameDesc = 'accountingName_DESC',
+  CountryNameAdjectiveAsc = 'countryNameAdjective_ASC',
+  CountryNameAdjectiveDesc = 'countryNameAdjective_DESC',
+  CountryNameShortAdjectiveAsc = 'countryNameShortAdjective_ASC',
+  CountryNameShortAdjectiveDesc = 'countryNameShortAdjective_DESC',
+  CountryNameShortAsc = 'countryNameShort_ASC',
+  CountryNameShortDesc = 'countryNameShort_DESC',
+  CountryNameAsc = 'countryName_ASC',
+  CountryNameDesc = 'countryName_DESC',
+  CurrencySymbolAsc = 'currencySymbol_ASC',
+  CurrencySymbolDesc = 'currencySymbol_DESC',
+  CurrencyAsc = 'currency_ASC',
+  CurrencyDesc = 'currency_DESC',
+  E164CountryCodeAsc = 'e164CountryCode_ASC',
+  E164CountryCodeDesc = 'e164CountryCode_DESC',
+  Iso3166Alpha2CodeAsc = 'iso3166Alpha2Code_ASC',
+  Iso3166Alpha2CodeDesc = 'iso3166Alpha2Code_DESC',
+  Iso3166Alpha3CodeAsc = 'iso3166Alpha3Code_ASC',
+  Iso3166Alpha3CodeDesc = 'iso3166Alpha3Code_DESC',
+  MottoAsc = 'motto_ASC',
+  MottoDesc = 'motto_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  NewVolunteerPipelineAsc = 'newVolunteerPipeline_ASC',
+  NewVolunteerPipelineDesc = 'newVolunteerPipeline_DESC',
+  PaymentProviderAsc = 'paymentProvider_ASC',
+  PaymentProviderDesc = 'paymentProvider_DESC',
+  PrimaryColorAsc = 'primaryColor_ASC',
+  PrimaryColorDesc = 'primaryColor_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TimezoneAsc = 'timezone_ASC',
+  TimezoneDesc = 'timezone_DESC',
+  WebnameAsc = 'webname_ASC',
+  WebnameDesc = 'webname_DESC'
+}
+
 /** [See type definition](https://app.contentful.com/spaces/d5pti1xheuyu/content_types/string) */
 export type CmsContentTypeString = CmsEntry & {
   __typename?: 'CmsContentTypeString';
@@ -19256,8 +19545,10 @@ export type CmsContentTypeStringRichValueArgs = {
 export type CmsContentTypeStringSubvaluesArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsContentTypeStringSubvalueCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsContentTypeStringFilter>;
 };
 
 
@@ -19289,6 +19580,7 @@ export type CmsContentTypeStringFilter = {
   richValue_contains?: InputMaybe<Scalars['String']>;
   richValue_exists?: InputMaybe<Scalars['Boolean']>;
   richValue_not_contains?: InputMaybe<Scalars['String']>;
+  subvalue?: InputMaybe<CmscfContentTypeStringNestedFilter>;
   subvalueCollection_exists?: InputMaybe<Scalars['Boolean']>;
   sys?: InputMaybe<CmsSysFilter>;
   value?: InputMaybe<Scalars['String']>;
@@ -19318,9 +19610,23 @@ export type CmsContentTypeStringLinkingCollectionsEntriesArgs = {
 export type CmsContentTypeStringLinkingCollectionsStringsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsContentTypeStringLinkingCollectionsContentTypeStringCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsContentTypeStringLinkingCollectionsContentTypeStringCollectionOrder {
+  KeyAsc = 'key_ASC',
+  KeyDesc = 'key_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
 
 export enum CmsContentTypeStringOrder {
   KeyAsc = 'key_ASC',
@@ -19358,6 +19664,14 @@ export type CmsContentTypeStringRichValueLinks = {
   __typename?: 'CmsContentTypeStringRichValueLinks';
   assets: CmsContentTypeStringRichValueAssets;
   entries: CmsContentTypeStringRichValueEntries;
+  resources: CmsContentTypeStringRichValueResources;
+};
+
+export type CmsContentTypeStringRichValueResources = {
+  __typename?: 'CmsContentTypeStringRichValueResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsContentTypeStringSubvalueCollection = {
@@ -19367,6 +19681,19 @@ export type CmsContentTypeStringSubvalueCollection = {
   skip: Scalars['Int'];
   total: Scalars['Int'];
 };
+
+export enum CmsContentTypeStringSubvalueCollectionOrder {
+  KeyAsc = 'key_ASC',
+  KeyDesc = 'key_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
 
 export type CmsContentfulMetadata = {
   __typename?: 'CmsContentfulMetadata';
@@ -19525,6 +19852,7 @@ export type CmsEventPostersArgs = {
 export type CmsEventProgramArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsProgramFilter>;
 };
 
 
@@ -19767,9 +20095,21 @@ export type CmsEventLinkingCollectionsEntriesArgs = {
 export type CmsEventLinkingCollectionsPressPhotosArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsEventLinkingCollectionsPressPhotoCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsEventLinkingCollectionsPressPhotoCollectionOrder {
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
 
 export type CmsEventNotice = {
   __typename?: 'CmsEventNotice';
@@ -19794,6 +20134,14 @@ export type CmsEventNoticeLinks = {
   __typename?: 'CmsEventNoticeLinks';
   assets: CmsEventNoticeAssets;
   entries: CmsEventNoticeEntries;
+  resources: CmsEventNoticeResources;
+};
+
+export type CmsEventNoticeResources = {
+  __typename?: 'CmsEventNoticeResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export enum CmsEventOrder {
@@ -19854,8 +20202,10 @@ export type CmsEventRestriction = CmsEntry & {
 export type CmsEventRestrictionApplicableProgramsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsEventRestrictionApplicableProgramsCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsProgramFilter>;
 };
 
 
@@ -19903,6 +20253,33 @@ export type CmsEventRestrictionApplicableProgramsCollection = {
   total: Scalars['Int'];
 };
 
+export enum CmsEventRestrictionApplicableProgramsCollectionOrder {
+  ArchivedAsc = 'archived_ASC',
+  ArchivedDesc = 'archived_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  ShortDescriptionAsc = 'shortDescription_ASC',
+  ShortDescriptionDesc = 'shortDescription_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC',
+  VirtualAsc = 'virtual_ASC',
+  VirtualDesc = 'virtual_DESC',
+  VolunteerUrlAsc = 'volunteerUrl_ASC',
+  VolunteerUrlDesc = 'volunteerUrl_DESC',
+  WebnameAsc = 'webname_ASC',
+  WebnameDesc = 'webname_DESC'
+}
+
 export type CmsEventRestrictionCollection = {
   __typename?: 'CmsEventRestrictionCollection';
   items: Array<Maybe<CmsEventRestriction>>;
@@ -19914,6 +20291,7 @@ export type CmsEventRestrictionCollection = {
 export type CmsEventRestrictionFilter = {
   AND?: InputMaybe<Array<InputMaybe<CmsEventRestrictionFilter>>>;
   OR?: InputMaybe<Array<InputMaybe<CmsEventRestrictionFilter>>>;
+  applicablePrograms?: InputMaybe<CmscfProgramNestedFilter>;
   applicableProgramsCollection_exists?: InputMaybe<Scalars['Boolean']>;
   contentfulMetadata?: InputMaybe<CmsContentfulMetadataFilter>;
   details?: InputMaybe<Scalars['String']>;
@@ -19966,9 +20344,51 @@ export type CmsEventRestrictionLinkingCollectionsEntriesArgs = {
 export type CmsEventRestrictionLinkingCollectionsLocalizationConfigsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsEventRestrictionLinkingCollectionsLocalizationConfigCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsEventRestrictionLinkingCollectionsLocalizationConfigCollectionOrder {
+  ContactDefaultTypeAsc = 'contactDefaultType_ASC',
+  ContactDefaultTypeDesc = 'contactDefaultType_DESC',
+  ContactDefaultValueAsc = 'contactDefaultValue_ASC',
+  ContactDefaultValueDesc = 'contactDefaultValue_DESC',
+  CountryNameAdjectiveAsc = 'countryNameAdjective_ASC',
+  CountryNameAdjectiveDesc = 'countryNameAdjective_DESC',
+  CountryNameShortAdjectiveAsc = 'countryNameShortAdjective_ASC',
+  CountryNameShortAdjectiveDesc = 'countryNameShortAdjective_DESC',
+  CountryNameShortAsc = 'countryNameShort_ASC',
+  CountryNameShortDesc = 'countryNameShort_DESC',
+  CountryNameAsc = 'countryName_ASC',
+  CountryNameDesc = 'countryName_DESC',
+  CurrencySymbolAsc = 'currencySymbol_ASC',
+  CurrencySymbolDesc = 'currencySymbol_DESC',
+  CurrencyAsc = 'currency_ASC',
+  CurrencyDesc = 'currency_DESC',
+  E164CountryCodeAsc = 'e164CountryCode_ASC',
+  E164CountryCodeDesc = 'e164CountryCode_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  Iso3166Alpha2CodeAsc = 'iso3166Alpha2Code_ASC',
+  Iso3166Alpha2CodeDesc = 'iso3166Alpha2Code_DESC',
+  Iso3166Alpha3CodeAsc = 'iso3166Alpha3Code_ASC',
+  Iso3166Alpha3CodeDesc = 'iso3166Alpha3Code_DESC',
+  LocaleAsc = 'locale_ASC',
+  LocaleDesc = 'locale_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  Use24HourTimeAsc = 'use24HourTime_ASC',
+  Use24HourTimeDesc = 'use24HourTime_DESC'
+}
 
 export enum CmsEventRestrictionOrder {
   IdAsc = 'id_ASC',
@@ -20031,6 +20451,7 @@ export type CmsFaqLinkedFromArgs = {
 export type CmsFaqProgramArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsProgramFilter>;
 };
 
 
@@ -20038,8 +20459,10 @@ export type CmsFaqProgramArgs = {
 export type CmsFaqRelatedAnswersArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsFaqRelatedAnswersCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsFaqFilter>;
 };
 
 
@@ -20077,6 +20500,14 @@ export type CmsFaqAnswerLinks = {
   __typename?: 'CmsFaqAnswerLinks';
   assets: CmsFaqAnswerAssets;
   entries: CmsFaqAnswerEntries;
+  resources: CmsFaqAnswerResources;
+};
+
+export type CmsFaqAnswerResources = {
+  __typename?: 'CmsFaqAnswerResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsFaqCollection = {
@@ -20103,6 +20534,7 @@ export type CmsFaqFilter = {
   featured_not?: InputMaybe<Scalars['Boolean']>;
   program?: InputMaybe<CmscfProgramNestedFilter>;
   program_exists?: InputMaybe<Scalars['Boolean']>;
+  relatedAnswers?: InputMaybe<CmscfFaqNestedFilter>;
   relatedAnswersCollection_exists?: InputMaybe<Scalars['Boolean']>;
   sys?: InputMaybe<CmsSysFilter>;
   tags_contains_all?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
@@ -20136,9 +20568,25 @@ export type CmsFaqLinkingCollectionsEntriesArgs = {
 export type CmsFaqLinkingCollectionsFaqsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsFaqLinkingCollectionsFaqCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsFaqLinkingCollectionsFaqCollectionOrder {
+  FeaturedAsc = 'featured_ASC',
+  FeaturedDesc = 'featured_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC'
+}
 
 export enum CmsFaqOrder {
   FeaturedAsc = 'featured_ASC',
@@ -20162,6 +20610,21 @@ export type CmsFaqRelatedAnswersCollection = {
   skip: Scalars['Int'];
   total: Scalars['Int'];
 };
+
+export enum CmsFaqRelatedAnswersCollectionOrder {
+  FeaturedAsc = 'featured_ASC',
+  FeaturedDesc = 'featured_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC'
+}
 
 /** [See type definition](https://app.contentful.com/spaces/d5pti1xheuyu/content_types/form) */
 export type CmsForm = CmsEntry & {
@@ -20258,6 +20721,14 @@ export type CmsFormDetailsLinks = {
   __typename?: 'CmsFormDetailsLinks';
   assets: CmsFormDetailsAssets;
   entries: CmsFormDetailsEntries;
+  resources: CmsFormDetailsResources;
+};
+
+export type CmsFormDetailsResources = {
+  __typename?: 'CmsFormDetailsResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsFormFilter = {
@@ -20351,6 +20822,14 @@ export type CmsFormSidebarLinks = {
   __typename?: 'CmsFormSidebarLinks';
   assets: CmsFormSidebarAssets;
   entries: CmsFormSidebarEntries;
+  resources: CmsFormSidebarResources;
+};
+
+export type CmsFormSidebarResources = {
+  __typename?: 'CmsFormSidebarResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 /** [See type definition](https://app.contentful.com/spaces/d5pti1xheuyu/content_types/globalSponsor) */
@@ -20540,6 +21019,7 @@ export type CmsGlobalSponsorLinkingCollectionsEntriesArgs = {
 export type CmsGlobalSponsorLinkingCollectionsHiringCompaniesArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsGlobalSponsorLinkingCollectionsHiringCompanyCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -20548,9 +21028,54 @@ export type CmsGlobalSponsorLinkingCollectionsHiringCompaniesArgs = {
 export type CmsGlobalSponsorLinkingCollectionsProgramsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsGlobalSponsorLinkingCollectionsProgramCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsGlobalSponsorLinkingCollectionsHiringCompanyCollectionOrder {
+  FeaturedAsc = 'featured_ASC',
+  FeaturedDesc = 'featured_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC'
+}
+
+export enum CmsGlobalSponsorLinkingCollectionsProgramCollectionOrder {
+  ArchivedAsc = 'archived_ASC',
+  ArchivedDesc = 'archived_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  ShortDescriptionAsc = 'shortDescription_ASC',
+  ShortDescriptionDesc = 'shortDescription_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC',
+  VirtualAsc = 'virtual_ASC',
+  VirtualDesc = 'virtual_DESC',
+  VolunteerUrlAsc = 'volunteerUrl_ASC',
+  VolunteerUrlDesc = 'volunteerUrl_DESC',
+  WebnameAsc = 'webname_ASC',
+  WebnameDesc = 'webname_DESC'
+}
 
 export enum CmsGlobalSponsorOrder {
   InstagramUsernameAsc = 'instagramUsername_ASC',
@@ -20633,6 +21158,7 @@ export type CmsHiringCompanyNameArgs = {
 export type CmsHiringCompanyRelatedSponsorArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsGlobalSponsorFilter>;
 };
 
 
@@ -20672,6 +21198,14 @@ export type CmsHiringCompanyDescriptionLinks = {
   __typename?: 'CmsHiringCompanyDescriptionLinks';
   assets: CmsHiringCompanyDescriptionAssets;
   entries: CmsHiringCompanyDescriptionEntries;
+  resources: CmsHiringCompanyDescriptionResources;
+};
+
+export type CmsHiringCompanyDescriptionResources = {
+  __typename?: 'CmsHiringCompanyDescriptionResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsHiringCompanyFilter = {
@@ -20726,9 +21260,29 @@ export type CmsHiringCompanyLinkingCollectionsEntriesArgs = {
 export type CmsHiringCompanyLinkingCollectionsHiringPostsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsHiringCompanyLinkingCollectionsHiringPostCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsHiringCompanyLinkingCollectionsHiringPostCollectionOrder {
+  PaidAsc = 'paid_ASC',
+  PaidDesc = 'paid_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC'
+}
 
 export enum CmsHiringCompanyOrder {
   FeaturedAsc = 'featured_ASC',
@@ -20767,6 +21321,7 @@ export type CmsHiringPost = CmsEntry & {
 export type CmsHiringPostCompanyArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsHiringCompanyFilter>;
 };
 
 
@@ -20792,8 +21347,10 @@ export type CmsHiringPostPaidArgs = {
 export type CmsHiringPostRegionsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsHiringPostRegionsCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsRegionFilter>;
 };
 
 
@@ -20845,6 +21402,14 @@ export type CmsHiringPostDescriptionLinks = {
   __typename?: 'CmsHiringPostDescriptionLinks';
   assets: CmsHiringPostDescriptionAssets;
   entries: CmsHiringPostDescriptionEntries;
+  resources: CmsHiringPostDescriptionResources;
+};
+
+export type CmsHiringPostDescriptionResources = {
+  __typename?: 'CmsHiringPostDescriptionResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsHiringPostFilter = {
@@ -20859,6 +21424,7 @@ export type CmsHiringPostFilter = {
   paid?: InputMaybe<Scalars['Boolean']>;
   paid_exists?: InputMaybe<Scalars['Boolean']>;
   paid_not?: InputMaybe<Scalars['Boolean']>;
+  regions?: InputMaybe<CmscfRegionNestedFilter>;
   regionsCollection_exists?: InputMaybe<Scalars['Boolean']>;
   sys?: InputMaybe<CmsSysFilter>;
   title?: InputMaybe<Scalars['String']>;
@@ -20923,6 +21489,53 @@ export type CmsHiringPostRegionsCollection = {
   skip: Scalars['Int'];
   total: Scalars['Int'];
 };
+
+export enum CmsHiringPostRegionsCollectionOrder {
+  AbbrAsc = 'abbr_ASC',
+  AbbrDesc = 'abbr_DESC',
+  AccountingNameAsc = 'accountingName_ASC',
+  AccountingNameDesc = 'accountingName_DESC',
+  CountryNameAdjectiveAsc = 'countryNameAdjective_ASC',
+  CountryNameAdjectiveDesc = 'countryNameAdjective_DESC',
+  CountryNameShortAdjectiveAsc = 'countryNameShortAdjective_ASC',
+  CountryNameShortAdjectiveDesc = 'countryNameShortAdjective_DESC',
+  CountryNameShortAsc = 'countryNameShort_ASC',
+  CountryNameShortDesc = 'countryNameShort_DESC',
+  CountryNameAsc = 'countryName_ASC',
+  CountryNameDesc = 'countryName_DESC',
+  CurrencySymbolAsc = 'currencySymbol_ASC',
+  CurrencySymbolDesc = 'currencySymbol_DESC',
+  CurrencyAsc = 'currency_ASC',
+  CurrencyDesc = 'currency_DESC',
+  E164CountryCodeAsc = 'e164CountryCode_ASC',
+  E164CountryCodeDesc = 'e164CountryCode_DESC',
+  Iso3166Alpha2CodeAsc = 'iso3166Alpha2Code_ASC',
+  Iso3166Alpha2CodeDesc = 'iso3166Alpha2Code_DESC',
+  Iso3166Alpha3CodeAsc = 'iso3166Alpha3Code_ASC',
+  Iso3166Alpha3CodeDesc = 'iso3166Alpha3Code_DESC',
+  MottoAsc = 'motto_ASC',
+  MottoDesc = 'motto_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  NewVolunteerPipelineAsc = 'newVolunteerPipeline_ASC',
+  NewVolunteerPipelineDesc = 'newVolunteerPipeline_DESC',
+  PaymentProviderAsc = 'paymentProvider_ASC',
+  PaymentProviderDesc = 'paymentProvider_DESC',
+  PrimaryColorAsc = 'primaryColor_ASC',
+  PrimaryColorDesc = 'primaryColor_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TimezoneAsc = 'timezone_ASC',
+  TimezoneDesc = 'timezone_DESC',
+  WebnameAsc = 'webname_ASC',
+  WebnameDesc = 'webname_DESC'
+}
 
 export enum CmsImageFormat {
   Avif = 'AVIF',
@@ -21280,8 +21893,10 @@ export type CmsLocalizationConfigPaymentProvidersArgs = {
 export type CmsLocalizationConfigRequiredEventRestrictionsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsLocalizationConfigRequiredEventRestrictionsCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsEventRestrictionFilter>;
 };
 
 
@@ -21408,6 +22023,7 @@ export type CmsLocalizationConfigFilter = {
   paymentProviders_contains_none?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   paymentProviders_contains_some?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   paymentProviders_exists?: InputMaybe<Scalars['Boolean']>;
+  requiredEventRestrictions?: InputMaybe<CmscfEventRestrictionNestedFilter>;
   requiredEventRestrictionsCollection_exists?: InputMaybe<Scalars['Boolean']>;
   sys?: InputMaybe<CmsSysFilter>;
   use24HourTime?: InputMaybe<Scalars['Boolean']>;
@@ -21433,9 +22049,57 @@ export type CmsLocalizationConfigLinkingCollectionsEntriesArgs = {
 export type CmsLocalizationConfigLinkingCollectionsRegionsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsLocalizationConfigLinkingCollectionsRegionCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsLocalizationConfigLinkingCollectionsRegionCollectionOrder {
+  AbbrAsc = 'abbr_ASC',
+  AbbrDesc = 'abbr_DESC',
+  AccountingNameAsc = 'accountingName_ASC',
+  AccountingNameDesc = 'accountingName_DESC',
+  CountryNameAdjectiveAsc = 'countryNameAdjective_ASC',
+  CountryNameAdjectiveDesc = 'countryNameAdjective_DESC',
+  CountryNameShortAdjectiveAsc = 'countryNameShortAdjective_ASC',
+  CountryNameShortAdjectiveDesc = 'countryNameShortAdjective_DESC',
+  CountryNameShortAsc = 'countryNameShort_ASC',
+  CountryNameShortDesc = 'countryNameShort_DESC',
+  CountryNameAsc = 'countryName_ASC',
+  CountryNameDesc = 'countryName_DESC',
+  CurrencySymbolAsc = 'currencySymbol_ASC',
+  CurrencySymbolDesc = 'currencySymbol_DESC',
+  CurrencyAsc = 'currency_ASC',
+  CurrencyDesc = 'currency_DESC',
+  E164CountryCodeAsc = 'e164CountryCode_ASC',
+  E164CountryCodeDesc = 'e164CountryCode_DESC',
+  Iso3166Alpha2CodeAsc = 'iso3166Alpha2Code_ASC',
+  Iso3166Alpha2CodeDesc = 'iso3166Alpha2Code_DESC',
+  Iso3166Alpha3CodeAsc = 'iso3166Alpha3Code_ASC',
+  Iso3166Alpha3CodeDesc = 'iso3166Alpha3Code_DESC',
+  MottoAsc = 'motto_ASC',
+  MottoDesc = 'motto_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  NewVolunteerPipelineAsc = 'newVolunteerPipeline_ASC',
+  NewVolunteerPipelineDesc = 'newVolunteerPipeline_DESC',
+  PaymentProviderAsc = 'paymentProvider_ASC',
+  PaymentProviderDesc = 'paymentProvider_DESC',
+  PrimaryColorAsc = 'primaryColor_ASC',
+  PrimaryColorDesc = 'primaryColor_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TimezoneAsc = 'timezone_ASC',
+  TimezoneDesc = 'timezone_DESC',
+  WebnameAsc = 'webname_ASC',
+  WebnameDesc = 'webname_DESC'
+}
 
 export enum CmsLocalizationConfigOrder {
   ContactDefaultTypeAsc = 'contactDefaultType_ASC',
@@ -21485,6 +22149,23 @@ export type CmsLocalizationConfigRequiredEventRestrictionsCollection = {
   skip: Scalars['Int'];
   total: Scalars['Int'];
 };
+
+export enum CmsLocalizationConfigRequiredEventRestrictionsCollectionOrder {
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC'
+}
 
 export type CmsLocation = {
   __typename?: 'CmsLocation';
@@ -21650,6 +22331,7 @@ export type CmsPressPhoto = CmsEntry & {
 export type CmsPressPhotoEventArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsEventFilter>;
 };
 
 
@@ -21670,6 +22352,7 @@ export type CmsPressPhotoPhotoArgs = {
 export type CmsPressPhotoRegionArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsRegionFilter>;
 };
 
 
@@ -21677,6 +22360,7 @@ export type CmsPressPhotoRegionArgs = {
 export type CmsPressPhotoSubProgramArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsProgramFilter>;
 };
 
 
@@ -21827,8 +22511,10 @@ export type CmsProgramPostersArgs = {
 export type CmsProgramPresentingSponsorsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramPresentingSponsorsCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<CmsGlobalSponsorFilter>;
 };
 
 
@@ -21931,6 +22617,14 @@ export type CmsProgramEducationDetailsLinks = {
   __typename?: 'CmsProgramEducationDetailsLinks';
   assets: CmsProgramEducationDetailsAssets;
   entries: CmsProgramEducationDetailsEntries;
+  resources: CmsProgramEducationDetailsResources;
+};
+
+export type CmsProgramEducationDetailsResources = {
+  __typename?: 'CmsProgramEducationDetailsResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsProgramEligibility = {
@@ -21956,6 +22650,14 @@ export type CmsProgramEligibilityLinks = {
   __typename?: 'CmsProgramEligibilityLinks';
   assets: CmsProgramEligibilityAssets;
   entries: CmsProgramEligibilityEntries;
+  resources: CmsProgramEligibilityResources;
+};
+
+export type CmsProgramEligibilityResources = {
+  __typename?: 'CmsProgramEligibilityResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsProgramFilter = {
@@ -21988,6 +22690,7 @@ export type CmsProgramFilter = {
   name_not_contains?: InputMaybe<Scalars['String']>;
   name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   postersCollection_exists?: InputMaybe<Scalars['Boolean']>;
+  presentingSponsors?: InputMaybe<CmscfGlobalSponsorNestedFilter>;
   presentingSponsorsCollection_exists?: InputMaybe<Scalars['Boolean']>;
   shortDescription?: InputMaybe<Scalars['String']>;
   shortDescription_contains?: InputMaybe<Scalars['String']>;
@@ -22058,6 +22761,7 @@ export type CmsProgramLinkingCollections = {
 export type CmsProgramLinkingCollectionsAnnouncementsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramLinkingCollectionsAnnouncementCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -22066,6 +22770,7 @@ export type CmsProgramLinkingCollectionsAnnouncementsArgs = {
 export type CmsProgramLinkingCollectionsAwardsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramLinkingCollectionsAwardCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -22082,6 +22787,7 @@ export type CmsProgramLinkingCollectionsEntriesArgs = {
 export type CmsProgramLinkingCollectionsEventRestrictionsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramLinkingCollectionsEventRestrictionCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -22090,6 +22796,7 @@ export type CmsProgramLinkingCollectionsEventRestrictionsArgs = {
 export type CmsProgramLinkingCollectionsEventsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramLinkingCollectionsEventCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -22098,6 +22805,7 @@ export type CmsProgramLinkingCollectionsEventsArgs = {
 export type CmsProgramLinkingCollectionsFaqsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramLinkingCollectionsFaqCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -22106,6 +22814,7 @@ export type CmsProgramLinkingCollectionsFaqsArgs = {
 export type CmsProgramLinkingCollectionsPressPhotosArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramLinkingCollectionsPressPhotoCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -22114,9 +22823,163 @@ export type CmsProgramLinkingCollectionsPressPhotosArgs = {
 export type CmsProgramLinkingCollectionsTestimonialsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsProgramLinkingCollectionsTestimonialCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsProgramLinkingCollectionsAnnouncementCollectionOrder {
+  DisplayAtAsc = 'displayAt_ASC',
+  DisplayAtDesc = 'displayAt_DESC',
+  EndAtAsc = 'endAt_ASC',
+  EndAtDesc = 'endAt_DESC',
+  LinkAsc = 'link_ASC',
+  LinkDesc = 'link_DESC',
+  OnelineAsc = 'oneline_ASC',
+  OnelineDesc = 'oneline_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC',
+  VisibilityAsc = 'visibility_ASC',
+  VisibilityDesc = 'visibility_DESC'
+}
+
+export enum CmsProgramLinkingCollectionsAwardCollectionOrder {
+  FeaturedAsc = 'featured_ASC',
+  FeaturedDesc = 'featured_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  RankingAsc = 'ranking_ASC',
+  RankingDesc = 'ranking_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export enum CmsProgramLinkingCollectionsEventCollectionOrder {
+  AwardsAtAsc = 'awardsAt_ASC',
+  AwardsAtDesc = 'awardsAt_DESC',
+  CalendarReleaseDateAsc = 'calendarReleaseDate_ASC',
+  CalendarReleaseDateDesc = 'calendarReleaseDate_DESC',
+  EndsAtAsc = 'endsAt_ASC',
+  EndsAtDesc = 'endsAt_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  ParticipantRoleIdAsc = 'participantRoleId_ASC',
+  ParticipantRoleIdDesc = 'participantRoleId_DESC',
+  RegistrationsCloseAtAsc = 'registrationsCloseAt_ASC',
+  RegistrationsCloseAtDesc = 'registrationsCloseAt_DESC',
+  RegistrationsOpenAtAsc = 'registrationsOpenAt_ASC',
+  RegistrationsOpenAtDesc = 'registrationsOpenAt_DESC',
+  StartsAtAsc = 'startsAt_ASC',
+  StartsAtDesc = 'startsAt_DESC',
+  StatEventCountAsc = 'statEventCount_ASC',
+  StatEventCountDesc = 'statEventCount_DESC',
+  StatLowInterestContinuedCountAsc = 'statLowInterestContinuedCount_ASC',
+  StatLowInterestContinuedCountDesc = 'statLowInterestContinuedCount_DESC',
+  StatLowInterestCountAsc = 'statLowInterestCount_ASC',
+  StatLowInterestCountDesc = 'statLowInterestCount_DESC',
+  StatStudentCountAsc = 'statStudentCount_ASC',
+  StatStudentCountDesc = 'statStudentCount_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  ThemeAsc = 'theme_ASC',
+  ThemeDesc = 'theme_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC'
+}
+
+export enum CmsProgramLinkingCollectionsEventRestrictionCollectionOrder {
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC'
+}
+
+export enum CmsProgramLinkingCollectionsFaqCollectionOrder {
+  FeaturedAsc = 'featured_ASC',
+  FeaturedDesc = 'featured_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC'
+}
+
+export enum CmsProgramLinkingCollectionsPressPhotoCollectionOrder {
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export enum CmsProgramLinkingCollectionsTestimonialCollectionOrder {
+  CompanyAsc = 'company_ASC',
+  CompanyDesc = 'company_DESC',
+  ExperienceAsc = 'experience_ASC',
+  ExperienceDesc = 'experience_DESC',
+  FeaturedAsc = 'featured_ASC',
+  FeaturedDesc = 'featured_DESC',
+  FirstNameAsc = 'firstName_ASC',
+  FirstNameDesc = 'firstName_DESC',
+  GroupNameAsc = 'groupName_ASC',
+  GroupNameDesc = 'groupName_DESC',
+  LastNameAsc = 'lastName_ASC',
+  LastNameDesc = 'lastName_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC'
+}
 
 export enum CmsProgramOrder {
   ArchivedAsc = 'archived_ASC',
@@ -22153,6 +23016,29 @@ export type CmsProgramPresentingSponsorsCollection = {
   total: Scalars['Int'];
 };
 
+export enum CmsProgramPresentingSponsorsCollectionOrder {
+  InstagramUsernameAsc = 'instagramUsername_ASC',
+  InstagramUsernameDesc = 'instagramUsername_DESC',
+  LinkAsc = 'link_ASC',
+  LinkDesc = 'link_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  ShortDescriptionAsc = 'shortDescription_ASC',
+  ShortDescriptionDesc = 'shortDescription_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TwitterUsernameAsc = 'twitterUsername_ASC',
+  TwitterUsernameDesc = 'twitterUsername_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC'
+}
+
 export type CmsProgramVolunteerBlurb = {
   __typename?: 'CmsProgramVolunteerBlurb';
   json: Scalars['CmsJSON'];
@@ -22176,6 +23062,14 @@ export type CmsProgramVolunteerBlurbLinks = {
   __typename?: 'CmsProgramVolunteerBlurbLinks';
   assets: CmsProgramVolunteerBlurbAssets;
   entries: CmsProgramVolunteerBlurbEntries;
+  resources: CmsProgramVolunteerBlurbResources;
+};
+
+export type CmsProgramVolunteerBlurbResources = {
+  __typename?: 'CmsProgramVolunteerBlurbResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsProgramVolunteerDetails = {
@@ -22201,10 +23095,19 @@ export type CmsProgramVolunteerDetailsLinks = {
   __typename?: 'CmsProgramVolunteerDetailsLinks';
   assets: CmsProgramVolunteerDetailsAssets;
   entries: CmsProgramVolunteerDetailsEntries;
+  resources: CmsProgramVolunteerDetailsResources;
+};
+
+export type CmsProgramVolunteerDetailsResources = {
+  __typename?: 'CmsProgramVolunteerDetailsResources';
+  block: Array<CmsResourceLink>;
+  hyperlink: Array<CmsResourceLink>;
+  inline: Array<CmsResourceLink>;
 };
 
 export type CmsQuery = {
   __typename?: 'CmsQuery';
+  _node?: Maybe<Cms_Node>;
   announcement?: Maybe<CmsAnnouncement>;
   announcements?: Maybe<CmsAnnouncementCollection>;
   asset?: Maybe<CmsAsset>;
@@ -22254,6 +23157,13 @@ export type CmsQuery = {
   strings?: Maybe<CmsContentTypeStringCollection>;
   testimonial?: Maybe<CmsTestimonial>;
   testimonials?: Maybe<CmsTestimonialCollection>;
+};
+
+
+export type CmsQuery_NodeArgs = {
+  id: Scalars['ID'];
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -22698,6 +23608,7 @@ export type CmsRegion = CmsEntry & {
   messagingServices?: Maybe<Array<Maybe<Scalars['String']>>>;
   motto?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  newVolunteerPipeline?: Maybe<Scalars['String']>;
   pastPhotos: Array<ShowcasePhoto>;
   paymentProvider?: Maybe<Scalars['String']>;
   primaryColor?: Maybe<Scalars['String']>;
@@ -22800,6 +23711,7 @@ export type CmsRegionLinkedFromArgs = {
 export type CmsRegionLocalizationConfigArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsLocalizationConfigFilter>;
 };
 
 
@@ -22823,6 +23735,12 @@ export type CmsRegionMottoArgs = {
 
 /** [See type definition](https://app.contentful.com/spaces/d5pti1xheuyu/content_types/region) */
 export type CmsRegionNameArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+/** [See type definition](https://app.contentful.com/spaces/d5pti1xheuyu/content_types/region) */
+export type CmsRegionNewVolunteerPipelineArgs = {
   locale?: InputMaybe<Scalars['String']>;
 };
 
@@ -23006,6 +23924,13 @@ export type CmsRegionFilter = {
   name_not?: InputMaybe<Scalars['String']>;
   name_not_contains?: InputMaybe<Scalars['String']>;
   name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  newVolunteerPipeline?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_contains?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_exists?: InputMaybe<Scalars['Boolean']>;
+  newVolunteerPipeline_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  newVolunteerPipeline_not?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_not_contains?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   paymentProvider?: InputMaybe<Scalars['String']>;
   paymentProvider_contains?: InputMaybe<Scalars['String']>;
   paymentProvider_exists?: InputMaybe<Scalars['Boolean']>;
@@ -23054,6 +23979,7 @@ export type CmsRegionLinkingCollections = {
 export type CmsRegionLinkingCollectionsCommunityPartnersArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsRegionLinkingCollectionsCommunityPartnerCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -23070,6 +23996,7 @@ export type CmsRegionLinkingCollectionsEntriesArgs = {
 export type CmsRegionLinkingCollectionsHiringPostsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsRegionLinkingCollectionsHiringPostCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -23078,6 +24005,7 @@ export type CmsRegionLinkingCollectionsHiringPostsArgs = {
 export type CmsRegionLinkingCollectionsPressPhotosArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsRegionLinkingCollectionsPressPhotoCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -23086,9 +24014,92 @@ export type CmsRegionLinkingCollectionsPressPhotosArgs = {
 export type CmsRegionLinkingCollectionsTestimonialsArgs = {
   limit?: InputMaybe<Scalars['Int']>;
   locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<CmsRegionLinkingCollectionsTestimonialCollectionOrder>>>;
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
+export enum CmsRegionLinkingCollectionsCommunityPartnerCollectionOrder {
+  BlurbAsc = 'blurb_ASC',
+  BlurbDesc = 'blurb_DESC',
+  CostAsc = 'cost_ASC',
+  CostDesc = 'cost_DESC',
+  DisplayUrlAsc = 'displayUrl_ASC',
+  DisplayUrlDesc = 'displayUrl_DESC',
+  EligibilityAsc = 'eligibility_ASC',
+  EligibilityDesc = 'eligibility_DESC',
+  ExpiresAsc = 'expires_ASC',
+  ExpiresDesc = 'expires_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC'
+}
+
+export enum CmsRegionLinkingCollectionsHiringPostCollectionOrder {
+  PaidAsc = 'paid_ASC',
+  PaidDesc = 'paid_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC',
+  UrlAsc = 'url_ASC',
+  UrlDesc = 'url_DESC'
+}
+
+export enum CmsRegionLinkingCollectionsPressPhotoCollectionOrder {
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export enum CmsRegionLinkingCollectionsTestimonialCollectionOrder {
+  CompanyAsc = 'company_ASC',
+  CompanyDesc = 'company_DESC',
+  ExperienceAsc = 'experience_ASC',
+  ExperienceDesc = 'experience_DESC',
+  FeaturedAsc = 'featured_ASC',
+  FeaturedDesc = 'featured_DESC',
+  FirstNameAsc = 'firstName_ASC',
+  FirstNameDesc = 'firstName_DESC',
+  GroupNameAsc = 'groupName_ASC',
+  GroupNameDesc = 'groupName_DESC',
+  LastNameAsc = 'lastName_ASC',
+  LastNameDesc = 'lastName_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  TitleAsc = 'title_ASC',
+  TitleDesc = 'title_DESC',
+  TypeAsc = 'type_ASC',
+  TypeDesc = 'type_DESC'
+}
 
 export enum CmsRegionOrder {
   AbbrAsc = 'abbr_ASC',
@@ -23117,6 +24128,8 @@ export enum CmsRegionOrder {
   MottoDesc = 'motto_DESC',
   NameAsc = 'name_ASC',
   NameDesc = 'name_DESC',
+  NewVolunteerPipelineAsc = 'newVolunteerPipeline_ASC',
+  NewVolunteerPipelineDesc = 'newVolunteerPipeline_DESC',
   PaymentProviderAsc = 'paymentProvider_ASC',
   PaymentProviderDesc = 'paymentProvider_DESC',
   PrimaryColorAsc = 'primaryColor_ASC',
@@ -23134,6 +24147,18 @@ export enum CmsRegionOrder {
   WebnameAsc = 'webname_ASC',
   WebnameDesc = 'webname_DESC'
 }
+
+export type CmsResourceLink = {
+  __typename?: 'CmsResourceLink';
+  sys: CmsResourceSys;
+};
+
+export type CmsResourceSys = {
+  __typename?: 'CmsResourceSys';
+  linkType: Scalars['String'];
+  type: Scalars['String'];
+  urn: Scalars['String'];
+};
 
 /** [See type definition](https://app.contentful.com/spaces/d5pti1xheuyu/content_types/site) */
 export type CmsSite = CmsEntry & {
@@ -23541,6 +24566,7 @@ export type CmsTestimonialLinkedFromArgs = {
 export type CmsTestimonialProgramArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsProgramFilter>;
 };
 
 
@@ -23554,6 +24580,7 @@ export type CmsTestimonialQuoteArgs = {
 export type CmsTestimonialRegionArgs = {
   locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<CmsRegionFilter>;
 };
 
 
@@ -23695,6 +24722,36 @@ export enum CmsTestimonialOrder {
   TypeDesc = 'type_DESC'
 }
 
+export type Cms_Node = {
+  _id: Scalars['ID'];
+};
+
+export type CmscfContentTypeStringNestedFilter = {
+  AND?: InputMaybe<Array<InputMaybe<CmscfContentTypeStringNestedFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<CmscfContentTypeStringNestedFilter>>>;
+  contentfulMetadata?: InputMaybe<CmsContentfulMetadataFilter>;
+  json_exists?: InputMaybe<Scalars['Boolean']>;
+  key?: InputMaybe<Scalars['String']>;
+  key_contains?: InputMaybe<Scalars['String']>;
+  key_exists?: InputMaybe<Scalars['Boolean']>;
+  key_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  key_not?: InputMaybe<Scalars['String']>;
+  key_not_contains?: InputMaybe<Scalars['String']>;
+  key_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  richValue_contains?: InputMaybe<Scalars['String']>;
+  richValue_exists?: InputMaybe<Scalars['Boolean']>;
+  richValue_not_contains?: InputMaybe<Scalars['String']>;
+  subvalueCollection_exists?: InputMaybe<Scalars['Boolean']>;
+  sys?: InputMaybe<CmsSysFilter>;
+  value?: InputMaybe<Scalars['String']>;
+  value_contains?: InputMaybe<Scalars['String']>;
+  value_exists?: InputMaybe<Scalars['Boolean']>;
+  value_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  value_not?: InputMaybe<Scalars['String']>;
+  value_not_contains?: InputMaybe<Scalars['String']>;
+  value_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
 export type CmscfEventNestedFilter = {
   AND?: InputMaybe<Array<InputMaybe<CmscfEventNestedFilter>>>;
   OR?: InputMaybe<Array<InputMaybe<CmscfEventNestedFilter>>>;
@@ -23821,6 +24878,73 @@ export type CmscfEventNestedFilter = {
   theme_not?: InputMaybe<Scalars['String']>;
   theme_not_contains?: InputMaybe<Scalars['String']>;
   theme_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title?: InputMaybe<Scalars['String']>;
+  title_contains?: InputMaybe<Scalars['String']>;
+  title_exists?: InputMaybe<Scalars['Boolean']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title_not?: InputMaybe<Scalars['String']>;
+  title_not_contains?: InputMaybe<Scalars['String']>;
+  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type CmscfEventRestrictionNestedFilter = {
+  AND?: InputMaybe<Array<InputMaybe<CmscfEventRestrictionNestedFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<CmscfEventRestrictionNestedFilter>>>;
+  applicableProgramsCollection_exists?: InputMaybe<Scalars['Boolean']>;
+  contentfulMetadata?: InputMaybe<CmsContentfulMetadataFilter>;
+  details?: InputMaybe<Scalars['String']>;
+  details_contains?: InputMaybe<Scalars['String']>;
+  details_exists?: InputMaybe<Scalars['Boolean']>;
+  details_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  details_not?: InputMaybe<Scalars['String']>;
+  details_not_contains?: InputMaybe<Scalars['String']>;
+  details_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  icon_exists?: InputMaybe<Scalars['Boolean']>;
+  id?: InputMaybe<Scalars['String']>;
+  id_contains?: InputMaybe<Scalars['String']>;
+  id_exists?: InputMaybe<Scalars['Boolean']>;
+  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  id_not?: InputMaybe<Scalars['String']>;
+  id_not_contains?: InputMaybe<Scalars['String']>;
+  id_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name?: InputMaybe<Scalars['String']>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_exists?: InputMaybe<Scalars['Boolean']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  sys?: InputMaybe<CmsSysFilter>;
+  title?: InputMaybe<Scalars['String']>;
+  title_contains?: InputMaybe<Scalars['String']>;
+  title_exists?: InputMaybe<Scalars['Boolean']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title_not?: InputMaybe<Scalars['String']>;
+  title_not_contains?: InputMaybe<Scalars['String']>;
+  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type CmscfFaqNestedFilter = {
+  AND?: InputMaybe<Array<InputMaybe<CmscfFaqNestedFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<CmscfFaqNestedFilter>>>;
+  answer_contains?: InputMaybe<Scalars['String']>;
+  answer_exists?: InputMaybe<Scalars['Boolean']>;
+  answer_not_contains?: InputMaybe<Scalars['String']>;
+  audience_contains_all?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  audience_contains_none?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  audience_contains_some?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  audience_exists?: InputMaybe<Scalars['Boolean']>;
+  contentfulMetadata?: InputMaybe<CmsContentfulMetadataFilter>;
+  featured?: InputMaybe<Scalars['Boolean']>;
+  featured_exists?: InputMaybe<Scalars['Boolean']>;
+  featured_not?: InputMaybe<Scalars['Boolean']>;
+  program_exists?: InputMaybe<Scalars['Boolean']>;
+  relatedAnswersCollection_exists?: InputMaybe<Scalars['Boolean']>;
+  sys?: InputMaybe<CmsSysFilter>;
+  tags_contains_all?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  tags_contains_none?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  tags_contains_some?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  tags_exists?: InputMaybe<Scalars['Boolean']>;
   title?: InputMaybe<Scalars['String']>;
   title_contains?: InputMaybe<Scalars['String']>;
   title_exists?: InputMaybe<Scalars['Boolean']>;
@@ -24238,6 +25362,13 @@ export type CmscfRegionNestedFilter = {
   name_not?: InputMaybe<Scalars['String']>;
   name_not_contains?: InputMaybe<Scalars['String']>;
   name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  newVolunteerPipeline?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_contains?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_exists?: InputMaybe<Scalars['Boolean']>;
+  newVolunteerPipeline_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  newVolunteerPipeline_not?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_not_contains?: InputMaybe<Scalars['String']>;
+  newVolunteerPipeline_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   paymentProvider?: InputMaybe<Scalars['String']>;
   paymentProvider_contains?: InputMaybe<Scalars['String']>;
   paymentProvider_exists?: InputMaybe<Scalars['Boolean']>;
@@ -24333,21 +25464,135 @@ export type GithubQueryContributorsArgs = {
   repository: Scalars['String'];
 };
 
+export type LabsArtifact = {
+  __typename?: 'LabsArtifact';
+  artifactType: LabsArtifactType;
+  artifactTypeId?: Maybe<Scalars['String']>;
+  createdAt: Scalars['LabsDateTime'];
+  id: Scalars['String'];
+  link: Scalars['String'];
+  mentor?: Maybe<LabsMentor>;
+  mentorId?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  project: LabsProject;
+  projectId: Scalars['String'];
+  student?: Maybe<LabsStudent>;
+  studentId?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['LabsDateTime'];
+};
+
+export type LabsArtifactType = {
+  __typename?: 'LabsArtifactType';
+  createdAt: Scalars['LabsDateTime'];
+  description?: Maybe<Scalars['String']>;
+  eventId: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  personType?: Maybe<LabsPersonType>;
+  required: Scalars['Boolean'];
+  updatedAt: Scalars['LabsDateTime'];
+};
+
+export type LabsAutocompleteFilterTypeInput = {
+  mentors?: InputMaybe<Scalars['Boolean']>;
+  projects?: InputMaybe<Scalars['Boolean']>;
+  students?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type LabsAutocompleteResult = {
+  __typename?: 'LabsAutocompleteResult';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  type: LabsAutocompleteType;
+};
+
+export enum LabsAutocompleteType {
+  Mentor = 'MENTOR',
+  Project = 'PROJECT',
+  Student = 'STUDENT'
+}
+
+export type LabsEmploymentRecord = {
+  __typename?: 'LabsEmploymentRecord';
+  eligibleForRehire: Scalars['Boolean'];
+  end: Scalars['LabsDateTime'];
+  mentors: Array<Scalars['String']>;
+  start: Scalars['LabsDateTime'];
+  title: Scalars['String'];
+};
+
 export type LabsEvent = {
   __typename?: 'LabsEvent';
+  artifactTypes: Array<LabsArtifactType>;
+  certificationStatements: Array<Scalars['String']>;
   createdAt: Scalars['LabsDateTime'];
+  defaultWeeks: Scalars['Int'];
   emailTemplate: Scalars['String'];
+  hasAdvanced: Scalars['Boolean'];
+  hasBeginner: Scalars['Boolean'];
+  hasIntermediate: Scalars['Boolean'];
+  iAmMentor: Scalars['Boolean'];
+  iAmStudent: Scalars['Boolean'];
   id: Scalars['String'];
+  isActive: Scalars['Boolean'];
   matchPreferenceSubmissionOpen: Scalars['Boolean'];
   matchingAlgorithm: Scalars['String'];
+  mentorApplicationSchema?: Maybe<Scalars['LabsJSONObject']>;
+  mentorApplicationUi?: Maybe<Scalars['LabsJSONObject']>;
   mentorApplicationsEndAt: Scalars['LabsDateTime'];
   mentorApplicationsStartAt: Scalars['LabsDateTime'];
   name: Scalars['String'];
+  partnersOnly: Scalars['Boolean'];
+  slackUserGroupId?: Maybe<Scalars['String']>;
+  slackWorkspaceAccessToken?: Maybe<Scalars['String']>;
+  slackWorkspaceId?: Maybe<Scalars['String']>;
   slug: Scalars['String'];
+  standupAndProsperToken?: Maybe<Scalars['String']>;
   startsAt: Scalars['LabsDateTime'];
+  studentApplicationSchema?: Maybe<Scalars['LabsJSONObject']>;
+  studentApplicationUi?: Maybe<Scalars['LabsJSONObject']>;
   studentApplicationsEndAt: Scalars['LabsDateTime'];
   studentApplicationsStartAt: Scalars['LabsDateTime'];
   updatedAt: Scalars['LabsDateTime'];
+};
+
+export type LabsEventEditInput = {
+  certificationStatements?: InputMaybe<Array<Scalars['String']>>;
+  defaultWeeks?: InputMaybe<Scalars['Int']>;
+  emailSignature?: InputMaybe<Scalars['String']>;
+  hasAdvanced?: InputMaybe<Scalars['Boolean']>;
+  hasBeginner?: InputMaybe<Scalars['Boolean']>;
+  hasIntermediate?: InputMaybe<Scalars['Boolean']>;
+  matchComplete?: InputMaybe<Scalars['Boolean']>;
+  matchPreferenceSubmissionOpen?: InputMaybe<Scalars['Boolean']>;
+  mentorApplicationSchema?: InputMaybe<Scalars['LabsJSONObject']>;
+  mentorApplicationUi?: InputMaybe<Scalars['LabsJSONObject']>;
+  mentorApplicationsEndAt?: InputMaybe<Scalars['LabsDateTime']>;
+  mentorApplicationsStartAt?: InputMaybe<Scalars['LabsDateTime']>;
+  name?: InputMaybe<Scalars['String']>;
+  partnersOnly?: InputMaybe<Scalars['Boolean']>;
+  slackWorkspaceAccessToken?: InputMaybe<Scalars['String']>;
+  slackWorkspaceId?: InputMaybe<Scalars['String']>;
+  studentApplicationSchema?: InputMaybe<Scalars['LabsJSONObject']>;
+  studentApplicationUi?: InputMaybe<Scalars['LabsJSONObject']>;
+  studentApplicationsEndAt?: InputMaybe<Scalars['LabsDateTime']>;
+  studentApplicationsStartAt?: InputMaybe<Scalars['LabsDateTime']>;
+  title?: InputMaybe<Scalars['String']>;
+};
+
+export enum LabsEventStateFilter {
+  AcceptingMentorApplications = 'ACCEPTING_MENTOR_APPLICATIONS',
+  AcceptingStudentApplications = 'ACCEPTING_STUDENT_APPLICATIONS',
+  Active = 'ACTIVE',
+  Inactive = 'INACTIVE',
+  Past = 'PAST',
+  Upcoming = 'UPCOMING'
+}
+
+export type LabsEventsWhereInput = {
+  mine?: InputMaybe<Scalars['Boolean']>;
+  public?: InputMaybe<Scalars['Boolean']>;
+  state?: InputMaybe<LabsEventStateFilter>;
 };
 
 export type LabsGtLtEq = {
@@ -24363,6 +25608,12 @@ export type LabsIdOrUsernameInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type LabsIdOrUsernameOrEmailInput = {
+  email?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type LabsMatch = {
   __typename?: 'LabsMatch';
   project: LabsProject;
@@ -24372,8 +25623,10 @@ export type LabsMatch = {
 export type LabsMentor = {
   __typename?: 'LabsMentor';
   account?: Maybe<AccountUser>;
+  artifacts: Array<LabsArtifact>;
   createdAt: Scalars['LabsDateTime'];
   email: Scalars['String'];
+  emailCount: Scalars['Float'];
   event: LabsEvent;
   eventId: Scalars['String'];
   givenName: Scalars['String'];
@@ -24384,9 +25637,13 @@ export type LabsMentor = {
   name: Scalars['String'];
   profile: Scalars['LabsJSON'];
   profileField?: Maybe<Scalars['LabsJSON']>;
+  projectPreferences?: Maybe<Scalars['String']>;
   projects: Array<LabsProject>;
+  slackId?: Maybe<Scalars['String']>;
   status: LabsMentorStatus;
   surname: Scalars['String'];
+  surveyResponsesAbout: Array<LabsSurveyResponse>;
+  timezone?: Maybe<Scalars['String']>;
   updatedAt: Scalars['LabsDateTime'];
   username?: Maybe<Scalars['String']>;
 };
@@ -24403,6 +25660,7 @@ export type LabsMentorApplyInput = {
   profile?: InputMaybe<Scalars['LabsJSONObject']>;
   projects: Array<LabsProjectCreateInput>;
   surname: Scalars['String'];
+  timezone?: InputMaybe<Scalars['String']>;
 };
 
 export type LabsMentorCreateInput = {
@@ -24410,8 +25668,10 @@ export type LabsMentorCreateInput = {
   givenName: Scalars['String'];
   maxWeeks?: InputMaybe<Scalars['Int']>;
   profile?: InputMaybe<Scalars['LabsJSONObject']>;
+  projectPreferences?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<LabsMentorStatus>;
   surname: Scalars['String'];
+  timezone?: InputMaybe<Scalars['String']>;
   username?: InputMaybe<Scalars['String']>;
 };
 
@@ -24421,8 +25681,10 @@ export type LabsMentorEditInput = {
   managerUsername?: InputMaybe<Scalars['String']>;
   maxWeeks?: InputMaybe<Scalars['Int']>;
   profile?: InputMaybe<Scalars['LabsJSONObject']>;
+  projectPreferences?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<LabsMentorStatus>;
   surname?: InputMaybe<Scalars['String']>;
+  timezone?: InputMaybe<Scalars['String']>;
   username?: InputMaybe<Scalars['String']>;
 };
 
@@ -24446,12 +25708,20 @@ export enum LabsMentorStatus {
 export type LabsMutation = {
   __typename?: 'LabsMutation';
   acceptStudentOffer: LabsStudent;
+  addArtifact: Scalars['Boolean'];
+  addNote: LabsNote;
   addProjectMentor: LabsProject;
   addProjectStudent: LabsProject;
+  addRepository: LabsRepository;
+  addResource: LabsResource;
   applyMentor: LabsMentor;
   applyStudent: LabsStudent;
+  associatePartnerCode: LabsStudent;
   cancelStudentApplication: LabsStudent;
+  claimProject: LabsProject;
+  cloneEvent: LabsEvent;
   createMentor: LabsMentor;
+  createPartner: LabsPartner;
   createProject: LabsProject;
   createStudent: LabsStudent;
   createSurvey: LabsSurvey;
@@ -24461,21 +25731,51 @@ export type LabsMutation = {
   deleteProject: Scalars['Boolean'];
   deleteStudent: Scalars['Boolean'];
   deleteTag: Scalars['Boolean'];
+  editEvent: LabsEvent;
   editMentor: LabsMentor;
+  editPartner: LabsPartner;
   editProject: LabsProject;
+  editRepository: LabsRepository;
+  editResource: LabsResource;
   editStudent: LabsStudent;
   editTag: LabsTag;
   expressProjectPreferences?: Maybe<Array<LabsPreference>>;
   offerStudentAdmission: LabsStudent;
+  rateStandup: Scalars['Boolean'];
   rejectStudent: LabsStudent;
   removeProjectMentor: LabsProject;
   removeProjectStudent: LabsProject;
+  requestLoginLink: Scalars['Boolean'];
   resetStudentAdmissionOffer: LabsStudent;
+  runActivity: Scalars['Boolean'];
+  runAutomation: Scalars['Boolean'];
   sendMentorEmail: Scalars['Float'];
   sendStudentEmail: Scalars['Float'];
   submitStudentRating: Scalars['Boolean'];
   submitTraining: Scalars['Boolean'];
   surveyRespond: Scalars['Boolean'];
+};
+
+
+export type LabsMutationAcceptStudentOfferArgs = {
+  timeManagementPlan?: InputMaybe<Scalars['LabsJSONObject']>;
+  timezone?: InputMaybe<Scalars['String']>;
+};
+
+
+export type LabsMutationAddArtifactArgs = {
+  artifactType?: InputMaybe<Scalars['String']>;
+  groupArtifact?: InputMaybe<Scalars['Boolean']>;
+  link: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+  project: Scalars['String'];
+};
+
+
+export type LabsMutationAddNoteArgs = {
+  caution: Scalars['Float'];
+  note: Scalars['String'];
+  student: LabsIdOrUsernameOrEmailInput;
 };
 
 
@@ -24491,6 +25791,16 @@ export type LabsMutationAddProjectStudentArgs = {
 };
 
 
+export type LabsMutationAddRepositoryArgs = {
+  data: LabsRepositoryCreateInput;
+};
+
+
+export type LabsMutationAddResourceArgs = {
+  data: LabsResourceCreateInput;
+};
+
+
 export type LabsMutationApplyMentorArgs = {
   data: LabsMentorApplyInput;
 };
@@ -24501,8 +25811,31 @@ export type LabsMutationApplyStudentArgs = {
 };
 
 
+export type LabsMutationAssociatePartnerCodeArgs = {
+  partnerCode?: InputMaybe<Scalars['String']>;
+  where?: InputMaybe<LabsIdOrUsernameOrEmailInput>;
+};
+
+
+export type LabsMutationClaimProjectArgs = {
+  mentor: LabsIdOrUsernameInput;
+  project: Scalars['String'];
+};
+
+
+export type LabsMutationCloneEventArgs = {
+  name: Scalars['String'];
+  startsAt: Scalars['LabsDateTime'];
+};
+
+
 export type LabsMutationCreateMentorArgs = {
   data: LabsMentorCreateInput;
+};
+
+
+export type LabsMutationCreatePartnerArgs = {
+  data: LabsPartnerCreateInput;
 };
 
 
@@ -24554,15 +25887,38 @@ export type LabsMutationDeleteTagArgs = {
 };
 
 
+export type LabsMutationEditEventArgs = {
+  data: LabsEventEditInput;
+};
+
+
 export type LabsMutationEditMentorArgs = {
   data: LabsMentorEditInput;
   where?: InputMaybe<LabsIdOrUsernameInput>;
 };
 
 
+export type LabsMutationEditPartnerArgs = {
+  data: LabsPartnerEditInput;
+  partnerCode: Scalars['String'];
+};
+
+
 export type LabsMutationEditProjectArgs = {
   data: LabsProjectEditInput;
   project: Scalars['String'];
+};
+
+
+export type LabsMutationEditRepositoryArgs = {
+  data: LabsRepositoryEditInput;
+  where: Scalars['String'];
+};
+
+
+export type LabsMutationEditResourceArgs = {
+  data: LabsResourceEditInput;
+  where: Scalars['String'];
 };
 
 
@@ -24588,6 +25944,12 @@ export type LabsMutationOfferStudentAdmissionArgs = {
 };
 
 
+export type LabsMutationRateStandupArgs = {
+  rating: Scalars['Float'];
+  where: Scalars['String'];
+};
+
+
 export type LabsMutationRejectStudentArgs = {
   reason?: InputMaybe<LabsRejectionReason>;
   where: LabsIdOrUsernameInput;
@@ -24606,8 +25968,24 @@ export type LabsMutationRemoveProjectStudentArgs = {
 };
 
 
+export type LabsMutationRequestLoginLinkArgs = {
+  email: Scalars['String'];
+};
+
+
 export type LabsMutationResetStudentAdmissionOfferArgs = {
   where: LabsIdOrUsernameInput;
+};
+
+
+export type LabsMutationRunActivityArgs = {
+  args: Scalars['LabsJSONObject'];
+  functionName: Scalars['String'];
+};
+
+
+export type LabsMutationRunAutomationArgs = {
+  functionName: Scalars['String'];
 };
 
 
@@ -24645,6 +26023,61 @@ export type LabsMutationSurveyRespondArgs = {
   responses: Array<LabsSurveyRespondInput>;
 };
 
+export type LabsNote = {
+  __typename?: 'LabsNote';
+  caution: Scalars['Float'];
+  createdAt: Scalars['LabsDateTime'];
+  event: LabsEvent;
+  eventId: Scalars['String'];
+  id: Scalars['String'];
+  note: Scalars['String'];
+  student?: Maybe<LabsStudent>;
+  studentId?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['LabsDateTime'];
+  username: Scalars['String'];
+};
+
+export type LabsPartner = {
+  __typename?: 'LabsPartner';
+  affineProjects: Array<LabsProject>;
+  autoApprove: Scalars['Boolean'];
+  createdAt: Scalars['LabsDateTime'];
+  event: LabsEvent;
+  eventId: Scalars['String'];
+  forbidTags: Array<LabsTag>;
+  forceTags: Array<LabsTag>;
+  id: Scalars['String'];
+  minHours?: Maybe<Scalars['Int']>;
+  onlyAffine: Scalars['Boolean'];
+  partnerCode: Scalars['String'];
+  skipPreferences: Scalars['Boolean'];
+  studentCount: Scalars['Float'];
+  students: Array<LabsStudent>;
+  token: Scalars['String'];
+  updatedAt: Scalars['LabsDateTime'];
+  weeks?: Maybe<Scalars['Int']>;
+};
+
+export type LabsPartnerCreateInput = {
+  forbidTags?: InputMaybe<Array<Scalars['String']>>;
+  forceTags?: InputMaybe<Array<Scalars['String']>>;
+  minHours?: InputMaybe<Scalars['Int']>;
+  onlyAffine?: InputMaybe<Scalars['Boolean']>;
+  partnerCode: Scalars['String'];
+  skipPreferences?: InputMaybe<Scalars['Boolean']>;
+  weeks?: InputMaybe<Scalars['Int']>;
+};
+
+export type LabsPartnerEditInput = {
+  forbidTags?: InputMaybe<Array<Scalars['String']>>;
+  forceTags?: InputMaybe<Array<Scalars['String']>>;
+  minHours?: InputMaybe<Scalars['Int']>;
+  onlyAffine?: InputMaybe<Scalars['Boolean']>;
+  partnerCode?: InputMaybe<Scalars['String']>;
+  skipPreferences?: InputMaybe<Scalars['Boolean']>;
+  weeks?: InputMaybe<Scalars['Int']>;
+};
+
 export enum LabsPersonType {
   Mentor = 'MENTOR',
   Student = 'STUDENT'
@@ -24658,34 +26091,56 @@ export type LabsPreference = {
 
 export type LabsProject = {
   __typename?: 'LabsProject';
+  affinePartner?: Maybe<LabsPartner>;
+  affinePartnerId?: Maybe<Scalars['String']>;
+  artifacts: Array<LabsArtifact>;
+  complete: Scalars['Boolean'];
   createdAt: Scalars['LabsDateTime'];
   deliverables?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  event: LabsEvent;
-  eventId: Scalars['String'];
+  event?: Maybe<LabsEvent>;
+  eventId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  issueUrl?: Maybe<Scalars['String']>;
   maxStudents: Scalars['Int'];
   mentors: Array<LabsMentor>;
+  repository?: Maybe<LabsRepository>;
+  repositoryId?: Maybe<Scalars['String']>;
+  slackChannelId?: Maybe<Scalars['String']>;
+  standupId?: Maybe<Scalars['String']>;
   status: LabsProjectStatus;
   studentCount: Scalars['Float'];
   students: Array<LabsStudent>;
+  surveyResponsesAbout: Array<LabsSurveyResponse>;
   tags: Array<LabsTag>;
   track: LabsTrack;
   updatedAt: Scalars['LabsDateTime'];
 };
 
+export type LabsProjectCountWhereInput = {
+  complete?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type LabsProjectCreateInput = {
+  affinePartnerId?: InputMaybe<Scalars['String']>;
+  complete?: InputMaybe<Scalars['Boolean']>;
   deliverables?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  issueUrl?: InputMaybe<Scalars['String']>;
   maxStudents?: InputMaybe<Scalars['Int']>;
+  repositoryId?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   track: LabsTrack;
 };
 
 export type LabsProjectEditInput = {
+  affinePartnerId?: InputMaybe<Scalars['String']>;
+  complete?: InputMaybe<Scalars['Boolean']>;
   deliverables?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  issueUrl?: InputMaybe<Scalars['String']>;
   maxStudents?: InputMaybe<Scalars['Int']>;
+  repositoryId?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<LabsProjectStatus>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   track?: InputMaybe<LabsTrack>;
@@ -24700,23 +26155,77 @@ export enum LabsProjectStatus {
 
 export type LabsQuery = {
   __typename?: 'LabsQuery';
+  activities: Array<Scalars['String']>;
+  activitySchema: Scalars['LabsJSONObject'];
+  applicationId?: Maybe<Scalars['String']>;
+  autocomplete: Array<LabsAutocompleteResult>;
+  automations: Array<Scalars['String']>;
+  employmentRecords: Array<LabsEmploymentRecord>;
   event?: Maybe<LabsEvent>;
+  events: Array<LabsEvent>;
+  getStandup: Scalars['String'];
+  getSurveyResponse: LabsSurveyResponse;
   mentor?: Maybe<LabsMentor>;
+  mentorPriorParticipation?: Maybe<LabsMentor>;
   mentors: Array<LabsMentor>;
   nextStudentNeedingRating?: Maybe<LabsStudent>;
+  partners: Array<LabsPartner>;
+  projectCount: Scalars['Int'];
   projectMatches?: Maybe<Array<LabsMatch>>;
   projectPreferences?: Maybe<Array<LabsPreference>>;
+  repositories: Array<LabsRepository>;
+  resources: Array<LabsResource>;
   statAdmissionsStatus: Array<LabsStat>;
   student?: Maybe<LabsStudent>;
   students: Array<LabsStudent>;
   studentsTopRated: Array<LabsStudent>;
+  supportedTimezones: Scalars['LabsJSONObject'];
   survey: LabsSurvey;
   surveys: Array<LabsSurvey>;
   tags: Array<LabsTag>;
+  unclaimedProjects: Array<LabsProject>;
+};
+
+
+export type LabsQueryActivitySchemaArgs = {
+  functionName: Scalars['String'];
+};
+
+
+export type LabsQueryAutocompleteArgs = {
+  q: Scalars['String'];
+  status?: InputMaybe<Array<LabsStudentStatus>>;
+  types: LabsAutocompleteFilterTypeInput;
+};
+
+
+export type LabsQueryEmploymentRecordsArgs = {
+  givenName: Scalars['String'];
+  surname: Scalars['String'];
+};
+
+
+export type LabsQueryEventsArgs = {
+  where?: InputMaybe<LabsEventsWhereInput>;
+};
+
+
+export type LabsQueryGetStandupArgs = {
+  where: Scalars['String'];
+};
+
+
+export type LabsQueryGetSurveyResponseArgs = {
+  where: Scalars['String'];
 };
 
 
 export type LabsQueryMentorArgs = {
+  where?: InputMaybe<LabsIdOrUsernameInput>;
+};
+
+
+export type LabsQueryMentorPriorParticipationArgs = {
   where?: InputMaybe<LabsIdOrUsernameInput>;
 };
 
@@ -24733,8 +26242,18 @@ export type LabsQueryNextStudentNeedingRatingArgs = {
 };
 
 
+export type LabsQueryProjectCountArgs = {
+  where?: InputMaybe<LabsProjectCountWhereInput>;
+};
+
+
 export type LabsQueryProjectMatchesArgs = {
   tags: Array<Scalars['String']>;
+};
+
+
+export type LabsQueryRepositoriesArgs = {
+  where?: InputMaybe<LabsRepositoryWhereInput>;
 };
 
 
@@ -24778,6 +26297,74 @@ export enum LabsRejectionReason {
   Other = 'OTHER'
 }
 
+export type LabsRepository = {
+  __typename?: 'LabsRepository';
+  createdAt: Scalars['LabsDateTime'];
+  id: Scalars['String'];
+  logoUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  projectCount: Scalars['Int'];
+  projects: Array<LabsProject>;
+  updatedAt: Scalars['LabsDateTime'];
+  url: Scalars['String'];
+};
+
+export type LabsRepositoryCreateInput = {
+  logoUrl?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type LabsRepositoryEditInput = {
+  logoUrl?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  url?: InputMaybe<Scalars['String']>;
+};
+
+export type LabsRepositoryWhereInput = {
+  hasLogo?: InputMaybe<Scalars['Boolean']>;
+  hasProjects?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type LabsResource = {
+  __typename?: 'LabsResource';
+  createdAt: Scalars['LabsDateTime'];
+  displayToManagers: Scalars['Boolean'];
+  displayToMentors: Scalars['Boolean'];
+  displayToPartners: Scalars['Boolean'];
+  displayToStudents: Scalars['Boolean'];
+  event: LabsEvent;
+  eventId: Scalars['String'];
+  id: Scalars['String'];
+  link: Scalars['String'];
+  name: Scalars['String'];
+  updatedAt: Scalars['LabsDateTime'];
+};
+
+export type LabsResourceCreateInput = {
+  displayToManagers: Scalars['Boolean'];
+  displayToMentors: Scalars['Boolean'];
+  displayToPartners: Scalars['Boolean'];
+  displayToStudents: Scalars['Boolean'];
+  link: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type LabsResourceEditInput = {
+  displayToMentors?: InputMaybe<Scalars['Boolean']>;
+  displayToStudents?: InputMaybe<Scalars['Boolean']>;
+  link?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type LabsStandupRating = {
+  __typename?: 'LabsStandupRating';
+  dueAt: Scalars['LabsDateTime'];
+  humanRated: Scalars['Boolean'];
+  id?: Maybe<Scalars['String']>;
+  rating?: Maybe<Scalars['Int']>;
+};
+
 export type LabsStat = {
   __typename?: 'LabsStat';
   key: Scalars['String'];
@@ -24789,15 +26376,20 @@ export type LabsStudent = {
   account?: Maybe<AccountUser>;
   admissionRatingAverage?: Maybe<Scalars['Float']>;
   admissionRatingCount?: Maybe<Scalars['Float']>;
+  artifacts: Array<LabsArtifact>;
   createdAt: Scalars['LabsDateTime'];
   email: Scalars['String'];
+  emailCount: Scalars['Float'];
   event: LabsEvent;
   eventId: Scalars['String'];
   givenName: Scalars['String'];
+  hasProjectPreferences: Scalars['Boolean'];
   hasValidAdmissionOffer: Scalars['Boolean'];
   id: Scalars['String'];
+  interviewNotes?: Maybe<Scalars['String']>;
   minHours: Scalars['Int'];
   name: Scalars['String'];
+  notes: Array<LabsNote>;
   offerDate?: Maybe<Scalars['LabsDateTime']>;
   partnerCode?: Maybe<Scalars['String']>;
   profile: Scalars['LabsJSON'];
@@ -24806,11 +26398,18 @@ export type LabsStudent = {
   projects: Array<LabsProject>;
   rejectionReason?: Maybe<LabsRejectionReason>;
   requiredTagTraining: Array<LabsTag>;
+  resumeUrl?: Maybe<Scalars['String']>;
+  skipPreferences: Scalars['Boolean'];
+  slackId?: Maybe<Scalars['String']>;
+  standupRatings: Array<LabsStandupRating>;
   status: LabsStudentStatus;
   surname: Scalars['String'];
   surveyResponsesAbout: Array<LabsSurveyResponse>;
   tagTrainingSubmissions: Array<LabsTagTrainingSubmission>;
   tags: Array<LabsTag>;
+  timeManagementPlan?: Maybe<Scalars['LabsJSON']>;
+  timezone?: Maybe<Scalars['String']>;
+  token: Scalars['String'];
   track: LabsTrack;
   trackRecommendation?: Maybe<Array<LabsTrackRecommendation>>;
   updatedAt: Scalars['LabsDateTime'];
@@ -24824,8 +26423,10 @@ export type LabsStudentApplyInput = {
   minHours: Scalars['Int'];
   partnerCode?: InputMaybe<Scalars['String']>;
   profile?: InputMaybe<Scalars['LabsJSONObject']>;
+  resume?: InputMaybe<Scalars['Upload']>;
   surname: Scalars['String'];
   tags?: InputMaybe<Array<Scalars['String']>>;
+  timezone?: InputMaybe<Scalars['String']>;
   track: LabsTrack;
 };
 
@@ -24835,6 +26436,7 @@ export type LabsStudentCreateInput = {
   minHours: Scalars['Int'];
   partnerCode?: InputMaybe<Scalars['String']>;
   profile?: InputMaybe<Scalars['LabsJSONObject']>;
+  skipPreferences?: InputMaybe<Scalars['Boolean']>;
   status?: InputMaybe<LabsStudentStatus>;
   surname: Scalars['String'];
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -24846,9 +26448,11 @@ export type LabsStudentCreateInput = {
 export type LabsStudentEditInput = {
   email?: InputMaybe<Scalars['String']>;
   givenName?: InputMaybe<Scalars['String']>;
+  interviewNotes?: InputMaybe<Scalars['String']>;
   minHours?: InputMaybe<Scalars['Int']>;
   partnerCode?: InputMaybe<Scalars['String']>;
   profile?: InputMaybe<Scalars['LabsJSONObject']>;
+  skipPreferences?: InputMaybe<Scalars['Boolean']>;
   status?: InputMaybe<LabsStudentStatus>;
   surname?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -24860,6 +26464,7 @@ export type LabsStudentEditInput = {
 export type LabsStudentFilterInput = {
   email?: InputMaybe<Scalars['String']>;
   givenName?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
   inStatus?: InputMaybe<LabsStudentStatus>;
   partnerCode?: InputMaybe<Scalars['String']>;
   surname?: InputMaybe<Scalars['String']>;
@@ -24884,51 +26489,65 @@ export type LabsSurvey = {
   event: LabsEvent;
   eventId: Scalars['String'];
   id: Scalars['String'];
+  intro?: Maybe<Scalars['String']>;
   menteeCaution?: Maybe<Scalars['String']>;
+  menteeDisplay?: Maybe<Scalars['String']>;
   menteeSchema?: Maybe<Scalars['LabsJSONObject']>;
   menteeShare?: Maybe<Scalars['LabsJSONObject']>;
   menteeUi?: Maybe<Scalars['LabsJSONObject']>;
   mentorCaution?: Maybe<Scalars['String']>;
+  mentorDisplay?: Maybe<Scalars['String']>;
   mentorSchema?: Maybe<Scalars['LabsJSONObject']>;
   mentorShare?: Maybe<Scalars['LabsJSONObject']>;
   mentorUi?: Maybe<Scalars['LabsJSONObject']>;
   name: Scalars['String'];
   occurrences: Array<LabsSurveyOccurence>;
   peerCaution?: Maybe<Scalars['String']>;
+  peerDisplay?: Maybe<Scalars['String']>;
   peerSchema?: Maybe<Scalars['LabsJSONObject']>;
   peerShare?: Maybe<Scalars['LabsJSONObject']>;
   peerUi?: Maybe<Scalars['LabsJSONObject']>;
   personType: LabsPersonType;
   projectCaution?: Maybe<Scalars['String']>;
+  projectDisplay?: Maybe<Scalars['String']>;
   projectSchema?: Maybe<Scalars['LabsJSONObject']>;
   projectShare?: Maybe<Scalars['LabsJSONObject']>;
   projectUi?: Maybe<Scalars['LabsJSONObject']>;
+  randomize: Scalars['Boolean'];
   selfCaution?: Maybe<Scalars['String']>;
+  selfDisplay?: Maybe<Scalars['String']>;
   selfSchema?: Maybe<Scalars['LabsJSONObject']>;
   selfUi?: Maybe<Scalars['LabsJSONObject']>;
   updatedAt: Scalars['LabsDateTime'];
 };
 
 export type LabsSurveyCreateInput = {
+  intro?: InputMaybe<Scalars['String']>;
   menteeCaution?: InputMaybe<Scalars['String']>;
+  menteeDisplay?: InputMaybe<Scalars['String']>;
   menteeSchema?: InputMaybe<Scalars['LabsJSONObject']>;
   menteeShare?: InputMaybe<Scalars['LabsJSONObject']>;
   menteeUi?: InputMaybe<Scalars['LabsJSONObject']>;
   mentorCaution?: InputMaybe<Scalars['String']>;
+  mentorDisplay?: InputMaybe<Scalars['String']>;
   mentorSchema?: InputMaybe<Scalars['LabsJSONObject']>;
   mentorShare?: InputMaybe<Scalars['LabsJSONObject']>;
   mentorUi?: InputMaybe<Scalars['LabsJSONObject']>;
   name: Scalars['String'];
   peerCaution?: InputMaybe<Scalars['String']>;
+  peerDisplay?: InputMaybe<Scalars['String']>;
   peerSchema?: InputMaybe<Scalars['LabsJSONObject']>;
   peerShare?: InputMaybe<Scalars['LabsJSONObject']>;
   peerUi?: InputMaybe<Scalars['LabsJSONObject']>;
   personType: LabsPersonType;
   projectCaution?: InputMaybe<Scalars['String']>;
+  projectDisplay?: InputMaybe<Scalars['String']>;
   projectSchema?: InputMaybe<Scalars['LabsJSONObject']>;
   projectShare?: InputMaybe<Scalars['LabsJSONObject']>;
   projectUi?: InputMaybe<Scalars['LabsJSONObject']>;
+  randomize?: InputMaybe<Scalars['Boolean']>;
   selfCaution?: InputMaybe<Scalars['String']>;
+  selfDisplay?: InputMaybe<Scalars['String']>;
   selfSchema?: InputMaybe<Scalars['LabsJSONObject']>;
   selfUi?: InputMaybe<Scalars['LabsJSONObject']>;
   slug: Scalars['String'];
@@ -24940,16 +26559,10 @@ export type LabsSurveyOccurence = {
   dueAt: Scalars['LabsDateTime'];
   id: Scalars['String'];
   survey: LabsSurvey;
-  surveyFeedback: Array<LabsSurveyResponse>;
   surveyId: Scalars['String'];
   surveyResponses: Array<LabsSurveyResponse>;
   updatedAt: Scalars['LabsDateTime'];
   visibleAt: Scalars['LabsDateTime'];
-};
-
-
-export type LabsSurveyOccurenceSurveyFeedbackArgs = {
-  personType?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -25041,7 +26654,7 @@ export type LabsTrackRecommendation = {
 export type Mutation = {
   __typename?: 'Mutation';
   account: AccountMutation;
-  advisor: AdvisorMutation;
+  advisors: AdvisorsMutation;
   blog: BlogRootMutation;
   calendar: CalendarMutation;
   clear: ClearMutation;
@@ -25053,7 +26666,7 @@ export type Mutation = {
 export type Query = {
   __typename?: 'Query';
   account: AccountQuery;
-  advisor: AdvisorQuery;
+  advisors: AdvisorsQuery;
   blog: BlogRootQuery;
   calendar: CalendarQuery;
   clear: ClearQuery;
@@ -25062,10 +26675,52 @@ export type Query = {
   geo: GeoQuery;
   github: GithubQuery;
   labs: LabsQuery;
+  showYourWork: ShowYourWorkQuery;
   showcase: ShowcaseQuery;
-  showyourwork: ShowyourworkQuery;
   twitch: TwitchQuery;
 };
+
+export type ShowYourWorkDiscordMessage = {
+  __typename?: 'ShowYourWorkDiscordMessage';
+  author?: Maybe<AccountUser>;
+  createdAt: Scalars['ShowYourWorkDateTime'];
+  id: Scalars['String'];
+  imageUrl: Scalars['String'];
+  text: Scalars['String'];
+  userId: Scalars['String'];
+  videoUrl?: Maybe<Scalars['String']>;
+};
+
+
+export type ShowYourWorkDiscordMessageImageUrlArgs = {
+  fillBlur?: InputMaybe<Scalars['Boolean']>;
+  height?: InputMaybe<Scalars['Float']>;
+  strategy?: InputMaybe<ShowYourWorkResizeStrategy>;
+  width?: InputMaybe<Scalars['Float']>;
+};
+
+export type ShowYourWorkQuery = {
+  __typename?: 'ShowYourWorkQuery';
+  messages: Array<ShowYourWorkDiscordMessage>;
+};
+
+
+export type ShowYourWorkQueryMessagesArgs = {
+  skip?: InputMaybe<Scalars['Float']>;
+  take?: InputMaybe<Scalars['Float']>;
+};
+
+export enum ShowYourWorkResizeStrategy {
+  Clamp = 'CLAMP',
+  Clip = 'CLIP',
+  Crop = 'CROP',
+  Facearea = 'FACEAREA',
+  Fill = 'FILL',
+  Fillmax = 'FILLMAX',
+  Max = 'MAX',
+  Min = 'MIN',
+  Scale = 'SCALE'
+}
 
 export type ShowcaseAddReactionsInput = {
   count: Scalars['Float'];
@@ -25228,8 +26883,10 @@ export enum ShowcaseMediaFilterType {
 }
 
 export enum ShowcaseMediaTopic {
+  Art = 'ART',
   Demo = 'DEMO',
   Judges = 'JUDGES',
+  Music = 'MUSIC',
   Presentation = 'PRESENTATION',
   Team = 'TEAM'
 }
@@ -25298,6 +26955,7 @@ export type ShowcaseMutation = {
   featurePhoto: Scalars['Boolean'];
   featureProject: Scalars['Boolean'];
   importPhotos: Scalars['Boolean'];
+  joinProject: ShowcaseProject;
   judgeProject: Scalars['Boolean'];
   peerJudgeProjects: Scalars['Boolean'];
   recordMetric: Scalars['Boolean'];
@@ -25386,6 +27044,11 @@ export type ShowcaseMutationFeatureProjectArgs = {
 
 export type ShowcaseMutationImportPhotosArgs = {
   photos: Array<ShowcaseImportPhotoInput>;
+};
+
+
+export type ShowcaseMutationJoinProjectArgs = {
+  joinCode: Scalars['String'];
 };
 
 
@@ -25508,6 +27171,7 @@ export type ShowcaseProject = {
   canEdit: Scalars['Boolean'];
   challengesEncountered?: Maybe<Scalars['String']>;
   codeLink?: Maybe<Scalars['String']>;
+  coverImage?: Maybe<ShowcaseMedia>;
   createdAt: Scalars['ShowcaseDateTime'];
   description?: Maybe<Scalars['String']>;
   eventGroup?: Maybe<CmsEvent>;
@@ -25515,6 +27179,7 @@ export type ShowcaseProject = {
   eventId: Scalars['String'];
   featured: Scalars['Boolean'];
   id: Scalars['String'];
+  joinCode?: Maybe<Scalars['String']>;
   media?: Maybe<Array<ShowcaseMedia>>;
   members?: Maybe<Array<ShowcaseMember>>;
   metadata?: Maybe<Array<ShowcaseMetadata>>;
@@ -25588,7 +27253,7 @@ export type ShowcaseQuery = {
   photo: ShowcasePhoto;
   photos: Array<ShowcasePhoto>;
   presentationReadyPercent: Scalars['Float'];
-  project: ShowcaseProject;
+  project?: Maybe<ShowcaseProject>;
   projects: Array<ShowcaseProject>;
   projectsOverTime: Array<ShowcaseMetricTimeSeries>;
 };
@@ -25655,48 +27320,6 @@ export enum ShowcaseReactionType {
 }
 
 export enum ShowcaseResizeStrategy {
-  Clamp = 'CLAMP',
-  Clip = 'CLIP',
-  Crop = 'CROP',
-  Facearea = 'FACEAREA',
-  Fill = 'FILL',
-  Fillmax = 'FILLMAX',
-  Max = 'MAX',
-  Min = 'MIN',
-  Scale = 'SCALE'
-}
-
-export type ShowyourworkDiscordMessage = {
-  __typename?: 'ShowyourworkDiscordMessage';
-  author?: Maybe<AccountUser>;
-  createdAt: Scalars['ShowyourworkDateTime'];
-  id: Scalars['String'];
-  imageUrl: Scalars['String'];
-  text: Scalars['String'];
-  userId: Scalars['String'];
-  videoUrl?: Maybe<Scalars['String']>;
-};
-
-
-export type ShowyourworkDiscordMessageImageUrlArgs = {
-  fillBlur?: InputMaybe<Scalars['Boolean']>;
-  height?: InputMaybe<Scalars['Float']>;
-  strategy?: InputMaybe<ShowyourworkResizeStrategy>;
-  width?: InputMaybe<Scalars['Float']>;
-};
-
-export type ShowyourworkQuery = {
-  __typename?: 'ShowyourworkQuery';
-  messages: Array<ShowyourworkDiscordMessage>;
-};
-
-
-export type ShowyourworkQueryMessagesArgs = {
-  skip?: InputMaybe<Scalars['Float']>;
-  take?: InputMaybe<Scalars['Float']>;
-};
-
-export enum ShowyourworkResizeStrategy {
   Clamp = 'CLAMP',
   Clip = 'CLIP',
   Crop = 'CROP',
@@ -25863,7 +27486,6 @@ export type ResolversTypes = ResolversObject<{
   AccountBadge: ResolverTypeWrapper<AccountBadge>;
   AccountBadgeInput: AccountBadgeInput;
   AccountDiscordInformation: ResolverTypeWrapper<AccountDiscordInformation>;
-  AccountDiscordTokenInfoInput: AccountDiscordTokenInfoInput;
   AccountDisplayedBadgeInput: AccountDisplayedBadgeInput;
   AccountMutation: ResolverTypeWrapper<AccountMutation>;
   AccountPizzaOrTurtle: AccountPizzaOrTurtle;
@@ -25877,35 +27499,35 @@ export type ResolversTypes = ResolversObject<{
   AccountUserPictureTransformInput: AccountUserPictureTransformInput;
   AccountUserSearch: AccountUserSearch;
   AccountUserWhereInput: AccountUserWhereInput;
-  AdvisorAdvisor: ResolverTypeWrapper<AdvisorAdvisor>;
-  AdvisorAdvisorCreateInput: AdvisorAdvisorCreateInput;
-  AdvisorAdvisorLimitInput: AdvisorAdvisorLimitInput;
-  AdvisorAdvisorType: AdvisorAdvisorType;
-  AdvisorAdvisorWhereInput: AdvisorAdvisorWhereInput;
-  AdvisorDateTime: ResolverTypeWrapper<Scalars['AdvisorDateTime']>;
-  AdvisorEventParticipation: ResolverTypeWrapper<AdvisorEventParticipation>;
-  AdvisorEventParticipationCreateInput: AdvisorEventParticipationCreateInput;
-  AdvisorJSONObject: ResolverTypeWrapper<Scalars['AdvisorJSONObject']>;
-  AdvisorMutation: ResolverTypeWrapper<AdvisorMutation>;
-  AdvisorPendingRequests: ResolverTypeWrapper<AdvisorPendingRequests>;
-  AdvisorProfile: ResolverTypeWrapper<AdvisorProfile>;
-  AdvisorProfileCreateInput: AdvisorProfileCreateInput;
-  AdvisorProfileEditInput: AdvisorProfileEditInput;
-  AdvisorQuery: ResolverTypeWrapper<AdvisorQuery>;
-  AdvisorRecommendation: ResolverTypeWrapper<AdvisorRecommendation>;
-  AdvisorRecommendationCreateInput: AdvisorRecommendationCreateInput;
-  AdvisorRecommendationEditInput: AdvisorRecommendationEditInput;
-  AdvisorRecommendationRating: AdvisorRecommendationRating;
-  AdvisorRemainingRequestsByAdvisorType: ResolverTypeWrapper<AdvisorRemainingRequestsByAdvisorType>;
-  AdvisorRemainingRequestsType: ResolverTypeWrapper<AdvisorRemainingRequestsType>;
-  AdvisorRequest: ResolverTypeWrapper<AdvisorRequest>;
-  AdvisorRequestAssignment: ResolverTypeWrapper<AdvisorRequestAssignment>;
-  AdvisorRequestCount: ResolverTypeWrapper<AdvisorRequestCount>;
-  AdvisorRequestCountWhereInput: AdvisorRequestCountWhereInput;
-  AdvisorRequestType: AdvisorRequestType;
-  AdvisorTag: ResolverTypeWrapper<AdvisorTag>;
-  AdvisorTagCreateInput: AdvisorTagCreateInput;
-  AdvisorTagType: AdvisorTagType;
+  AdvisorsAdvisor: ResolverTypeWrapper<AdvisorsAdvisor>;
+  AdvisorsAdvisorCreateInput: AdvisorsAdvisorCreateInput;
+  AdvisorsAdvisorLimitInput: AdvisorsAdvisorLimitInput;
+  AdvisorsAdvisorType: AdvisorsAdvisorType;
+  AdvisorsAdvisorWhereInput: AdvisorsAdvisorWhereInput;
+  AdvisorsDateTime: ResolverTypeWrapper<Scalars['AdvisorsDateTime']>;
+  AdvisorsEventParticipation: ResolverTypeWrapper<AdvisorsEventParticipation>;
+  AdvisorsEventParticipationCreateInput: AdvisorsEventParticipationCreateInput;
+  AdvisorsJSONObject: ResolverTypeWrapper<Scalars['AdvisorsJSONObject']>;
+  AdvisorsMutation: ResolverTypeWrapper<AdvisorsMutation>;
+  AdvisorsPendingRequests: ResolverTypeWrapper<AdvisorsPendingRequests>;
+  AdvisorsProfile: ResolverTypeWrapper<AdvisorsProfile>;
+  AdvisorsProfileCreateInput: AdvisorsProfileCreateInput;
+  AdvisorsProfileEditInput: AdvisorsProfileEditInput;
+  AdvisorsQuery: ResolverTypeWrapper<AdvisorsQuery>;
+  AdvisorsRecommendation: ResolverTypeWrapper<AdvisorsRecommendation>;
+  AdvisorsRecommendationCreateInput: AdvisorsRecommendationCreateInput;
+  AdvisorsRecommendationEditInput: AdvisorsRecommendationEditInput;
+  AdvisorsRecommendationRating: AdvisorsRecommendationRating;
+  AdvisorsRemainingRequestsByAdvisorType: ResolverTypeWrapper<AdvisorsRemainingRequestsByAdvisorType>;
+  AdvisorsRemainingRequestsType: ResolverTypeWrapper<AdvisorsRemainingRequestsType>;
+  AdvisorsRequest: ResolverTypeWrapper<AdvisorsRequest>;
+  AdvisorsRequestAssignment: ResolverTypeWrapper<AdvisorsRequestAssignment>;
+  AdvisorsRequestCount: ResolverTypeWrapper<AdvisorsRequestCount>;
+  AdvisorsRequestCountWhereInput: AdvisorsRequestCountWhereInput;
+  AdvisorsRequestType: AdvisorsRequestType;
+  AdvisorsTag: ResolverTypeWrapper<AdvisorsTag>;
+  AdvisorsTagCreateInput: AdvisorsTagCreateInput;
+  AdvisorsTagType: AdvisorsTagType;
   BlogAcfFieldGroup: ResolversTypes['BlogCategory_Display'] | ResolversTypes['BlogPost_Authoroverride'] | ResolversTypes['BlogPost_Marketing'] | ResolversTypes['BlogPost_Release'];
   BlogAvatar: ResolverTypeWrapper<BlogAvatar>;
   BlogAvatarRatingEnum: BlogAvatarRatingEnum;
@@ -26266,6 +27888,7 @@ export type ResolversTypes = ResolversObject<{
   ClearBoolFieldUpdateOperationsInput: ClearBoolFieldUpdateOperationsInput;
   ClearBoolFilter: ClearBoolFilter;
   ClearBoolWithAggregatesFilter: ClearBoolWithAggregatesFilter;
+  ClearCheckPromoCodeResult: ResolverTypeWrapper<ClearCheckPromoCodeResult>;
   ClearDateTime: ResolverTypeWrapper<Scalars['ClearDateTime']>;
   ClearDateTimeFieldUpdateOperationsInput: ClearDateTimeFieldUpdateOperationsInput;
   ClearDateTimeFilter: ClearDateTimeFilter;
@@ -26685,6 +28308,8 @@ export type ResolversTypes = ResolversObject<{
   ClearPublicPerson: ResolverTypeWrapper<ClearPublicPerson>;
   ClearQuery: ResolverTypeWrapper<ClearQuery>;
   ClearQueryMode: ClearQueryMode;
+  ClearRegistrationResponse: ResolverTypeWrapper<ClearRegistrationResponse>;
+  ClearRegistrationResponseTicket: ResolverTypeWrapper<ClearRegistrationResponseTicket>;
   ClearScheduleItem: ResolverTypeWrapper<ClearScheduleItem>;
   ClearScheduleItemCountAggregate: ResolverTypeWrapper<ClearScheduleItemCountAggregate>;
   ClearScheduleItemCountOrderByAggregateInput: ClearScheduleItemCountOrderByAggregateInput;
@@ -26803,6 +28428,10 @@ export type ResolversTypes = ResolversObject<{
   ClearTicketCreateWithoutSentEmailsInput: ClearTicketCreateWithoutSentEmailsInput;
   ClearTicketGroupBy: ResolverTypeWrapper<ClearTicketGroupBy>;
   ClearTicketListRelationFilter: ClearTicketListRelationFilter;
+  ClearTicketLookupResult: ResolverTypeWrapper<ClearTicketLookupResult>;
+  ClearTicketLookupResultGuardian: ResolverTypeWrapper<ClearTicketLookupResultGuardian>;
+  ClearTicketLookupResultPayment: ResolverTypeWrapper<ClearTicketLookupResultPayment>;
+  ClearTicketLookupResultPromoCode: ResolverTypeWrapper<ClearTicketLookupResultPromoCode>;
   ClearTicketMaxAggregate: ResolverTypeWrapper<ClearTicketMaxAggregate>;
   ClearTicketMaxOrderByAggregateInput: ClearTicketMaxOrderByAggregateInput;
   ClearTicketMinAggregate: ResolverTypeWrapper<ClearTicketMinAggregate>;
@@ -26924,6 +28553,7 @@ export type ResolversTypes = ResolversObject<{
   CmsAnnouncementLinkingCollections: ResolverTypeWrapper<CmsAnnouncementLinkingCollections>;
   CmsAnnouncementOrder: CmsAnnouncementOrder;
   CmsAnnouncementProgramCollection: ResolverTypeWrapper<CmsAnnouncementProgramCollection>;
+  CmsAnnouncementProgramCollectionOrder: CmsAnnouncementProgramCollectionOrder;
   CmsAsset: ResolverTypeWrapper<CmsAsset>;
   CmsAssetCollection: ResolverTypeWrapper<CmsAssetCollection>;
   CmsAssetFilter: CmsAssetFilter;
@@ -26935,6 +28565,7 @@ export type ResolversTypes = ResolversObject<{
   CmsAwardLinkingCollections: ResolverTypeWrapper<CmsAwardLinkingCollections>;
   CmsAwardOrder: CmsAwardOrder;
   CmsAwardProgramsCollection: ResolverTypeWrapper<CmsAwardProgramsCollection>;
+  CmsAwardProgramsCollectionOrder: CmsAwardProgramsCollectionOrder;
   CmsBadge: ResolverTypeWrapper<CmsBadge>;
   CmsBadgeCollection: ResolverTypeWrapper<CmsBadgeCollection>;
   CmsBadgeFilter: CmsBadgeFilter;
@@ -26952,16 +28583,20 @@ export type ResolversTypes = ResolversObject<{
   CmsCommunityPartnerLinkingCollections: ResolverTypeWrapper<CmsCommunityPartnerLinkingCollections>;
   CmsCommunityPartnerOrder: CmsCommunityPartnerOrder;
   CmsCommunityPartnerRegionCollection: ResolverTypeWrapper<CmsCommunityPartnerRegionCollection>;
+  CmsCommunityPartnerRegionCollectionOrder: CmsCommunityPartnerRegionCollectionOrder;
   CmsContentTypeString: ResolverTypeWrapper<CmsContentTypeString>;
   CmsContentTypeStringCollection: ResolverTypeWrapper<CmsContentTypeStringCollection>;
   CmsContentTypeStringFilter: CmsContentTypeStringFilter;
   CmsContentTypeStringLinkingCollections: ResolverTypeWrapper<CmsContentTypeStringLinkingCollections>;
+  CmsContentTypeStringLinkingCollectionsContentTypeStringCollectionOrder: CmsContentTypeStringLinkingCollectionsContentTypeStringCollectionOrder;
   CmsContentTypeStringOrder: CmsContentTypeStringOrder;
   CmsContentTypeStringRichValue: ResolverTypeWrapper<CmsContentTypeStringRichValue>;
   CmsContentTypeStringRichValueAssets: ResolverTypeWrapper<CmsContentTypeStringRichValueAssets>;
   CmsContentTypeStringRichValueEntries: ResolverTypeWrapper<CmsContentTypeStringRichValueEntries>;
   CmsContentTypeStringRichValueLinks: ResolverTypeWrapper<CmsContentTypeStringRichValueLinks>;
+  CmsContentTypeStringRichValueResources: ResolverTypeWrapper<CmsContentTypeStringRichValueResources>;
   CmsContentTypeStringSubvalueCollection: ResolverTypeWrapper<CmsContentTypeStringSubvalueCollection>;
+  CmsContentTypeStringSubvalueCollectionOrder: CmsContentTypeStringSubvalueCollectionOrder;
   CmsContentfulMetadata: ResolverTypeWrapper<CmsContentfulMetadata>;
   CmsContentfulMetadataFilter: CmsContentfulMetadataFilter;
   CmsContentfulMetadataTagsFilter: CmsContentfulMetadataTagsFilter;
@@ -26976,33 +28611,41 @@ export type ResolversTypes = ResolversObject<{
   CmsEventCollection: ResolverTypeWrapper<CmsEventCollection>;
   CmsEventFilter: CmsEventFilter;
   CmsEventLinkingCollections: ResolverTypeWrapper<CmsEventLinkingCollections>;
+  CmsEventLinkingCollectionsPressPhotoCollectionOrder: CmsEventLinkingCollectionsPressPhotoCollectionOrder;
   CmsEventNotice: ResolverTypeWrapper<CmsEventNotice>;
   CmsEventNoticeAssets: ResolverTypeWrapper<CmsEventNoticeAssets>;
   CmsEventNoticeEntries: ResolverTypeWrapper<CmsEventNoticeEntries>;
   CmsEventNoticeLinks: ResolverTypeWrapper<CmsEventNoticeLinks>;
+  CmsEventNoticeResources: ResolverTypeWrapper<CmsEventNoticeResources>;
   CmsEventOrder: CmsEventOrder;
   CmsEventRestriction: ResolverTypeWrapper<CmsEventRestriction>;
   CmsEventRestrictionApplicableProgramsCollection: ResolverTypeWrapper<CmsEventRestrictionApplicableProgramsCollection>;
+  CmsEventRestrictionApplicableProgramsCollectionOrder: CmsEventRestrictionApplicableProgramsCollectionOrder;
   CmsEventRestrictionCollection: ResolverTypeWrapper<CmsEventRestrictionCollection>;
   CmsEventRestrictionFilter: CmsEventRestrictionFilter;
   CmsEventRestrictionLinkingCollections: ResolverTypeWrapper<CmsEventRestrictionLinkingCollections>;
+  CmsEventRestrictionLinkingCollectionsLocalizationConfigCollectionOrder: CmsEventRestrictionLinkingCollectionsLocalizationConfigCollectionOrder;
   CmsEventRestrictionOrder: CmsEventRestrictionOrder;
   CmsFaq: ResolverTypeWrapper<CmsFaq>;
   CmsFaqAnswer: ResolverTypeWrapper<CmsFaqAnswer>;
   CmsFaqAnswerAssets: ResolverTypeWrapper<CmsFaqAnswerAssets>;
   CmsFaqAnswerEntries: ResolverTypeWrapper<CmsFaqAnswerEntries>;
   CmsFaqAnswerLinks: ResolverTypeWrapper<CmsFaqAnswerLinks>;
+  CmsFaqAnswerResources: ResolverTypeWrapper<CmsFaqAnswerResources>;
   CmsFaqCollection: ResolverTypeWrapper<CmsFaqCollection>;
   CmsFaqFilter: CmsFaqFilter;
   CmsFaqLinkingCollections: ResolverTypeWrapper<CmsFaqLinkingCollections>;
+  CmsFaqLinkingCollectionsFaqCollectionOrder: CmsFaqLinkingCollectionsFaqCollectionOrder;
   CmsFaqOrder: CmsFaqOrder;
   CmsFaqRelatedAnswersCollection: ResolverTypeWrapper<CmsFaqRelatedAnswersCollection>;
+  CmsFaqRelatedAnswersCollectionOrder: CmsFaqRelatedAnswersCollectionOrder;
   CmsForm: ResolverTypeWrapper<CmsForm>;
   CmsFormCollection: ResolverTypeWrapper<CmsFormCollection>;
   CmsFormDetails: ResolverTypeWrapper<CmsFormDetails>;
   CmsFormDetailsAssets: ResolverTypeWrapper<CmsFormDetailsAssets>;
   CmsFormDetailsEntries: ResolverTypeWrapper<CmsFormDetailsEntries>;
   CmsFormDetailsLinks: ResolverTypeWrapper<CmsFormDetailsLinks>;
+  CmsFormDetailsResources: ResolverTypeWrapper<CmsFormDetailsResources>;
   CmsFormFilter: CmsFormFilter;
   CmsFormLinkingCollections: ResolverTypeWrapper<CmsFormLinkingCollections>;
   CmsFormOrder: CmsFormOrder;
@@ -27010,10 +28653,13 @@ export type ResolversTypes = ResolversObject<{
   CmsFormSidebarAssets: ResolverTypeWrapper<CmsFormSidebarAssets>;
   CmsFormSidebarEntries: ResolverTypeWrapper<CmsFormSidebarEntries>;
   CmsFormSidebarLinks: ResolverTypeWrapper<CmsFormSidebarLinks>;
+  CmsFormSidebarResources: ResolverTypeWrapper<CmsFormSidebarResources>;
   CmsGlobalSponsor: ResolverTypeWrapper<CmsGlobalSponsor>;
   CmsGlobalSponsorCollection: ResolverTypeWrapper<CmsGlobalSponsorCollection>;
   CmsGlobalSponsorFilter: CmsGlobalSponsorFilter;
   CmsGlobalSponsorLinkingCollections: ResolverTypeWrapper<CmsGlobalSponsorLinkingCollections>;
+  CmsGlobalSponsorLinkingCollectionsHiringCompanyCollectionOrder: CmsGlobalSponsorLinkingCollectionsHiringCompanyCollectionOrder;
+  CmsGlobalSponsorLinkingCollectionsProgramCollectionOrder: CmsGlobalSponsorLinkingCollectionsProgramCollectionOrder;
   CmsGlobalSponsorOrder: CmsGlobalSponsorOrder;
   CmsHexColor: ResolverTypeWrapper<Scalars['CmsHexColor']>;
   CmsHiringCompany: ResolverTypeWrapper<CmsHiringCompany>;
@@ -27022,8 +28668,10 @@ export type ResolversTypes = ResolversObject<{
   CmsHiringCompanyDescriptionAssets: ResolverTypeWrapper<CmsHiringCompanyDescriptionAssets>;
   CmsHiringCompanyDescriptionEntries: ResolverTypeWrapper<CmsHiringCompanyDescriptionEntries>;
   CmsHiringCompanyDescriptionLinks: ResolverTypeWrapper<CmsHiringCompanyDescriptionLinks>;
+  CmsHiringCompanyDescriptionResources: ResolverTypeWrapper<CmsHiringCompanyDescriptionResources>;
   CmsHiringCompanyFilter: CmsHiringCompanyFilter;
   CmsHiringCompanyLinkingCollections: ResolverTypeWrapper<CmsHiringCompanyLinkingCollections>;
+  CmsHiringCompanyLinkingCollectionsHiringPostCollectionOrder: CmsHiringCompanyLinkingCollectionsHiringPostCollectionOrder;
   CmsHiringCompanyOrder: CmsHiringCompanyOrder;
   CmsHiringPost: ResolverTypeWrapper<CmsHiringPost>;
   CmsHiringPostCollection: ResolverTypeWrapper<CmsHiringPostCollection>;
@@ -27031,10 +28679,12 @@ export type ResolversTypes = ResolversObject<{
   CmsHiringPostDescriptionAssets: ResolverTypeWrapper<CmsHiringPostDescriptionAssets>;
   CmsHiringPostDescriptionEntries: ResolverTypeWrapper<CmsHiringPostDescriptionEntries>;
   CmsHiringPostDescriptionLinks: ResolverTypeWrapper<CmsHiringPostDescriptionLinks>;
+  CmsHiringPostDescriptionResources: ResolverTypeWrapper<CmsHiringPostDescriptionResources>;
   CmsHiringPostFilter: CmsHiringPostFilter;
   CmsHiringPostLinkingCollections: ResolverTypeWrapper<CmsHiringPostLinkingCollections>;
   CmsHiringPostOrder: CmsHiringPostOrder;
   CmsHiringPostRegionsCollection: ResolverTypeWrapper<CmsHiringPostRegionsCollection>;
+  CmsHiringPostRegionsCollectionOrder: CmsHiringPostRegionsCollectionOrder;
   CmsImageFormat: CmsImageFormat;
   CmsImageResizeFocus: CmsImageResizeFocus;
   CmsImageResizeStrategy: CmsImageResizeStrategy;
@@ -27049,8 +28699,10 @@ export type ResolversTypes = ResolversObject<{
   CmsLocalizationConfigCollection: ResolverTypeWrapper<CmsLocalizationConfigCollection>;
   CmsLocalizationConfigFilter: CmsLocalizationConfigFilter;
   CmsLocalizationConfigLinkingCollections: ResolverTypeWrapper<CmsLocalizationConfigLinkingCollections>;
+  CmsLocalizationConfigLinkingCollectionsRegionCollectionOrder: CmsLocalizationConfigLinkingCollectionsRegionCollectionOrder;
   CmsLocalizationConfigOrder: CmsLocalizationConfigOrder;
   CmsLocalizationConfigRequiredEventRestrictionsCollection: ResolverTypeWrapper<CmsLocalizationConfigRequiredEventRestrictionsCollection>;
+  CmsLocalizationConfigRequiredEventRestrictionsCollectionOrder: CmsLocalizationConfigRequiredEventRestrictionsCollectionOrder;
   CmsLocation: ResolverTypeWrapper<CmsLocation>;
   CmsNewsCoverage: ResolverTypeWrapper<CmsNewsCoverage>;
   CmsNewsCoverageCollection: ResolverTypeWrapper<CmsNewsCoverageCollection>;
@@ -27068,22 +28720,34 @@ export type ResolversTypes = ResolversObject<{
   CmsProgramEducationDetailsAssets: ResolverTypeWrapper<CmsProgramEducationDetailsAssets>;
   CmsProgramEducationDetailsEntries: ResolverTypeWrapper<CmsProgramEducationDetailsEntries>;
   CmsProgramEducationDetailsLinks: ResolverTypeWrapper<CmsProgramEducationDetailsLinks>;
+  CmsProgramEducationDetailsResources: ResolverTypeWrapper<CmsProgramEducationDetailsResources>;
   CmsProgramEligibility: ResolverTypeWrapper<CmsProgramEligibility>;
   CmsProgramEligibilityAssets: ResolverTypeWrapper<CmsProgramEligibilityAssets>;
   CmsProgramEligibilityEntries: ResolverTypeWrapper<CmsProgramEligibilityEntries>;
   CmsProgramEligibilityLinks: ResolverTypeWrapper<CmsProgramEligibilityLinks>;
+  CmsProgramEligibilityResources: ResolverTypeWrapper<CmsProgramEligibilityResources>;
   CmsProgramFilter: CmsProgramFilter;
   CmsProgramLinkingCollections: ResolverTypeWrapper<CmsProgramLinkingCollections>;
+  CmsProgramLinkingCollectionsAnnouncementCollectionOrder: CmsProgramLinkingCollectionsAnnouncementCollectionOrder;
+  CmsProgramLinkingCollectionsAwardCollectionOrder: CmsProgramLinkingCollectionsAwardCollectionOrder;
+  CmsProgramLinkingCollectionsEventCollectionOrder: CmsProgramLinkingCollectionsEventCollectionOrder;
+  CmsProgramLinkingCollectionsEventRestrictionCollectionOrder: CmsProgramLinkingCollectionsEventRestrictionCollectionOrder;
+  CmsProgramLinkingCollectionsFaqCollectionOrder: CmsProgramLinkingCollectionsFaqCollectionOrder;
+  CmsProgramLinkingCollectionsPressPhotoCollectionOrder: CmsProgramLinkingCollectionsPressPhotoCollectionOrder;
+  CmsProgramLinkingCollectionsTestimonialCollectionOrder: CmsProgramLinkingCollectionsTestimonialCollectionOrder;
   CmsProgramOrder: CmsProgramOrder;
   CmsProgramPresentingSponsorsCollection: ResolverTypeWrapper<CmsProgramPresentingSponsorsCollection>;
+  CmsProgramPresentingSponsorsCollectionOrder: CmsProgramPresentingSponsorsCollectionOrder;
   CmsProgramVolunteerBlurb: ResolverTypeWrapper<CmsProgramVolunteerBlurb>;
   CmsProgramVolunteerBlurbAssets: ResolverTypeWrapper<CmsProgramVolunteerBlurbAssets>;
   CmsProgramVolunteerBlurbEntries: ResolverTypeWrapper<CmsProgramVolunteerBlurbEntries>;
   CmsProgramVolunteerBlurbLinks: ResolverTypeWrapper<CmsProgramVolunteerBlurbLinks>;
+  CmsProgramVolunteerBlurbResources: ResolverTypeWrapper<CmsProgramVolunteerBlurbResources>;
   CmsProgramVolunteerDetails: ResolverTypeWrapper<CmsProgramVolunteerDetails>;
   CmsProgramVolunteerDetailsAssets: ResolverTypeWrapper<CmsProgramVolunteerDetailsAssets>;
   CmsProgramVolunteerDetailsEntries: ResolverTypeWrapper<CmsProgramVolunteerDetailsEntries>;
   CmsProgramVolunteerDetailsLinks: ResolverTypeWrapper<CmsProgramVolunteerDetailsLinks>;
+  CmsProgramVolunteerDetailsResources: ResolverTypeWrapper<CmsProgramVolunteerDetailsResources>;
   CmsQuality: ResolverTypeWrapper<Scalars['CmsQuality']>;
   CmsQuery: ResolverTypeWrapper<CmsQuery>;
   CmsRectangle: ResolverTypeWrapper<Scalars['CmsRectangle']>;
@@ -27091,7 +28755,13 @@ export type ResolversTypes = ResolversObject<{
   CmsRegionCollection: ResolverTypeWrapper<CmsRegionCollection>;
   CmsRegionFilter: CmsRegionFilter;
   CmsRegionLinkingCollections: ResolverTypeWrapper<CmsRegionLinkingCollections>;
+  CmsRegionLinkingCollectionsCommunityPartnerCollectionOrder: CmsRegionLinkingCollectionsCommunityPartnerCollectionOrder;
+  CmsRegionLinkingCollectionsHiringPostCollectionOrder: CmsRegionLinkingCollectionsHiringPostCollectionOrder;
+  CmsRegionLinkingCollectionsPressPhotoCollectionOrder: CmsRegionLinkingCollectionsPressPhotoCollectionOrder;
+  CmsRegionLinkingCollectionsTestimonialCollectionOrder: CmsRegionLinkingCollectionsTestimonialCollectionOrder;
   CmsRegionOrder: CmsRegionOrder;
+  CmsResourceLink: ResolverTypeWrapper<CmsResourceLink>;
+  CmsResourceSys: ResolverTypeWrapper<CmsResourceSys>;
   CmsSite: ResolverTypeWrapper<CmsSite>;
   CmsSiteCollection: ResolverTypeWrapper<CmsSiteCollection>;
   CmsSiteFilter: CmsSiteFilter;
@@ -27114,7 +28784,11 @@ export type ResolversTypes = ResolversObject<{
   CmsTestimonialFilter: CmsTestimonialFilter;
   CmsTestimonialLinkingCollections: ResolverTypeWrapper<CmsTestimonialLinkingCollections>;
   CmsTestimonialOrder: CmsTestimonialOrder;
+  Cms_Node: never;
+  CmscfContentTypeStringNestedFilter: CmscfContentTypeStringNestedFilter;
   CmscfEventNestedFilter: CmscfEventNestedFilter;
+  CmscfEventRestrictionNestedFilter: CmscfEventRestrictionNestedFilter;
+  CmscfFaqNestedFilter: CmscfFaqNestedFilter;
   CmscfGlobalSponsorNestedFilter: CmscfGlobalSponsorNestedFilter;
   CmscfHiringCompanyNestedFilter: CmscfHiringCompanyNestedFilter;
   CmscfLocalizationConfigNestedFilter: CmscfLocalizationConfigNestedFilter;
@@ -27131,10 +28805,20 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JSONObject: ResolverTypeWrapper<Scalars['JSONObject']>;
+  LabsArtifact: ResolverTypeWrapper<LabsArtifact>;
+  LabsArtifactType: ResolverTypeWrapper<LabsArtifactType>;
+  LabsAutocompleteFilterTypeInput: LabsAutocompleteFilterTypeInput;
+  LabsAutocompleteResult: ResolverTypeWrapper<LabsAutocompleteResult>;
+  LabsAutocompleteType: LabsAutocompleteType;
   LabsDateTime: ResolverTypeWrapper<Scalars['LabsDateTime']>;
+  LabsEmploymentRecord: ResolverTypeWrapper<LabsEmploymentRecord>;
   LabsEvent: ResolverTypeWrapper<LabsEvent>;
+  LabsEventEditInput: LabsEventEditInput;
+  LabsEventStateFilter: LabsEventStateFilter;
+  LabsEventsWhereInput: LabsEventsWhereInput;
   LabsGtLtEq: LabsGtLtEq;
   LabsIdOrUsernameInput: LabsIdOrUsernameInput;
+  LabsIdOrUsernameOrEmailInput: LabsIdOrUsernameOrEmailInput;
   LabsJSON: ResolverTypeWrapper<Scalars['LabsJSON']>;
   LabsJSONObject: ResolverTypeWrapper<Scalars['LabsJSONObject']>;
   LabsMatch: ResolverTypeWrapper<LabsMatch>;
@@ -27145,14 +28829,27 @@ export type ResolversTypes = ResolversObject<{
   LabsMentorFilterInput: LabsMentorFilterInput;
   LabsMentorStatus: LabsMentorStatus;
   LabsMutation: ResolverTypeWrapper<LabsMutation>;
+  LabsNote: ResolverTypeWrapper<LabsNote>;
+  LabsPartner: ResolverTypeWrapper<LabsPartner>;
+  LabsPartnerCreateInput: LabsPartnerCreateInput;
+  LabsPartnerEditInput: LabsPartnerEditInput;
   LabsPersonType: LabsPersonType;
   LabsPreference: ResolverTypeWrapper<LabsPreference>;
   LabsProject: ResolverTypeWrapper<LabsProject>;
+  LabsProjectCountWhereInput: LabsProjectCountWhereInput;
   LabsProjectCreateInput: LabsProjectCreateInput;
   LabsProjectEditInput: LabsProjectEditInput;
   LabsProjectStatus: LabsProjectStatus;
   LabsQuery: ResolverTypeWrapper<LabsQuery>;
   LabsRejectionReason: LabsRejectionReason;
+  LabsRepository: ResolverTypeWrapper<LabsRepository>;
+  LabsRepositoryCreateInput: LabsRepositoryCreateInput;
+  LabsRepositoryEditInput: LabsRepositoryEditInput;
+  LabsRepositoryWhereInput: LabsRepositoryWhereInput;
+  LabsResource: ResolverTypeWrapper<LabsResource>;
+  LabsResourceCreateInput: LabsResourceCreateInput;
+  LabsResourceEditInput: LabsResourceEditInput;
+  LabsStandupRating: ResolverTypeWrapper<LabsStandupRating>;
   LabsStat: ResolverTypeWrapper<LabsStat>;
   LabsStudent: ResolverTypeWrapper<LabsStudent>;
   LabsStudentApplyInput: LabsStudentApplyInput;
@@ -27174,6 +28871,10 @@ export type ResolversTypes = ResolversObject<{
   LabsTrackRecommendation: ResolverTypeWrapper<LabsTrackRecommendation>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  ShowYourWorkDateTime: ResolverTypeWrapper<Scalars['ShowYourWorkDateTime']>;
+  ShowYourWorkDiscordMessage: ResolverTypeWrapper<ShowYourWorkDiscordMessage>;
+  ShowYourWorkQuery: ResolverTypeWrapper<ShowYourWorkQuery>;
+  ShowYourWorkResizeStrategy: ShowYourWorkResizeStrategy;
   ShowcaseAddReactionsInput: ShowcaseAddReactionsInput;
   ShowcaseAward: ResolverTypeWrapper<ShowcaseAward>;
   ShowcaseCreateJudgingPoolInput: ShowcaseCreateJudgingPoolInput;
@@ -27211,10 +28912,6 @@ export type ResolversTypes = ResolversObject<{
   ShowcaseReactionCount: ResolverTypeWrapper<ShowcaseReactionCount>;
   ShowcaseReactionType: ShowcaseReactionType;
   ShowcaseResizeStrategy: ShowcaseResizeStrategy;
-  ShowyourworkDateTime: ResolverTypeWrapper<Scalars['ShowyourworkDateTime']>;
-  ShowyourworkDiscordMessage: ResolverTypeWrapper<ShowyourworkDiscordMessage>;
-  ShowyourworkQuery: ResolverTypeWrapper<ShowyourworkQuery>;
-  ShowyourworkResizeStrategy: ShowyourworkResizeStrategy;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
   TwitchLiveStatus: ResolverTypeWrapper<TwitchLiveStatus>;
@@ -27227,7 +28924,6 @@ export type ResolversParentTypes = ResolversObject<{
   AccountBadge: AccountBadge;
   AccountBadgeInput: AccountBadgeInput;
   AccountDiscordInformation: AccountDiscordInformation;
-  AccountDiscordTokenInfoInput: AccountDiscordTokenInfoInput;
   AccountDisplayedBadgeInput: AccountDisplayedBadgeInput;
   AccountMutation: AccountMutation;
   AccountQuery: AccountQuery;
@@ -27239,31 +28935,31 @@ export type ResolversParentTypes = ResolversObject<{
   AccountUserPictureTransformInput: AccountUserPictureTransformInput;
   AccountUserSearch: AccountUserSearch;
   AccountUserWhereInput: AccountUserWhereInput;
-  AdvisorAdvisor: AdvisorAdvisor;
-  AdvisorAdvisorCreateInput: AdvisorAdvisorCreateInput;
-  AdvisorAdvisorLimitInput: AdvisorAdvisorLimitInput;
-  AdvisorAdvisorWhereInput: AdvisorAdvisorWhereInput;
-  AdvisorDateTime: Scalars['AdvisorDateTime'];
-  AdvisorEventParticipation: AdvisorEventParticipation;
-  AdvisorEventParticipationCreateInput: AdvisorEventParticipationCreateInput;
-  AdvisorJSONObject: Scalars['AdvisorJSONObject'];
-  AdvisorMutation: AdvisorMutation;
-  AdvisorPendingRequests: AdvisorPendingRequests;
-  AdvisorProfile: AdvisorProfile;
-  AdvisorProfileCreateInput: AdvisorProfileCreateInput;
-  AdvisorProfileEditInput: AdvisorProfileEditInput;
-  AdvisorQuery: AdvisorQuery;
-  AdvisorRecommendation: AdvisorRecommendation;
-  AdvisorRecommendationCreateInput: AdvisorRecommendationCreateInput;
-  AdvisorRecommendationEditInput: AdvisorRecommendationEditInput;
-  AdvisorRemainingRequestsByAdvisorType: AdvisorRemainingRequestsByAdvisorType;
-  AdvisorRemainingRequestsType: AdvisorRemainingRequestsType;
-  AdvisorRequest: AdvisorRequest;
-  AdvisorRequestAssignment: AdvisorRequestAssignment;
-  AdvisorRequestCount: AdvisorRequestCount;
-  AdvisorRequestCountWhereInput: AdvisorRequestCountWhereInput;
-  AdvisorTag: AdvisorTag;
-  AdvisorTagCreateInput: AdvisorTagCreateInput;
+  AdvisorsAdvisor: AdvisorsAdvisor;
+  AdvisorsAdvisorCreateInput: AdvisorsAdvisorCreateInput;
+  AdvisorsAdvisorLimitInput: AdvisorsAdvisorLimitInput;
+  AdvisorsAdvisorWhereInput: AdvisorsAdvisorWhereInput;
+  AdvisorsDateTime: Scalars['AdvisorsDateTime'];
+  AdvisorsEventParticipation: AdvisorsEventParticipation;
+  AdvisorsEventParticipationCreateInput: AdvisorsEventParticipationCreateInput;
+  AdvisorsJSONObject: Scalars['AdvisorsJSONObject'];
+  AdvisorsMutation: AdvisorsMutation;
+  AdvisorsPendingRequests: AdvisorsPendingRequests;
+  AdvisorsProfile: AdvisorsProfile;
+  AdvisorsProfileCreateInput: AdvisorsProfileCreateInput;
+  AdvisorsProfileEditInput: AdvisorsProfileEditInput;
+  AdvisorsQuery: AdvisorsQuery;
+  AdvisorsRecommendation: AdvisorsRecommendation;
+  AdvisorsRecommendationCreateInput: AdvisorsRecommendationCreateInput;
+  AdvisorsRecommendationEditInput: AdvisorsRecommendationEditInput;
+  AdvisorsRemainingRequestsByAdvisorType: AdvisorsRemainingRequestsByAdvisorType;
+  AdvisorsRemainingRequestsType: AdvisorsRemainingRequestsType;
+  AdvisorsRequest: AdvisorsRequest;
+  AdvisorsRequestAssignment: AdvisorsRequestAssignment;
+  AdvisorsRequestCount: AdvisorsRequestCount;
+  AdvisorsRequestCountWhereInput: AdvisorsRequestCountWhereInput;
+  AdvisorsTag: AdvisorsTag;
+  AdvisorsTagCreateInput: AdvisorsTagCreateInput;
   BlogAcfFieldGroup: ResolversParentTypes['BlogCategory_Display'] | ResolversParentTypes['BlogPost_Authoroverride'] | ResolversParentTypes['BlogPost_Marketing'] | ResolversParentTypes['BlogPost_Release'];
   BlogAvatar: BlogAvatar;
   BlogCategory: BlogCategory;
@@ -27588,6 +29284,7 @@ export type ResolversParentTypes = ResolversObject<{
   ClearBoolFieldUpdateOperationsInput: ClearBoolFieldUpdateOperationsInput;
   ClearBoolFilter: ClearBoolFilter;
   ClearBoolWithAggregatesFilter: ClearBoolWithAggregatesFilter;
+  ClearCheckPromoCodeResult: ClearCheckPromoCodeResult;
   ClearDateTime: Scalars['ClearDateTime'];
   ClearDateTimeFieldUpdateOperationsInput: ClearDateTimeFieldUpdateOperationsInput;
   ClearDateTimeFilter: ClearDateTimeFilter;
@@ -27995,6 +29692,8 @@ export type ResolversParentTypes = ResolversObject<{
   ClearPromoCodeWhereUniqueInput: ClearPromoCodeWhereUniqueInput;
   ClearPublicPerson: ClearPublicPerson;
   ClearQuery: ClearQuery;
+  ClearRegistrationResponse: ClearRegistrationResponse;
+  ClearRegistrationResponseTicket: ClearRegistrationResponseTicket;
   ClearScheduleItem: ClearScheduleItem;
   ClearScheduleItemCountAggregate: ClearScheduleItemCountAggregate;
   ClearScheduleItemCountOrderByAggregateInput: ClearScheduleItemCountOrderByAggregateInput;
@@ -28109,6 +29808,10 @@ export type ResolversParentTypes = ResolversObject<{
   ClearTicketCreateWithoutSentEmailsInput: ClearTicketCreateWithoutSentEmailsInput;
   ClearTicketGroupBy: ClearTicketGroupBy;
   ClearTicketListRelationFilter: ClearTicketListRelationFilter;
+  ClearTicketLookupResult: ClearTicketLookupResult;
+  ClearTicketLookupResultGuardian: ClearTicketLookupResultGuardian;
+  ClearTicketLookupResultPayment: ClearTicketLookupResultPayment;
+  ClearTicketLookupResultPromoCode: ClearTicketLookupResultPromoCode;
   ClearTicketMaxAggregate: ClearTicketMaxAggregate;
   ClearTicketMaxOrderByAggregateInput: ClearTicketMaxOrderByAggregateInput;
   ClearTicketMinAggregate: ClearTicketMinAggregate;
@@ -28254,6 +29957,7 @@ export type ResolversParentTypes = ResolversObject<{
   CmsContentTypeStringRichValueAssets: CmsContentTypeStringRichValueAssets;
   CmsContentTypeStringRichValueEntries: CmsContentTypeStringRichValueEntries;
   CmsContentTypeStringRichValueLinks: CmsContentTypeStringRichValueLinks;
+  CmsContentTypeStringRichValueResources: CmsContentTypeStringRichValueResources;
   CmsContentTypeStringSubvalueCollection: CmsContentTypeStringSubvalueCollection;
   CmsContentfulMetadata: CmsContentfulMetadata;
   CmsContentfulMetadataFilter: CmsContentfulMetadataFilter;
@@ -28272,6 +29976,7 @@ export type ResolversParentTypes = ResolversObject<{
   CmsEventNoticeAssets: CmsEventNoticeAssets;
   CmsEventNoticeEntries: CmsEventNoticeEntries;
   CmsEventNoticeLinks: CmsEventNoticeLinks;
+  CmsEventNoticeResources: CmsEventNoticeResources;
   CmsEventRestriction: CmsEventRestriction;
   CmsEventRestrictionApplicableProgramsCollection: CmsEventRestrictionApplicableProgramsCollection;
   CmsEventRestrictionCollection: CmsEventRestrictionCollection;
@@ -28282,6 +29987,7 @@ export type ResolversParentTypes = ResolversObject<{
   CmsFaqAnswerAssets: CmsFaqAnswerAssets;
   CmsFaqAnswerEntries: CmsFaqAnswerEntries;
   CmsFaqAnswerLinks: CmsFaqAnswerLinks;
+  CmsFaqAnswerResources: CmsFaqAnswerResources;
   CmsFaqCollection: CmsFaqCollection;
   CmsFaqFilter: CmsFaqFilter;
   CmsFaqLinkingCollections: CmsFaqLinkingCollections;
@@ -28292,12 +29998,14 @@ export type ResolversParentTypes = ResolversObject<{
   CmsFormDetailsAssets: CmsFormDetailsAssets;
   CmsFormDetailsEntries: CmsFormDetailsEntries;
   CmsFormDetailsLinks: CmsFormDetailsLinks;
+  CmsFormDetailsResources: CmsFormDetailsResources;
   CmsFormFilter: CmsFormFilter;
   CmsFormLinkingCollections: CmsFormLinkingCollections;
   CmsFormSidebar: CmsFormSidebar;
   CmsFormSidebarAssets: CmsFormSidebarAssets;
   CmsFormSidebarEntries: CmsFormSidebarEntries;
   CmsFormSidebarLinks: CmsFormSidebarLinks;
+  CmsFormSidebarResources: CmsFormSidebarResources;
   CmsGlobalSponsor: CmsGlobalSponsor;
   CmsGlobalSponsorCollection: CmsGlobalSponsorCollection;
   CmsGlobalSponsorFilter: CmsGlobalSponsorFilter;
@@ -28309,6 +30017,7 @@ export type ResolversParentTypes = ResolversObject<{
   CmsHiringCompanyDescriptionAssets: CmsHiringCompanyDescriptionAssets;
   CmsHiringCompanyDescriptionEntries: CmsHiringCompanyDescriptionEntries;
   CmsHiringCompanyDescriptionLinks: CmsHiringCompanyDescriptionLinks;
+  CmsHiringCompanyDescriptionResources: CmsHiringCompanyDescriptionResources;
   CmsHiringCompanyFilter: CmsHiringCompanyFilter;
   CmsHiringCompanyLinkingCollections: CmsHiringCompanyLinkingCollections;
   CmsHiringPost: CmsHiringPost;
@@ -28317,6 +30026,7 @@ export type ResolversParentTypes = ResolversObject<{
   CmsHiringPostDescriptionAssets: CmsHiringPostDescriptionAssets;
   CmsHiringPostDescriptionEntries: CmsHiringPostDescriptionEntries;
   CmsHiringPostDescriptionLinks: CmsHiringPostDescriptionLinks;
+  CmsHiringPostDescriptionResources: CmsHiringPostDescriptionResources;
   CmsHiringPostFilter: CmsHiringPostFilter;
   CmsHiringPostLinkingCollections: CmsHiringPostLinkingCollections;
   CmsHiringPostRegionsCollection: CmsHiringPostRegionsCollection;
@@ -28346,10 +30056,12 @@ export type ResolversParentTypes = ResolversObject<{
   CmsProgramEducationDetailsAssets: CmsProgramEducationDetailsAssets;
   CmsProgramEducationDetailsEntries: CmsProgramEducationDetailsEntries;
   CmsProgramEducationDetailsLinks: CmsProgramEducationDetailsLinks;
+  CmsProgramEducationDetailsResources: CmsProgramEducationDetailsResources;
   CmsProgramEligibility: CmsProgramEligibility;
   CmsProgramEligibilityAssets: CmsProgramEligibilityAssets;
   CmsProgramEligibilityEntries: CmsProgramEligibilityEntries;
   CmsProgramEligibilityLinks: CmsProgramEligibilityLinks;
+  CmsProgramEligibilityResources: CmsProgramEligibilityResources;
   CmsProgramFilter: CmsProgramFilter;
   CmsProgramLinkingCollections: CmsProgramLinkingCollections;
   CmsProgramPresentingSponsorsCollection: CmsProgramPresentingSponsorsCollection;
@@ -28357,10 +30069,12 @@ export type ResolversParentTypes = ResolversObject<{
   CmsProgramVolunteerBlurbAssets: CmsProgramVolunteerBlurbAssets;
   CmsProgramVolunteerBlurbEntries: CmsProgramVolunteerBlurbEntries;
   CmsProgramVolunteerBlurbLinks: CmsProgramVolunteerBlurbLinks;
+  CmsProgramVolunteerBlurbResources: CmsProgramVolunteerBlurbResources;
   CmsProgramVolunteerDetails: CmsProgramVolunteerDetails;
   CmsProgramVolunteerDetailsAssets: CmsProgramVolunteerDetailsAssets;
   CmsProgramVolunteerDetailsEntries: CmsProgramVolunteerDetailsEntries;
   CmsProgramVolunteerDetailsLinks: CmsProgramVolunteerDetailsLinks;
+  CmsProgramVolunteerDetailsResources: CmsProgramVolunteerDetailsResources;
   CmsQuality: Scalars['CmsQuality'];
   CmsQuery: CmsQuery;
   CmsRectangle: Scalars['CmsRectangle'];
@@ -28368,6 +30082,8 @@ export type ResolversParentTypes = ResolversObject<{
   CmsRegionCollection: CmsRegionCollection;
   CmsRegionFilter: CmsRegionFilter;
   CmsRegionLinkingCollections: CmsRegionLinkingCollections;
+  CmsResourceLink: CmsResourceLink;
+  CmsResourceSys: CmsResourceSys;
   CmsSite: CmsSite;
   CmsSiteCollection: CmsSiteCollection;
   CmsSiteFilter: CmsSiteFilter;
@@ -28386,7 +30102,11 @@ export type ResolversParentTypes = ResolversObject<{
   CmsTestimonialCollection: CmsTestimonialCollection;
   CmsTestimonialFilter: CmsTestimonialFilter;
   CmsTestimonialLinkingCollections: CmsTestimonialLinkingCollections;
+  Cms_Node: never;
+  CmscfContentTypeStringNestedFilter: CmscfContentTypeStringNestedFilter;
   CmscfEventNestedFilter: CmscfEventNestedFilter;
+  CmscfEventRestrictionNestedFilter: CmscfEventRestrictionNestedFilter;
+  CmscfFaqNestedFilter: CmscfFaqNestedFilter;
   CmscfGlobalSponsorNestedFilter: CmscfGlobalSponsorNestedFilter;
   CmscfHiringCompanyNestedFilter: CmscfHiringCompanyNestedFilter;
   CmscfLocalizationConfigNestedFilter: CmscfLocalizationConfigNestedFilter;
@@ -28403,10 +30123,18 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   JSONObject: Scalars['JSONObject'];
+  LabsArtifact: LabsArtifact;
+  LabsArtifactType: LabsArtifactType;
+  LabsAutocompleteFilterTypeInput: LabsAutocompleteFilterTypeInput;
+  LabsAutocompleteResult: LabsAutocompleteResult;
   LabsDateTime: Scalars['LabsDateTime'];
+  LabsEmploymentRecord: LabsEmploymentRecord;
   LabsEvent: LabsEvent;
+  LabsEventEditInput: LabsEventEditInput;
+  LabsEventsWhereInput: LabsEventsWhereInput;
   LabsGtLtEq: LabsGtLtEq;
   LabsIdOrUsernameInput: LabsIdOrUsernameInput;
+  LabsIdOrUsernameOrEmailInput: LabsIdOrUsernameOrEmailInput;
   LabsJSON: Scalars['LabsJSON'];
   LabsJSONObject: Scalars['LabsJSONObject'];
   LabsMatch: LabsMatch;
@@ -28416,11 +30144,24 @@ export type ResolversParentTypes = ResolversObject<{
   LabsMentorEditInput: LabsMentorEditInput;
   LabsMentorFilterInput: LabsMentorFilterInput;
   LabsMutation: LabsMutation;
+  LabsNote: LabsNote;
+  LabsPartner: LabsPartner;
+  LabsPartnerCreateInput: LabsPartnerCreateInput;
+  LabsPartnerEditInput: LabsPartnerEditInput;
   LabsPreference: LabsPreference;
   LabsProject: LabsProject;
+  LabsProjectCountWhereInput: LabsProjectCountWhereInput;
   LabsProjectCreateInput: LabsProjectCreateInput;
   LabsProjectEditInput: LabsProjectEditInput;
   LabsQuery: LabsQuery;
+  LabsRepository: LabsRepository;
+  LabsRepositoryCreateInput: LabsRepositoryCreateInput;
+  LabsRepositoryEditInput: LabsRepositoryEditInput;
+  LabsRepositoryWhereInput: LabsRepositoryWhereInput;
+  LabsResource: LabsResource;
+  LabsResourceCreateInput: LabsResourceCreateInput;
+  LabsResourceEditInput: LabsResourceEditInput;
+  LabsStandupRating: LabsStandupRating;
   LabsStat: LabsStat;
   LabsStudent: LabsStudent;
   LabsStudentApplyInput: LabsStudentApplyInput;
@@ -28439,6 +30180,9 @@ export type ResolversParentTypes = ResolversObject<{
   LabsTrackRecommendation: LabsTrackRecommendation;
   Mutation: {};
   Query: {};
+  ShowYourWorkDateTime: Scalars['ShowYourWorkDateTime'];
+  ShowYourWorkDiscordMessage: ShowYourWorkDiscordMessage;
+  ShowYourWorkQuery: ShowYourWorkQuery;
   ShowcaseAddReactionsInput: ShowcaseAddReactionsInput;
   ShowcaseAward: ShowcaseAward;
   ShowcaseCreateJudgingPoolInput: ShowcaseCreateJudgingPoolInput;
@@ -28467,9 +30211,6 @@ export type ResolversParentTypes = ResolversObject<{
   ShowcaseProjectsWhere: ShowcaseProjectsWhere;
   ShowcaseQuery: ShowcaseQuery;
   ShowcaseReactionCount: ShowcaseReactionCount;
-  ShowyourworkDateTime: Scalars['ShowyourworkDateTime'];
-  ShowyourworkDiscordMessage: ShowyourworkDiscordMessage;
-  ShowyourworkQuery: ShowyourworkQuery;
   String: Scalars['String'];
   Subscription: {};
   TwitchLiveStatus: TwitchLiveStatus;
@@ -28502,7 +30243,6 @@ export type AccountMutationResolvers<ContextType = any, ParentType extends Resol
   linkDiscord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationLinkDiscordArgs, 'discordId' | 'userId'>>;
   pizzaOrTurtleCult?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationPizzaOrTurtleCultArgs, 'pizzaOrTurtle' | 'where'>>;
   revokeBadge?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationRevokeBadgeArgs, 'badge' | 'where'>>;
-  setDiscordToken?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationSetDiscordTokenArgs, 'tokenInfo' | 'where'>>;
   setDisplayedBadges?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationSetDisplayedBadgesArgs, 'where'>>;
   unlinkDiscord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationUnlinkDiscordArgs, 'userId'>>;
   updateUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AccountMutationUpdateUserArgs, 'updates' | 'username'>>;
@@ -28511,7 +30251,6 @@ export type AccountMutationResolvers<ContextType = any, ParentType extends Resol
 }>;
 
 export type AccountQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountQuery'] = ResolversParentTypes['AccountQuery']> = ResolversObject<{
-  getDiscordToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<AccountQueryGetDiscordTokenArgs, 'discordId'>>;
   getDiscordUsers?: Resolver<Array<Maybe<ResolversTypes['AccountUser']>>, ParentType, ContextType>;
   getUser?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType, RequireFields<AccountQueryGetUserArgs, 'where'>>;
   roleUsers?: Resolver<Array<Maybe<ResolversTypes['AccountUser']>>, ParentType, ContextType, RequireFields<AccountQueryRoleUsersArgs, 'roleId'>>;
@@ -28550,9 +30289,9 @@ export type AccountSubscriptionUserResolvers<ContextType = any, ParentType exten
 
 export type AccountUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountUser'] = ResolversParentTypes['AccountUser']> = ResolversObject<{
   acceptTos?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  badges?: Resolver<Array<ResolversTypes['AccountBadge']>, ParentType, ContextType, Partial<AccountUserBadgesArgs>>;
+  badges?: Resolver<Maybe<Array<ResolversTypes['AccountBadge']>>, ParentType, ContextType, Partial<AccountUserBadgesArgs>>;
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  blocked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  blocked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   discordId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   discordInformation?: Resolver<Maybe<ResolversTypes['AccountDiscordInformation']>, ParentType, ContextType>;
   displayNameFormat?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -28565,14 +30304,14 @@ export type AccountUserResolvers<ContextType = any, ParentType extends Resolvers
   phoneNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   picture?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<AccountUserPictureArgs>>;
   pronoun?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  roles?: Resolver<Array<ResolversTypes['AccountRole']>, ParentType, ContextType>;
+  roles?: Resolver<Maybe<Array<ResolversTypes['AccountRole']>>, ParentType, ContextType>;
   sites?: Resolver<Maybe<Array<Maybe<ResolversTypes['CmsSite']>>>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorAdvisorResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorAdvisor'] = ResolversParentTypes['AdvisorAdvisor']> = ResolversObject<{
+export type AdvisorsAdvisorResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsAdvisor'] = ResolversParentTypes['AdvisorsAdvisor']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -28581,133 +30320,133 @@ export type AdvisorAdvisorResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export interface AdvisorDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorDateTime'], any> {
-  name: 'AdvisorDateTime';
+export interface AdvisorsDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorsDateTime'], any> {
+  name: 'AdvisorsDateTime';
 }
 
-export type AdvisorEventParticipationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorEventParticipation'] = ResolversParentTypes['AdvisorEventParticipation']> = ResolversObject<{
+export type AdvisorsEventParticipationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsEventParticipation'] = ResolversParentTypes['AdvisorsEventParticipation']> = ResolversObject<{
   awardIds?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  profile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType>;
+  profile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export interface AdvisorJsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorJSONObject'], any> {
-  name: 'AdvisorJSONObject';
+export interface AdvisorsJsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AdvisorsJSONObject'], any> {
+  name: 'AdvisorsJSONObject';
 }
 
-export type AdvisorMutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorMutation'] = ResolversParentTypes['AdvisorMutation']> = ResolversObject<{
-  createAdvisor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationCreateAdvisorArgs, 'data'>>;
-  createEventParticipation?: Resolver<ResolversTypes['AdvisorEventParticipation'], ParentType, ContextType, RequireFields<AdvisorMutationCreateEventParticipationArgs, 'data' | 'username'>>;
-  createProfile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType, RequireFields<AdvisorMutationCreateProfileArgs, 'data'>>;
-  createRecommendation?: Resolver<ResolversTypes['AdvisorRecommendation'], ParentType, ContextType, RequireFields<AdvisorMutationCreateRecommendationArgs, 'data' | 'username'>>;
-  createRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationCreateRequestArgs, 'email' | 'familyName' | 'givenName' | 'type'>>;
-  createTag?: Resolver<ResolversTypes['AdvisorTag'], ParentType, ContextType, RequireFields<AdvisorMutationCreateTagArgs, 'data'>>;
-  deleteTag?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationDeleteTagArgs, 'id'>>;
-  editAdvisorLimits?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationEditAdvisorLimitsArgs, 'limits' | 'where'>>;
-  editProfile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType, RequireFields<AdvisorMutationEditProfileArgs, 'data'>>;
-  editRecommendation?: Resolver<ResolversTypes['AdvisorRecommendation'], ParentType, ContextType, RequireFields<AdvisorMutationEditRecommendationArgs, 'data' | 'id'>>;
-  getAdvisors?: Resolver<Array<ResolversTypes['AdvisorAdvisor']>, ParentType, ContextType>;
-  respondRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorMutationRespondRequestArgs, 'request'>>;
+export type AdvisorsMutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsMutation'] = ResolversParentTypes['AdvisorsMutation']> = ResolversObject<{
+  createAdvisor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateAdvisorArgs, 'data'>>;
+  createEventParticipation?: Resolver<ResolversTypes['AdvisorsEventParticipation'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateEventParticipationArgs, 'data' | 'username'>>;
+  createProfile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateProfileArgs, 'data'>>;
+  createRecommendation?: Resolver<ResolversTypes['AdvisorsRecommendation'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateRecommendationArgs, 'data' | 'username'>>;
+  createRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateRequestArgs, 'email' | 'familyName' | 'givenName' | 'type'>>;
+  createTag?: Resolver<ResolversTypes['AdvisorsTag'], ParentType, ContextType, RequireFields<AdvisorsMutationCreateTagArgs, 'data'>>;
+  deleteTag?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationDeleteTagArgs, 'id'>>;
+  editAdvisorLimits?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationEditAdvisorLimitsArgs, 'limits' | 'where'>>;
+  editProfile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType, RequireFields<AdvisorsMutationEditProfileArgs, 'data'>>;
+  editRecommendation?: Resolver<ResolversTypes['AdvisorsRecommendation'], ParentType, ContextType, RequireFields<AdvisorsMutationEditRecommendationArgs, 'data' | 'id'>>;
+  getAdvisors?: Resolver<Array<ResolversTypes['AdvisorsAdvisor']>, ParentType, ContextType>;
+  respondRequest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<AdvisorsMutationRespondRequestArgs, 'request'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorPendingRequestsResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorPendingRequests'] = ResolversParentTypes['AdvisorPendingRequests']> = ResolversObject<{
+export type AdvisorsPendingRequestsResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsPendingRequests'] = ResolversParentTypes['AdvisorsPendingRequests']> = ResolversObject<{
   pendingRequests?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  requestType?: Resolver<ResolversTypes['AdvisorRequestType'], ParentType, ContextType>;
+  requestType?: Resolver<ResolversTypes['AdvisorsRequestType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorProfile'] = ResolversParentTypes['AdvisorProfile']> = ResolversObject<{
+export type AdvisorsProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsProfile'] = ResolversParentTypes['AdvisorsProfile']> = ResolversObject<{
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  eventParticipation?: Resolver<Array<ResolversTypes['AdvisorEventParticipation']>, ParentType, ContextType>;
-  experience?: Resolver<Array<ResolversTypes['AdvisorTag']>, ParentType, ContextType>;
+  eventParticipation?: Resolver<Array<ResolversTypes['AdvisorsEventParticipation']>, ParentType, ContextType>;
+  experience?: Resolver<Array<ResolversTypes['AdvisorsTag']>, ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  gradHighSchoolAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
-  gradUniversityAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
-  recommendations?: Resolver<Array<ResolversTypes['AdvisorRecommendation']>, ParentType, ContextType>;
-  searchFullTimeAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
+  gradHighSchoolAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
+  gradUniversityAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
+  recommendations?: Resolver<Array<ResolversTypes['AdvisorsRecommendation']>, ParentType, ContextType>;
+  searchFullTimeAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
   searchInternships?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   searchOpen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   underrepresentedEthnicity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   underrepresentedGender?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
   urlGithub?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   urlLinkedIn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   urlResume?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   urlWebsite?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  workFteAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
-  workInternAt?: Resolver<Maybe<ResolversTypes['AdvisorDateTime']>, ParentType, ContextType>;
+  workFteAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
+  workInternAt?: Resolver<Maybe<ResolversTypes['AdvisorsDateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorQuery'] = ResolversParentTypes['AdvisorQuery']> = ResolversObject<{
-  buildResumePackage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<AdvisorQueryBuildResumePackageArgs, 'username'>>;
-  getRequest?: Resolver<ResolversTypes['AdvisorRequest'], ParentType, ContextType, RequireFields<AdvisorQueryGetRequestArgs, 'request'>>;
-  getRequestAssignment?: Resolver<ResolversTypes['AdvisorRequestAssignment'], ParentType, ContextType, RequireFields<AdvisorQueryGetRequestAssignmentArgs, 'request'>>;
-  pendingRequests?: Resolver<Array<ResolversTypes['AdvisorPendingRequests']>, ParentType, ContextType>;
-  profile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType, Partial<AdvisorQueryProfileArgs>>;
-  remainingRequests?: Resolver<Array<ResolversTypes['AdvisorRemainingRequestsType']>, ParentType, ContextType>;
-  servedRequests?: Resolver<Array<ResolversTypes['AdvisorRequestCount']>, ParentType, ContextType, Partial<AdvisorQueryServedRequestsArgs>>;
-  submittedRequests?: Resolver<Array<ResolversTypes['AdvisorRequestCount']>, ParentType, ContextType, Partial<AdvisorQuerySubmittedRequestsArgs>>;
-  tags?: Resolver<Array<ResolversTypes['AdvisorTag']>, ParentType, ContextType, Partial<AdvisorQueryTagsArgs>>;
+export type AdvisorsQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsQuery'] = ResolversParentTypes['AdvisorsQuery']> = ResolversObject<{
+  buildResumePackage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<AdvisorsQueryBuildResumePackageArgs, 'username'>>;
+  getRequest?: Resolver<ResolversTypes['AdvisorsRequest'], ParentType, ContextType, RequireFields<AdvisorsQueryGetRequestArgs, 'request'>>;
+  getRequestAssignment?: Resolver<ResolversTypes['AdvisorsRequestAssignment'], ParentType, ContextType, RequireFields<AdvisorsQueryGetRequestAssignmentArgs, 'request'>>;
+  pendingRequests?: Resolver<Array<ResolversTypes['AdvisorsPendingRequests']>, ParentType, ContextType>;
+  profile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType, Partial<AdvisorsQueryProfileArgs>>;
+  remainingRequests?: Resolver<Array<ResolversTypes['AdvisorsRemainingRequestsType']>, ParentType, ContextType>;
+  servedRequests?: Resolver<Array<ResolversTypes['AdvisorsRequestCount']>, ParentType, ContextType, Partial<AdvisorsQueryServedRequestsArgs>>;
+  submittedRequests?: Resolver<Array<ResolversTypes['AdvisorsRequestCount']>, ParentType, ContextType, Partial<AdvisorsQuerySubmittedRequestsArgs>>;
+  tags?: Resolver<Array<ResolversTypes['AdvisorsTag']>, ParentType, ContextType, Partial<AdvisorsQueryTagsArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorRecommendationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRecommendation'] = ResolversParentTypes['AdvisorRecommendation']> = ResolversObject<{
-  createdAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
+export type AdvisorsRecommendationResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRecommendation'] = ResolversParentTypes['AdvisorsRecommendation']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
   employer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  profile?: Resolver<ResolversTypes['AdvisorProfile'], ParentType, ContextType>;
+  profile?: Resolver<ResolversTypes['AdvisorsProfile'], ParentType, ContextType>;
   recommendation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  skillEngineering?: Resolver<Maybe<ResolversTypes['AdvisorRecommendationRating']>, ParentType, ContextType>;
-  skillInterpersonal?: Resolver<Maybe<ResolversTypes['AdvisorRecommendationRating']>, ParentType, ContextType>;
-  skillTechnical?: Resolver<Maybe<ResolversTypes['AdvisorRecommendationRating']>, ParentType, ContextType>;
+  skillEngineering?: Resolver<Maybe<ResolversTypes['AdvisorsRecommendationRating']>, ParentType, ContextType>;
+  skillInterpersonal?: Resolver<Maybe<ResolversTypes['AdvisorsRecommendationRating']>, ParentType, ContextType>;
+  skillTechnical?: Resolver<Maybe<ResolversTypes['AdvisorsRecommendationRating']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['AdvisorDateTime'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['AdvisorsDateTime'], ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorRemainingRequestsByAdvisorTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRemainingRequestsByAdvisorType'] = ResolversParentTypes['AdvisorRemainingRequestsByAdvisorType']> = ResolversObject<{
-  advisorType?: Resolver<ResolversTypes['AdvisorAdvisorType'], ParentType, ContextType>;
+export type AdvisorsRemainingRequestsByAdvisorTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRemainingRequestsByAdvisorType'] = ResolversParentTypes['AdvisorsRemainingRequestsByAdvisorType']> = ResolversObject<{
+  advisorType?: Resolver<ResolversTypes['AdvisorsAdvisorType'], ParentType, ContextType>;
   remainingRequests?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorRemainingRequestsTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRemainingRequestsType'] = ResolversParentTypes['AdvisorRemainingRequestsType']> = ResolversObject<{
-  advisorTypes?: Resolver<Array<ResolversTypes['AdvisorRemainingRequestsByAdvisorType']>, ParentType, ContextType>;
-  requestType?: Resolver<ResolversTypes['AdvisorRequestType'], ParentType, ContextType>;
+export type AdvisorsRemainingRequestsTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRemainingRequestsType'] = ResolversParentTypes['AdvisorsRemainingRequestsType']> = ResolversObject<{
+  advisorTypes?: Resolver<Array<ResolversTypes['AdvisorsRemainingRequestsByAdvisorType']>, ParentType, ContextType>;
+  requestType?: Resolver<ResolversTypes['AdvisorsRequestType'], ParentType, ContextType>;
   totalRemainingRequests?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorRequestResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRequest'] = ResolversParentTypes['AdvisorRequest']> = ResolversObject<{
+export type AdvisorsRequestResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRequest'] = ResolversParentTypes['AdvisorsRequest']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resumeUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['AdvisorRequestType'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['AdvisorsRequestType'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorRequestAssignmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRequestAssignment'] = ResolversParentTypes['AdvisorRequestAssignment']> = ResolversObject<{
-  request?: Resolver<ResolversTypes['AdvisorRequest'], ParentType, ContextType>;
-  response?: Resolver<Maybe<ResolversTypes['AdvisorJSONObject']>, ParentType, ContextType>;
+export type AdvisorsRequestAssignmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRequestAssignment'] = ResolversParentTypes['AdvisorsRequestAssignment']> = ResolversObject<{
+  request?: Resolver<ResolversTypes['AdvisorsRequest'], ParentType, ContextType>;
+  response?: Resolver<Maybe<ResolversTypes['AdvisorsJSONObject']>, ParentType, ContextType>;
   responseFile?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorRequestCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorRequestCount'] = ResolversParentTypes['AdvisorRequestCount']> = ResolversObject<{
+export type AdvisorsRequestCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsRequestCount'] = ResolversParentTypes['AdvisorsRequestCount']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   familyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -28717,11 +30456,11 @@ export type AdvisorRequestCountResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type AdvisorTagResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorTag'] = ResolversParentTypes['AdvisorTag']> = ResolversObject<{
+export type AdvisorsTagResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdvisorsTag'] = ResolversParentTypes['AdvisorsTag']> = ResolversObject<{
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  profiles?: Resolver<Array<ResolversTypes['AdvisorProfile']>, ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['AdvisorTagType'], ParentType, ContextType>;
+  profiles?: Resolver<Array<ResolversTypes['AdvisorsProfile']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['AdvisorsTagType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -30754,6 +32493,18 @@ export type ClearAggregateWebhookResolvers<ContextType = any, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type ClearCheckPromoCodeResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearCheckPromoCodeResult'] = ResolversParentTypes['ClearCheckPromoCodeResult']> = ResolversObject<{
+  discountAmount?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  discountType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  displayDiscountAmount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  displayDiscountName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  effectivePrice?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  metadata?: Resolver<Maybe<ResolversTypes['ClearJSONObject']>, ParentType, ContextType>;
+  remainingUses?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  valid?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export interface ClearDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ClearDateTime'], any> {
   name: 'ClearDateTime';
 }
@@ -30903,7 +32654,7 @@ export type ClearEventResolvers<ContextType = any, ParentType extends ResolversP
   adultWaiverId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   canEarlyBirdRegister?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   canRegister?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  checkPromoCode?: Resolver<ResolversTypes['ClearJSONObject'], ParentType, ContextType, RequireFields<ClearEventCheckPromoCodeArgs, 'code'>>;
+  checkPromoCode?: Resolver<ResolversTypes['ClearCheckPromoCodeResult'], ParentType, ContextType, RequireFields<ClearEventCheckPromoCodeArgs, 'code'>>;
   cmsEventRestrictions?: Resolver<Array<ResolversTypes['CmsEventRestriction']>, ParentType, ContextType, Partial<ClearEventCmsEventRestrictionsArgs>>;
   contentfulEventRestrictions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   contentfulWebname?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -31428,7 +33179,7 @@ export type ClearMutationResolvers<ContextType = any, ParentType extends Resolve
   deleteVenue?: Resolver<Maybe<ResolversTypes['ClearVenue']>, ParentType, ContextType, RequireFields<ClearMutationDeleteVenueArgs, 'where'>>;
   deleteWebhook?: Resolver<Maybe<ResolversTypes['ClearWebhook']>, ParentType, ContextType, RequireFields<ClearMutationDeleteWebhookArgs, 'where'>>;
   finalizePayment?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<ClearMutationFinalizePaymentArgs, 'paymentIntentId' | 'paymentProvider'>>;
-  registerForEvent?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<ClearMutationRegisterForEventArgs, 'eventWhere' | 'paymentProvider'>>;
+  registerForEvent?: Resolver<Maybe<ResolversTypes['ClearRegistrationResponse']>, ParentType, ContextType, RequireFields<ClearMutationRegisterForEventArgs, 'eventWhere' | 'paymentProvider'>>;
   requestEventScholarship?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ClearMutationRequestEventScholarshipArgs, 'eventWhere' | 'scholarshipReason'>>;
   sendInterestedEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ClearMutationSendInterestedEmailArgs, 'eventWhere'>>;
   sendNotification?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ClearMutationSendNotificationArgs, 'eventWhere' | 'guardian'>>;
@@ -31446,6 +33197,7 @@ export type ClearMutationResolvers<ContextType = any, ParentType extends Resolve
   setTicketMetadata?: Resolver<Maybe<ResolversTypes['ClearTicket']>, ParentType, ContextType, RequireFields<ClearMutationSetTicketMetadataArgs, 'key' | 'value' | 'where'>>;
   setVenueMetadata?: Resolver<Maybe<ResolversTypes['ClearVenue']>, ParentType, ContextType, RequireFields<ClearMutationSetVenueMetadataArgs, 'key' | 'value' | 'where'>>;
   subscribeToMailingList?: Resolver<Maybe<ResolversTypes['ClearMailingListMember']>, ParentType, ContextType, RequireFields<ClearMutationSubscribeToMailingListArgs, 'email' | 'where'>>;
+  trackSurveyResponse?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ClearMutationTrackSurveyResponseArgs, 'key' | 'privateKey' | 'value' | 'where'>>;
   updateEmailTemplate?: Resolver<Maybe<ResolversTypes['ClearEmailTemplate']>, ParentType, ContextType, RequireFields<ClearMutationUpdateEmailTemplateArgs, 'data' | 'where'>>;
   updateEvent?: Resolver<Maybe<ResolversTypes['ClearEvent']>, ParentType, ContextType, RequireFields<ClearMutationUpdateEventArgs, 'data' | 'where'>>;
   updateEventGroup?: Resolver<Maybe<ResolversTypes['ClearEventGroup']>, ParentType, ContextType, RequireFields<ClearMutationUpdateEventGroupArgs, 'data' | 'where'>>;
@@ -31827,16 +33579,34 @@ export type ClearQueryResolvers<ContextType = any, ParentType extends ResolversP
   person?: Resolver<Maybe<ResolversTypes['ClearPerson']>, ParentType, ContextType, RequireFields<ClearQueryPersonArgs, 'where'>>;
   promoCode?: Resolver<Maybe<ResolversTypes['ClearPromoCode']>, ParentType, ContextType, RequireFields<ClearQueryPromoCodeArgs, 'where'>>;
   promoCodes?: Resolver<Array<ResolversTypes['ClearPromoCode']>, ParentType, ContextType, Partial<ClearQueryPromoCodesArgs>>;
+  retrieveTicketInfo?: Resolver<ResolversTypes['ClearTicketLookupResult'], ParentType, ContextType, RequireFields<ClearQueryRetrieveTicketInfoArgs, 'privateKey' | 'where'>>;
   scheduleItem?: Resolver<Maybe<ResolversTypes['ClearScheduleItem']>, ParentType, ContextType, RequireFields<ClearQueryScheduleItemArgs, 'where'>>;
   scheduleItems?: Resolver<Array<ResolversTypes['ClearScheduleItem']>, ParentType, ContextType, Partial<ClearQueryScheduleItemsArgs>>;
   sponsor?: Resolver<Maybe<ResolversTypes['ClearSponsor']>, ParentType, ContextType, RequireFields<ClearQuerySponsorArgs, 'where'>>;
   sponsors?: Resolver<Array<ResolversTypes['ClearSponsor']>, ParentType, ContextType, Partial<ClearQuerySponsorsArgs>>;
   ticket?: Resolver<Maybe<ResolversTypes['ClearTicket']>, ParentType, ContextType, RequireFields<ClearQueryTicketArgs, 'where'>>;
   tickets?: Resolver<Array<ResolversTypes['ClearTicket']>, ParentType, ContextType, Partial<ClearQueryTicketsArgs>>;
+  ticketsWithSurveyKey?: Resolver<Array<ResolversTypes['ClearTicket']>, ParentType, ContextType, RequireFields<ClearQueryTicketsWithSurveyKeyArgs, 'keys'>>;
   venue?: Resolver<Maybe<ResolversTypes['ClearVenue']>, ParentType, ContextType, RequireFields<ClearQueryVenueArgs, 'where'>>;
   venues?: Resolver<Array<ResolversTypes['ClearVenue']>, ParentType, ContextType, Partial<ClearQueryVenuesArgs>>;
   webhook?: Resolver<Maybe<ResolversTypes['ClearWebhook']>, ParentType, ContextType, RequireFields<ClearQueryWebhookArgs, 'where'>>;
   webhooks?: Resolver<Array<ResolversTypes['ClearWebhook']>, ParentType, ContextType, Partial<ClearQueryWebhooksArgs>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ClearRegistrationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearRegistrationResponse'] = ResolversParentTypes['ClearRegistrationResponse']> = ResolversObject<{
+  paymentIntent?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  tickets?: Resolver<Array<ResolversTypes['ClearRegistrationResponseTicket']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ClearRegistrationResponseTicketResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearRegistrationResponseTicket'] = ResolversParentTypes['ClearRegistrationResponseTicket']> = ResolversObject<{
+  age?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  anonymousId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  privateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -32088,6 +33858,7 @@ export type ClearTeamResolvers<ContextType = any, ParentType extends ResolversPa
 export type ClearTicketResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearTicket'] = ResolversParentTypes['ClearTicket']> = ResolversObject<{
   _count?: Resolver<Maybe<ResolversTypes['ClearTicketCount']>, ParentType, ContextType>;
   age?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  anonymousId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   checkedIn?: Resolver<Maybe<ResolversTypes['ClearDateTime']>, ParentType, ContextType>;
   checkedOut?: Resolver<Maybe<ResolversTypes['ClearDateTime']>, ParentType, ContextType>;
   couponCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -32097,6 +33868,7 @@ export type ClearTicketResolvers<ContextType = any, ParentType extends Resolvers
   eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   getMetadata?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<ClearTicketGetMetadataArgs, 'key'>>;
+  getSurveyResponses?: Resolver<Maybe<ResolversTypes['ClearJSONObject']>, ParentType, ContextType, Partial<ClearTicketGetSurveyResponsesArgs>>;
   guardian?: Resolver<Maybe<ResolversTypes['ClearPerson']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -32107,9 +33879,11 @@ export type ClearTicketResolvers<ContextType = any, ParentType extends Resolvers
   paymentId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   personId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  privateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   promoCode?: Resolver<Maybe<ResolversTypes['ClearPromoCode']>, ParentType, ContextType>;
   promoCodeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   sentEmails?: Resolver<Array<ResolversTypes['ClearEmailTemplate']>, ParentType, ContextType, Partial<ClearTicketSentEmailsArgs>>;
+  surveyResponses?: Resolver<Maybe<ResolversTypes['ClearJSON']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['ClearTicketType'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['ClearDateTime'], ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -32149,7 +33923,9 @@ export type ClearTicketCountAggregateResolvers<ContextType = any, ParentType ext
   paymentId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   personId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   phone?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  privateKey?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   promoCodeId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  surveyResponses?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -32183,7 +33959,9 @@ export type ClearTicketGroupByResolvers<ContextType = any, ParentType extends Re
   paymentId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   personId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  privateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   promoCodeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  surveyResponses?: Resolver<Maybe<ResolversTypes['ClearJSON']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['ClearTicketType'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['ClearDateTime'], ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -32193,6 +33971,53 @@ export type ClearTicketGroupByResolvers<ContextType = any, ParentType extends Re
   waiverTrackingId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   waiverUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   whatsApp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ClearTicketLookupResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearTicketLookupResult'] = ResolversParentTypes['ClearTicketLookupResult']> = ResolversObject<{
+  age?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  anonymousId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  event?: Resolver<ResolversTypes['ClearEvent'], ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  guardian?: Resolver<Maybe<ResolversTypes['ClearTicketLookupResultGuardian']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  payment?: Resolver<Maybe<ResolversTypes['ClearTicketLookupResultPayment']>, ParentType, ContextType>;
+  phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  privateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  promoCode?: Resolver<Maybe<ResolversTypes['ClearTicketLookupResultPromoCode']>, ParentType, ContextType>;
+  surveyResponses?: Resolver<Maybe<ResolversTypes['ClearJSONObject']>, ParentType, ContextType>;
+  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  waiverPdfUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  waiverSigned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  waiverUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  whatsApp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ClearTicketLookupResultGuardianResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearTicketLookupResultGuardian'] = ResolversParentTypes['ClearTicketLookupResultGuardian']> = ResolversObject<{
+  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  whatsApp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ClearTicketLookupResultPaymentResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearTicketLookupResultPayment'] = ResolversParentTypes['ClearTicketLookupResultPayment']> = ResolversObject<{
+  complete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  paymentProvider?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ClearTicketLookupResultPromoCodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClearTicketLookupResultPromoCode'] = ResolversParentTypes['ClearTicketLookupResultPromoCode']> = ResolversObject<{
+  discountAmount?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  discountType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  displayDiscountAmount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  displayDiscountName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  metadata?: Resolver<Maybe<ResolversTypes['ClearJSONObject']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -32211,6 +34036,7 @@ export type ClearTicketMaxAggregateResolvers<ContextType = any, ParentType exten
   paymentId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   personId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  privateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   promoCodeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['ClearTicketType']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['ClearDateTime']>, ParentType, ContextType>;
@@ -32239,6 +34065,7 @@ export type ClearTicketMinAggregateResolvers<ContextType = any, ParentType exten
   paymentId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   personId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  privateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   promoCodeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['ClearTicketType']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['ClearDateTime']>, ParentType, ContextType>;
@@ -32716,6 +34543,14 @@ export type CmsContentTypeStringRichValueEntriesResolvers<ContextType = any, Par
 export type CmsContentTypeStringRichValueLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsContentTypeStringRichValueLinks'] = ResolversParentTypes['CmsContentTypeStringRichValueLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsContentTypeStringRichValueAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsContentTypeStringRichValueEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsContentTypeStringRichValueResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsContentTypeStringRichValueResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsContentTypeStringRichValueResources'] = ResolversParentTypes['CmsContentTypeStringRichValueResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -32825,6 +34660,14 @@ export type CmsEventNoticeEntriesResolvers<ContextType = any, ParentType extends
 export type CmsEventNoticeLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsEventNoticeLinks'] = ResolversParentTypes['CmsEventNoticeLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsEventNoticeAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsEventNoticeEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsEventNoticeResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsEventNoticeResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsEventNoticeResources'] = ResolversParentTypes['CmsEventNoticeResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -32899,6 +34742,14 @@ export type CmsFaqAnswerEntriesResolvers<ContextType = any, ParentType extends R
 export type CmsFaqAnswerLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsFaqAnswerLinks'] = ResolversParentTypes['CmsFaqAnswerLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsFaqAnswerAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsFaqAnswerEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsFaqAnswerResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsFaqAnswerResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsFaqAnswerResources'] = ResolversParentTypes['CmsFaqAnswerResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -32968,6 +34819,14 @@ export type CmsFormDetailsEntriesResolvers<ContextType = any, ParentType extends
 export type CmsFormDetailsLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsFormDetailsLinks'] = ResolversParentTypes['CmsFormDetailsLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsFormDetailsAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsFormDetailsEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsFormDetailsResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsFormDetailsResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsFormDetailsResources'] = ResolversParentTypes['CmsFormDetailsResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -32998,6 +34857,14 @@ export type CmsFormSidebarEntriesResolvers<ContextType = any, ParentType extends
 export type CmsFormSidebarLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsFormSidebarLinks'] = ResolversParentTypes['CmsFormSidebarLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsFormSidebarAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsFormSidebarEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsFormSidebarResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsFormSidebarResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsFormSidebarResources'] = ResolversParentTypes['CmsFormSidebarResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33083,6 +34950,14 @@ export type CmsHiringCompanyDescriptionEntriesResolvers<ContextType = any, Paren
 export type CmsHiringCompanyDescriptionLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHiringCompanyDescriptionLinks'] = ResolversParentTypes['CmsHiringCompanyDescriptionLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsHiringCompanyDescriptionAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsHiringCompanyDescriptionEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsHiringCompanyDescriptionResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsHiringCompanyDescriptionResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHiringCompanyDescriptionResources'] = ResolversParentTypes['CmsHiringCompanyDescriptionResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33136,6 +35011,14 @@ export type CmsHiringPostDescriptionEntriesResolvers<ContextType = any, ParentTy
 export type CmsHiringPostDescriptionLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHiringPostDescriptionLinks'] = ResolversParentTypes['CmsHiringPostDescriptionLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsHiringPostDescriptionAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsHiringPostDescriptionEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsHiringPostDescriptionResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsHiringPostDescriptionResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHiringPostDescriptionResources'] = ResolversParentTypes['CmsHiringPostDescriptionResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33342,6 +35225,14 @@ export type CmsProgramEducationDetailsEntriesResolvers<ContextType = any, Parent
 export type CmsProgramEducationDetailsLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramEducationDetailsLinks'] = ResolversParentTypes['CmsProgramEducationDetailsLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsProgramEducationDetailsAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsProgramEducationDetailsEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsProgramEducationDetailsResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsProgramEducationDetailsResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramEducationDetailsResources'] = ResolversParentTypes['CmsProgramEducationDetailsResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33367,6 +35258,14 @@ export type CmsProgramEligibilityEntriesResolvers<ContextType = any, ParentType 
 export type CmsProgramEligibilityLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramEligibilityLinks'] = ResolversParentTypes['CmsProgramEligibilityLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsProgramEligibilityAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsProgramEligibilityEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsProgramEligibilityResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsProgramEligibilityResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramEligibilityResources'] = ResolversParentTypes['CmsProgramEligibilityResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33412,6 +35311,14 @@ export type CmsProgramVolunteerBlurbEntriesResolvers<ContextType = any, ParentTy
 export type CmsProgramVolunteerBlurbLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramVolunteerBlurbLinks'] = ResolversParentTypes['CmsProgramVolunteerBlurbLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsProgramVolunteerBlurbAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsProgramVolunteerBlurbEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsProgramVolunteerBlurbResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsProgramVolunteerBlurbResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramVolunteerBlurbResources'] = ResolversParentTypes['CmsProgramVolunteerBlurbResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33437,6 +35344,14 @@ export type CmsProgramVolunteerDetailsEntriesResolvers<ContextType = any, Parent
 export type CmsProgramVolunteerDetailsLinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramVolunteerDetailsLinks'] = ResolversParentTypes['CmsProgramVolunteerDetailsLinks']> = ResolversObject<{
   assets?: Resolver<ResolversTypes['CmsProgramVolunteerDetailsAssets'], ParentType, ContextType>;
   entries?: Resolver<ResolversTypes['CmsProgramVolunteerDetailsEntries'], ParentType, ContextType>;
+  resources?: Resolver<ResolversTypes['CmsProgramVolunteerDetailsResources'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsProgramVolunteerDetailsResourcesResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsProgramVolunteerDetailsResources'] = ResolversParentTypes['CmsProgramVolunteerDetailsResources']> = ResolversObject<{
+  block?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  hyperlink?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
+  inline?: Resolver<Array<ResolversTypes['CmsResourceLink']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33445,6 +35360,7 @@ export interface CmsQualityScalarConfig extends GraphQLScalarTypeConfig<Resolver
 }
 
 export type CmsQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsQuery'] = ResolversParentTypes['CmsQuery']> = ResolversObject<{
+  _node?: Resolver<Maybe<ResolversTypes['Cms_Node']>, ParentType, ContextType, RequireFields<CmsQuery_NodeArgs, 'id'>>;
   announcement?: Resolver<Maybe<ResolversTypes['CmsAnnouncement']>, ParentType, ContextType, RequireFields<CmsQueryAnnouncementArgs, 'id'>>;
   announcements?: Resolver<Maybe<ResolversTypes['CmsAnnouncementCollection']>, ParentType, ContextType, RequireFields<CmsQueryAnnouncementsArgs, 'limit' | 'skip'>>;
   asset?: Resolver<Maybe<ResolversTypes['CmsAsset']>, ParentType, ContextType, RequireFields<CmsQueryAssetArgs, 'id'>>;
@@ -33523,6 +35439,7 @@ export type CmsRegionResolvers<ContextType = any, ParentType extends ResolversPa
   messagingServices?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType, Partial<CmsRegionMessagingServicesArgs>>;
   motto?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<CmsRegionMottoArgs>>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<CmsRegionNameArgs>>;
+  newVolunteerPipeline?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<CmsRegionNewVolunteerPipelineArgs>>;
   pastPhotos?: Resolver<Array<ResolversTypes['ShowcasePhoto']>, ParentType, ContextType, Partial<CmsRegionPastPhotosArgs>>;
   paymentProvider?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<CmsRegionPaymentProviderArgs>>;
   primaryColor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<CmsRegionPrimaryColorArgs>>;
@@ -33550,6 +35467,18 @@ export type CmsRegionLinkingCollectionsResolvers<ContextType = any, ParentType e
   hiringPosts?: Resolver<Maybe<ResolversTypes['CmsHiringPostCollection']>, ParentType, ContextType, RequireFields<CmsRegionLinkingCollectionsHiringPostsArgs, 'limit' | 'skip'>>;
   pressPhotos?: Resolver<Maybe<ResolversTypes['CmsPressPhotoCollection']>, ParentType, ContextType, RequireFields<CmsRegionLinkingCollectionsPressPhotosArgs, 'limit' | 'skip'>>;
   testimonials?: Resolver<Maybe<ResolversTypes['CmsTestimonialCollection']>, ParentType, ContextType, RequireFields<CmsRegionLinkingCollectionsTestimonialsArgs, 'limit' | 'skip'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsResourceLinkResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsResourceLink'] = ResolversParentTypes['CmsResourceLink']> = ResolversObject<{
+  sys?: Resolver<ResolversTypes['CmsResourceSys'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CmsResourceSysResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsResourceSys'] = ResolversParentTypes['CmsResourceSys']> = ResolversObject<{
+  linkType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  urn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33665,6 +35594,11 @@ export type CmsTestimonialLinkingCollectionsResolvers<ContextType = any, ParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type Cms_NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Cms_Node'] = ResolversParentTypes['Cms_Node']> = ResolversObject<{
+  __resolveType: TypeResolveFn<null, ParentType, ContextType>;
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+}>;
+
 export interface EmailJsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['EmailJSONObject'], any> {
   name: 'EmailJSONObject';
 }
@@ -33716,21 +35650,84 @@ export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<Resolver
   name: 'JSONObject';
 }
 
+export type LabsArtifactResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsArtifact'] = ResolversParentTypes['LabsArtifact']> = ResolversObject<{
+  artifactType?: Resolver<ResolversTypes['LabsArtifactType'], ParentType, ContextType>;
+  artifactTypeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  link?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mentor?: Resolver<Maybe<ResolversTypes['LabsMentor']>, ParentType, ContextType>;
+  mentorId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  project?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  student?: Resolver<Maybe<ResolversTypes['LabsStudent']>, ParentType, ContextType>;
+  studentId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LabsArtifactTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsArtifactType'] = ResolversParentTypes['LabsArtifactType']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  personType?: Resolver<Maybe<ResolversTypes['LabsPersonType']>, ParentType, ContextType>;
+  required?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LabsAutocompleteResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsAutocompleteResult'] = ResolversParentTypes['LabsAutocompleteResult']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['LabsAutocompleteType'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export interface LabsDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['LabsDateTime'], any> {
   name: 'LabsDateTime';
 }
 
+export type LabsEmploymentRecordResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsEmploymentRecord'] = ResolversParentTypes['LabsEmploymentRecord']> = ResolversObject<{
+  eligibleForRehire?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  end?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  mentors?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  start?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type LabsEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsEvent'] = ResolversParentTypes['LabsEvent']> = ResolversObject<{
+  artifactTypes?: Resolver<Array<ResolversTypes['LabsArtifactType']>, ParentType, ContextType>;
+  certificationStatements?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  defaultWeeks?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   emailTemplate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hasAdvanced?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasBeginner?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasIntermediate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  iAmMentor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  iAmStudent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   matchPreferenceSubmissionOpen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   matchingAlgorithm?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mentorApplicationSchema?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
+  mentorApplicationUi?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   mentorApplicationsEndAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   mentorApplicationsStartAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  partnersOnly?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  slackUserGroupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  slackWorkspaceAccessToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  slackWorkspaceId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  standupAndProsperToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   startsAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  studentApplicationSchema?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
+  studentApplicationUi?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   studentApplicationsEndAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   studentApplicationsStartAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
@@ -33753,8 +35750,10 @@ export type LabsMatchResolvers<ContextType = any, ParentType extends ResolversPa
 
 export type LabsMentorResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsMentor'] = ResolversParentTypes['LabsMentor']> = ResolversObject<{
   account?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType>;
+  artifacts?: Resolver<Array<ResolversTypes['LabsArtifact']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  emailCount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   event?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType>;
   eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -33765,22 +35764,34 @@ export type LabsMentorResolvers<ContextType = any, ParentType extends ResolversP
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile?: Resolver<ResolversTypes['LabsJSON'], ParentType, ContextType>;
   profileField?: Resolver<Maybe<ResolversTypes['LabsJSON']>, ParentType, ContextType, RequireFields<LabsMentorProfileFieldArgs, 'key'>>;
+  projectPreferences?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projects?: Resolver<Array<ResolversTypes['LabsProject']>, ParentType, ContextType>;
+  slackId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['LabsMentorStatus'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  surveyResponsesAbout?: Resolver<Array<ResolversTypes['LabsSurveyResponse']>, ParentType, ContextType>;
+  timezone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type LabsMutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsMutation'] = ResolversParentTypes['LabsMutation']> = ResolversObject<{
-  acceptStudentOffer?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType>;
+  acceptStudentOffer?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, Partial<LabsMutationAcceptStudentOfferArgs>>;
+  addArtifact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationAddArtifactArgs, 'link' | 'project'>>;
+  addNote?: Resolver<ResolversTypes['LabsNote'], ParentType, ContextType, RequireFields<LabsMutationAddNoteArgs, 'caution' | 'note' | 'student'>>;
   addProjectMentor?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType, RequireFields<LabsMutationAddProjectMentorArgs, 'mentor' | 'project'>>;
   addProjectStudent?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType, RequireFields<LabsMutationAddProjectStudentArgs, 'project' | 'student'>>;
+  addRepository?: Resolver<ResolversTypes['LabsRepository'], ParentType, ContextType, RequireFields<LabsMutationAddRepositoryArgs, 'data'>>;
+  addResource?: Resolver<ResolversTypes['LabsResource'], ParentType, ContextType, RequireFields<LabsMutationAddResourceArgs, 'data'>>;
   applyMentor?: Resolver<ResolversTypes['LabsMentor'], ParentType, ContextType, RequireFields<LabsMutationApplyMentorArgs, 'data'>>;
   applyStudent?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, RequireFields<LabsMutationApplyStudentArgs, 'data'>>;
+  associatePartnerCode?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, Partial<LabsMutationAssociatePartnerCodeArgs>>;
   cancelStudentApplication?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType>;
+  claimProject?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType, RequireFields<LabsMutationClaimProjectArgs, 'mentor' | 'project'>>;
+  cloneEvent?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType, RequireFields<LabsMutationCloneEventArgs, 'name' | 'startsAt'>>;
   createMentor?: Resolver<ResolversTypes['LabsMentor'], ParentType, ContextType, RequireFields<LabsMutationCreateMentorArgs, 'data'>>;
+  createPartner?: Resolver<ResolversTypes['LabsPartner'], ParentType, ContextType, RequireFields<LabsMutationCreatePartnerArgs, 'data'>>;
   createProject?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType, RequireFields<LabsMutationCreateProjectArgs, 'data'>>;
   createStudent?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, RequireFields<LabsMutationCreateStudentArgs, 'data'>>;
   createSurvey?: Resolver<ResolversTypes['LabsSurvey'], ParentType, ContextType, RequireFields<LabsMutationCreateSurveyArgs, 'data'>>;
@@ -33790,21 +35801,64 @@ export type LabsMutationResolvers<ContextType = any, ParentType extends Resolver
   deleteProject?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationDeleteProjectArgs, 'project'>>;
   deleteStudent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationDeleteStudentArgs, 'where'>>;
   deleteTag?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationDeleteTagArgs, 'tag'>>;
+  editEvent?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType, RequireFields<LabsMutationEditEventArgs, 'data'>>;
   editMentor?: Resolver<ResolversTypes['LabsMentor'], ParentType, ContextType, RequireFields<LabsMutationEditMentorArgs, 'data'>>;
+  editPartner?: Resolver<ResolversTypes['LabsPartner'], ParentType, ContextType, RequireFields<LabsMutationEditPartnerArgs, 'data' | 'partnerCode'>>;
   editProject?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType, RequireFields<LabsMutationEditProjectArgs, 'data' | 'project'>>;
+  editRepository?: Resolver<ResolversTypes['LabsRepository'], ParentType, ContextType, RequireFields<LabsMutationEditRepositoryArgs, 'data' | 'where'>>;
+  editResource?: Resolver<ResolversTypes['LabsResource'], ParentType, ContextType, RequireFields<LabsMutationEditResourceArgs, 'data' | 'where'>>;
   editStudent?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, RequireFields<LabsMutationEditStudentArgs, 'data'>>;
   editTag?: Resolver<ResolversTypes['LabsTag'], ParentType, ContextType, RequireFields<LabsMutationEditTagArgs, 'data' | 'tag'>>;
   expressProjectPreferences?: Resolver<Maybe<Array<ResolversTypes['LabsPreference']>>, ParentType, ContextType, RequireFields<LabsMutationExpressProjectPreferencesArgs, 'projects'>>;
   offerStudentAdmission?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, RequireFields<LabsMutationOfferStudentAdmissionArgs, 'where'>>;
+  rateStandup?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationRateStandupArgs, 'rating' | 'where'>>;
   rejectStudent?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, RequireFields<LabsMutationRejectStudentArgs, 'where'>>;
   removeProjectMentor?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType, RequireFields<LabsMutationRemoveProjectMentorArgs, 'mentor' | 'project'>>;
   removeProjectStudent?: Resolver<ResolversTypes['LabsProject'], ParentType, ContextType, RequireFields<LabsMutationRemoveProjectStudentArgs, 'project' | 'student'>>;
+  requestLoginLink?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationRequestLoginLinkArgs, 'email'>>;
   resetStudentAdmissionOffer?: Resolver<ResolversTypes['LabsStudent'], ParentType, ContextType, RequireFields<LabsMutationResetStudentAdmissionOfferArgs, 'where'>>;
+  runActivity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationRunActivityArgs, 'args' | 'functionName'>>;
+  runAutomation?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationRunAutomationArgs, 'functionName'>>;
   sendMentorEmail?: Resolver<ResolversTypes['Float'], ParentType, ContextType, RequireFields<LabsMutationSendMentorEmailArgs, 'body' | 'dryRun' | 'subject'>>;
   sendStudentEmail?: Resolver<ResolversTypes['Float'], ParentType, ContextType, RequireFields<LabsMutationSendStudentEmailArgs, 'body' | 'dryRun' | 'subject'>>;
   submitStudentRating?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationSubmitStudentRatingArgs, 'rating' | 'track' | 'where'>>;
   submitTraining?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationSubmitTrainingArgs, 'tag' | 'url'>>;
   surveyRespond?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<LabsMutationSurveyRespondArgs, 'occurrence' | 'responses'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LabsNoteResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsNote'] = ResolversParentTypes['LabsNote']> = ResolversObject<{
+  caution?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  event?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType>;
+  eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  note?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  student?: Resolver<Maybe<ResolversTypes['LabsStudent']>, ParentType, ContextType>;
+  studentId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LabsPartnerResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsPartner'] = ResolversParentTypes['LabsPartner']> = ResolversObject<{
+  affineProjects?: Resolver<Array<ResolversTypes['LabsProject']>, ParentType, ContextType>;
+  autoApprove?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  event?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType>;
+  eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  forbidTags?: Resolver<Array<ResolversTypes['LabsTag']>, ParentType, ContextType>;
+  forceTags?: Resolver<Array<ResolversTypes['LabsTag']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  minHours?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  onlyAffine?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  partnerCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  skipPreferences?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  studentCount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  students?: Resolver<Array<ResolversTypes['LabsStudent']>, ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  weeks?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33815,17 +35869,27 @@ export type LabsPreferenceResolvers<ContextType = any, ParentType extends Resolv
 }>;
 
 export type LabsProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsProject'] = ResolversParentTypes['LabsProject']> = ResolversObject<{
+  affinePartner?: Resolver<Maybe<ResolversTypes['LabsPartner']>, ParentType, ContextType>;
+  affinePartnerId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  artifacts?: Resolver<Array<ResolversTypes['LabsArtifact']>, ParentType, ContextType>;
+  complete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   deliverables?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  event?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType>;
-  eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  event?: Resolver<Maybe<ResolversTypes['LabsEvent']>, ParentType, ContextType>;
+  eventId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  issueUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   maxStudents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   mentors?: Resolver<Array<ResolversTypes['LabsMentor']>, ParentType, ContextType>;
+  repository?: Resolver<Maybe<ResolversTypes['LabsRepository']>, ParentType, ContextType>;
+  repositoryId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  slackChannelId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  standupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['LabsProjectStatus'], ParentType, ContextType>;
   studentCount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   students?: Resolver<Array<ResolversTypes['LabsStudent']>, ParentType, ContextType>;
+  surveyResponsesAbout?: Resolver<Array<ResolversTypes['LabsSurveyResponse']>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['LabsTag']>, ParentType, ContextType>;
   track?: Resolver<ResolversTypes['LabsTrack'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
@@ -33833,19 +35897,70 @@ export type LabsProjectResolvers<ContextType = any, ParentType extends Resolvers
 }>;
 
 export type LabsQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsQuery'] = ResolversParentTypes['LabsQuery']> = ResolversObject<{
+  activities?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  activitySchema?: Resolver<ResolversTypes['LabsJSONObject'], ParentType, ContextType, RequireFields<LabsQueryActivitySchemaArgs, 'functionName'>>;
+  applicationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  autocomplete?: Resolver<Array<ResolversTypes['LabsAutocompleteResult']>, ParentType, ContextType, RequireFields<LabsQueryAutocompleteArgs, 'q' | 'status' | 'types'>>;
+  automations?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  employmentRecords?: Resolver<Array<ResolversTypes['LabsEmploymentRecord']>, ParentType, ContextType, RequireFields<LabsQueryEmploymentRecordsArgs, 'givenName' | 'surname'>>;
   event?: Resolver<Maybe<ResolversTypes['LabsEvent']>, ParentType, ContextType>;
+  events?: Resolver<Array<ResolversTypes['LabsEvent']>, ParentType, ContextType, Partial<LabsQueryEventsArgs>>;
+  getStandup?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<LabsQueryGetStandupArgs, 'where'>>;
+  getSurveyResponse?: Resolver<ResolversTypes['LabsSurveyResponse'], ParentType, ContextType, RequireFields<LabsQueryGetSurveyResponseArgs, 'where'>>;
   mentor?: Resolver<Maybe<ResolversTypes['LabsMentor']>, ParentType, ContextType, Partial<LabsQueryMentorArgs>>;
+  mentorPriorParticipation?: Resolver<Maybe<ResolversTypes['LabsMentor']>, ParentType, ContextType, Partial<LabsQueryMentorPriorParticipationArgs>>;
   mentors?: Resolver<Array<ResolversTypes['LabsMentor']>, ParentType, ContextType, Partial<LabsQueryMentorsArgs>>;
   nextStudentNeedingRating?: Resolver<Maybe<ResolversTypes['LabsStudent']>, ParentType, ContextType, Partial<LabsQueryNextStudentNeedingRatingArgs>>;
+  partners?: Resolver<Array<ResolversTypes['LabsPartner']>, ParentType, ContextType>;
+  projectCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<LabsQueryProjectCountArgs>>;
   projectMatches?: Resolver<Maybe<Array<ResolversTypes['LabsMatch']>>, ParentType, ContextType, RequireFields<LabsQueryProjectMatchesArgs, 'tags'>>;
   projectPreferences?: Resolver<Maybe<Array<ResolversTypes['LabsPreference']>>, ParentType, ContextType>;
+  repositories?: Resolver<Array<ResolversTypes['LabsRepository']>, ParentType, ContextType, Partial<LabsQueryRepositoriesArgs>>;
+  resources?: Resolver<Array<ResolversTypes['LabsResource']>, ParentType, ContextType>;
   statAdmissionsStatus?: Resolver<Array<ResolversTypes['LabsStat']>, ParentType, ContextType, Partial<LabsQueryStatAdmissionsStatusArgs>>;
   student?: Resolver<Maybe<ResolversTypes['LabsStudent']>, ParentType, ContextType, Partial<LabsQueryStudentArgs>>;
   students?: Resolver<Array<ResolversTypes['LabsStudent']>, ParentType, ContextType, Partial<LabsQueryStudentsArgs>>;
   studentsTopRated?: Resolver<Array<ResolversTypes['LabsStudent']>, ParentType, ContextType, Partial<LabsQueryStudentsTopRatedArgs>>;
+  supportedTimezones?: Resolver<ResolversTypes['LabsJSONObject'], ParentType, ContextType>;
   survey?: Resolver<ResolversTypes['LabsSurvey'], ParentType, ContextType, RequireFields<LabsQuerySurveyArgs, 'survey'>>;
   surveys?: Resolver<Array<ResolversTypes['LabsSurvey']>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['LabsTag']>, ParentType, ContextType, Partial<LabsQueryTagsArgs>>;
+  unclaimedProjects?: Resolver<Array<ResolversTypes['LabsProject']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LabsRepositoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsRepository'] = ResolversParentTypes['LabsRepository']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  logoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  projects?: Resolver<Array<ResolversTypes['LabsProject']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LabsResourceResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsResource'] = ResolversParentTypes['LabsResource']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  displayToManagers?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  displayToMentors?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  displayToPartners?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  displayToStudents?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  event?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType>;
+  eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  link?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LabsStandupRatingResolvers<ContextType = any, ParentType extends ResolversParentTypes['LabsStandupRating'] = ResolversParentTypes['LabsStandupRating']> = ResolversObject<{
+  dueAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
+  humanRated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  rating?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -33859,15 +35974,20 @@ export type LabsStudentResolvers<ContextType = any, ParentType extends Resolvers
   account?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType>;
   admissionRatingAverage?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   admissionRatingCount?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  artifacts?: Resolver<Array<ResolversTypes['LabsArtifact']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  emailCount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   event?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType>;
   eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   givenName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hasProjectPreferences?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasValidAdmissionOffer?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  interviewNotes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   minHours?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  notes?: Resolver<Array<ResolversTypes['LabsNote']>, ParentType, ContextType>;
   offerDate?: Resolver<Maybe<ResolversTypes['LabsDateTime']>, ParentType, ContextType>;
   partnerCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   profile?: Resolver<ResolversTypes['LabsJSON'], ParentType, ContextType>;
@@ -33876,11 +35996,18 @@ export type LabsStudentResolvers<ContextType = any, ParentType extends Resolvers
   projects?: Resolver<Array<ResolversTypes['LabsProject']>, ParentType, ContextType>;
   rejectionReason?: Resolver<Maybe<ResolversTypes['LabsRejectionReason']>, ParentType, ContextType>;
   requiredTagTraining?: Resolver<Array<ResolversTypes['LabsTag']>, ParentType, ContextType>;
+  resumeUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  skipPreferences?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  slackId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  standupRatings?: Resolver<Array<ResolversTypes['LabsStandupRating']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['LabsStudentStatus'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surveyResponsesAbout?: Resolver<Array<ResolversTypes['LabsSurveyResponse']>, ParentType, ContextType>;
   tagTrainingSubmissions?: Resolver<Array<ResolversTypes['LabsTagTrainingSubmission']>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['LabsTag']>, ParentType, ContextType>;
+  timeManagementPlan?: Resolver<Maybe<ResolversTypes['LabsJSON']>, ParentType, ContextType>;
+  timezone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   track?: Resolver<ResolversTypes['LabsTrack'], ParentType, ContextType>;
   trackRecommendation?: Resolver<Maybe<Array<ResolversTypes['LabsTrackRecommendation']>>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
@@ -33894,26 +36021,33 @@ export type LabsSurveyResolvers<ContextType = any, ParentType extends ResolversP
   event?: Resolver<ResolversTypes['LabsEvent'], ParentType, ContextType>;
   eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  intro?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   menteeCaution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  menteeDisplay?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   menteeSchema?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   menteeShare?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   menteeUi?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   mentorCaution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  mentorDisplay?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mentorSchema?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   mentorShare?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   mentorUi?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   occurrences?: Resolver<Array<ResolversTypes['LabsSurveyOccurence']>, ParentType, ContextType>;
   peerCaution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  peerDisplay?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   peerSchema?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   peerShare?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   peerUi?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   personType?: Resolver<ResolversTypes['LabsPersonType'], ParentType, ContextType>;
   projectCaution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  projectDisplay?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projectSchema?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   projectShare?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   projectUi?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
+  randomize?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   selfCaution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  selfDisplay?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   selfSchema?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   selfUi?: Resolver<Maybe<ResolversTypes['LabsJSONObject']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
@@ -33925,7 +36059,6 @@ export type LabsSurveyOccurenceResolvers<ContextType = any, ParentType extends R
   dueAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   survey?: Resolver<ResolversTypes['LabsSurvey'], ParentType, ContextType>;
-  surveyFeedback?: Resolver<Array<ResolversTypes['LabsSurveyResponse']>, ParentType, ContextType, Partial<LabsSurveyOccurenceSurveyFeedbackArgs>>;
   surveyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surveyResponses?: Resolver<Array<ResolversTypes['LabsSurveyResponse']>, ParentType, ContextType, Partial<LabsSurveyOccurenceSurveyResponsesArgs>>;
   updatedAt?: Resolver<ResolversTypes['LabsDateTime'], ParentType, ContextType>;
@@ -33983,7 +36116,7 @@ export type LabsTrackRecommendationResolvers<ContextType = any, ParentType exten
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   account?: Resolver<ResolversTypes['AccountMutation'], ParentType, ContextType>;
-  advisor?: Resolver<ResolversTypes['AdvisorMutation'], ParentType, ContextType>;
+  advisors?: Resolver<ResolversTypes['AdvisorsMutation'], ParentType, ContextType>;
   blog?: Resolver<ResolversTypes['BlogRootMutation'], ParentType, ContextType>;
   calendar?: Resolver<ResolversTypes['CalendarMutation'], ParentType, ContextType>;
   clear?: Resolver<ResolversTypes['ClearMutation'], ParentType, ContextType>;
@@ -33994,7 +36127,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   account?: Resolver<ResolversTypes['AccountQuery'], ParentType, ContextType>;
-  advisor?: Resolver<ResolversTypes['AdvisorQuery'], ParentType, ContextType>;
+  advisors?: Resolver<ResolversTypes['AdvisorsQuery'], ParentType, ContextType>;
   blog?: Resolver<ResolversTypes['BlogRootQuery'], ParentType, ContextType>;
   calendar?: Resolver<ResolversTypes['CalendarQuery'], ParentType, ContextType>;
   clear?: Resolver<ResolversTypes['ClearQuery'], ParentType, ContextType>;
@@ -34003,9 +36136,29 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   geo?: Resolver<ResolversTypes['GeoQuery'], ParentType, ContextType>;
   github?: Resolver<ResolversTypes['GithubQuery'], ParentType, ContextType>;
   labs?: Resolver<ResolversTypes['LabsQuery'], ParentType, ContextType>;
+  showYourWork?: Resolver<ResolversTypes['ShowYourWorkQuery'], ParentType, ContextType>;
   showcase?: Resolver<ResolversTypes['ShowcaseQuery'], ParentType, ContextType>;
-  showyourwork?: Resolver<ResolversTypes['ShowyourworkQuery'], ParentType, ContextType>;
   twitch?: Resolver<ResolversTypes['TwitchQuery'], ParentType, ContextType>;
+}>;
+
+export interface ShowYourWorkDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ShowYourWorkDateTime'], any> {
+  name: 'ShowYourWorkDateTime';
+}
+
+export type ShowYourWorkDiscordMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowYourWorkDiscordMessage'] = ResolversParentTypes['ShowYourWorkDiscordMessage']> = ResolversObject<{
+  author?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['ShowYourWorkDateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType, Partial<ShowYourWorkDiscordMessageImageUrlArgs>>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ShowYourWorkQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowYourWorkQuery'] = ResolversParentTypes['ShowYourWorkQuery']> = ResolversObject<{
+  messages?: Resolver<Array<ResolversTypes['ShowYourWorkDiscordMessage']>, ParentType, ContextType, Partial<ShowYourWorkQueryMessagesArgs>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type ShowcaseAwardResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowcaseAward'] = ResolversParentTypes['ShowcaseAward']> = ResolversObject<{
@@ -34134,6 +36287,7 @@ export type ShowcaseMutationResolvers<ContextType = any, ParentType extends Reso
   featurePhoto?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ShowcaseMutationFeaturePhotoArgs, 'id'>>;
   featureProject?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ShowcaseMutationFeatureProjectArgs, 'id'>>;
   importPhotos?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ShowcaseMutationImportPhotosArgs, 'photos'>>;
+  joinProject?: Resolver<ResolversTypes['ShowcaseProject'], ParentType, ContextType, RequireFields<ShowcaseMutationJoinProjectArgs, 'joinCode'>>;
   judgeProject?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ShowcaseMutationJudgeProjectArgs, 'judgingCriteria' | 'project' | 'value'>>;
   peerJudgeProjects?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ShowcaseMutationPeerJudgeProjectsArgs, 'eventId' | 'projects'>>;
   recordMetric?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ShowcaseMutationRecordMetricArgs, 'member' | 'name' | 'project' | 'value'>>;
@@ -34183,6 +36337,7 @@ export type ShowcaseProjectResolvers<ContextType = any, ParentType extends Resol
   canEdit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   challengesEncountered?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   codeLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  coverImage?: Resolver<Maybe<ResolversTypes['ShowcaseMedia']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['ShowcaseDateTime'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   eventGroup?: Resolver<Maybe<ResolversTypes['CmsEvent']>, ParentType, ContextType>;
@@ -34190,6 +36345,7 @@ export type ShowcaseProjectResolvers<ContextType = any, ParentType extends Resol
   eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   featured?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  joinCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   media?: Resolver<Maybe<Array<ResolversTypes['ShowcaseMedia']>>, ParentType, ContextType, RequireFields<ShowcaseProjectMediaArgs, 'take'>>;
   members?: Resolver<Maybe<Array<ResolversTypes['ShowcaseMember']>>, ParentType, ContextType>;
   metadata?: Resolver<Maybe<Array<ResolversTypes['ShowcaseMetadata']>>, ParentType, ContextType>;
@@ -34219,7 +36375,7 @@ export type ShowcaseQueryResolvers<ContextType = any, ParentType extends Resolve
   photo?: Resolver<ResolversTypes['ShowcasePhoto'], ParentType, ContextType, Partial<ShowcaseQueryPhotoArgs>>;
   photos?: Resolver<Array<ResolversTypes['ShowcasePhoto']>, ParentType, ContextType, Partial<ShowcaseQueryPhotosArgs>>;
   presentationReadyPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType, RequireFields<ShowcaseQueryPresentationReadyPercentArgs, 'where'>>;
-  project?: Resolver<ResolversTypes['ShowcaseProject'], ParentType, ContextType, Partial<ShowcaseQueryProjectArgs>>;
+  project?: Resolver<Maybe<ResolversTypes['ShowcaseProject']>, ParentType, ContextType, Partial<ShowcaseQueryProjectArgs>>;
   projects?: Resolver<Array<ResolversTypes['ShowcaseProject']>, ParentType, ContextType, Partial<ShowcaseQueryProjectsArgs>>;
   projectsOverTime?: Resolver<Array<ResolversTypes['ShowcaseMetricTimeSeries']>, ParentType, ContextType, RequireFields<ShowcaseQueryProjectsOverTimeArgs, 'where'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -34228,26 +36384,6 @@ export type ShowcaseQueryResolvers<ContextType = any, ParentType extends Resolve
 export type ShowcaseReactionCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowcaseReactionCount'] = ResolversParentTypes['ShowcaseReactionCount']> = ResolversObject<{
   count?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['ShowcaseReactionType'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export interface ShowyourworkDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ShowyourworkDateTime'], any> {
-  name: 'ShowyourworkDateTime';
-}
-
-export type ShowyourworkDiscordMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowyourworkDiscordMessage'] = ResolversParentTypes['ShowyourworkDiscordMessage']> = ResolversObject<{
-  author?: Resolver<Maybe<ResolversTypes['AccountUser']>, ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['ShowyourworkDateTime'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType, Partial<ShowyourworkDiscordMessageImageUrlArgs>>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type ShowyourworkQueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['ShowyourworkQuery'] = ResolversParentTypes['ShowyourworkQuery']> = ResolversObject<{
-  messages?: Resolver<Array<ResolversTypes['ShowyourworkDiscordMessage']>, ParentType, ContextType, Partial<ShowyourworkQueryMessagesArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -34294,21 +36430,21 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   AccountSubscriptionBadge?: AccountSubscriptionBadgeResolvers<ContextType>;
   AccountSubscriptionUser?: AccountSubscriptionUserResolvers<ContextType>;
   AccountUser?: AccountUserResolvers<ContextType>;
-  AdvisorAdvisor?: AdvisorAdvisorResolvers<ContextType>;
-  AdvisorDateTime?: GraphQLScalarType;
-  AdvisorEventParticipation?: AdvisorEventParticipationResolvers<ContextType>;
-  AdvisorJSONObject?: GraphQLScalarType;
-  AdvisorMutation?: AdvisorMutationResolvers<ContextType>;
-  AdvisorPendingRequests?: AdvisorPendingRequestsResolvers<ContextType>;
-  AdvisorProfile?: AdvisorProfileResolvers<ContextType>;
-  AdvisorQuery?: AdvisorQueryResolvers<ContextType>;
-  AdvisorRecommendation?: AdvisorRecommendationResolvers<ContextType>;
-  AdvisorRemainingRequestsByAdvisorType?: AdvisorRemainingRequestsByAdvisorTypeResolvers<ContextType>;
-  AdvisorRemainingRequestsType?: AdvisorRemainingRequestsTypeResolvers<ContextType>;
-  AdvisorRequest?: AdvisorRequestResolvers<ContextType>;
-  AdvisorRequestAssignment?: AdvisorRequestAssignmentResolvers<ContextType>;
-  AdvisorRequestCount?: AdvisorRequestCountResolvers<ContextType>;
-  AdvisorTag?: AdvisorTagResolvers<ContextType>;
+  AdvisorsAdvisor?: AdvisorsAdvisorResolvers<ContextType>;
+  AdvisorsDateTime?: GraphQLScalarType;
+  AdvisorsEventParticipation?: AdvisorsEventParticipationResolvers<ContextType>;
+  AdvisorsJSONObject?: GraphQLScalarType;
+  AdvisorsMutation?: AdvisorsMutationResolvers<ContextType>;
+  AdvisorsPendingRequests?: AdvisorsPendingRequestsResolvers<ContextType>;
+  AdvisorsProfile?: AdvisorsProfileResolvers<ContextType>;
+  AdvisorsQuery?: AdvisorsQueryResolvers<ContextType>;
+  AdvisorsRecommendation?: AdvisorsRecommendationResolvers<ContextType>;
+  AdvisorsRemainingRequestsByAdvisorType?: AdvisorsRemainingRequestsByAdvisorTypeResolvers<ContextType>;
+  AdvisorsRemainingRequestsType?: AdvisorsRemainingRequestsTypeResolvers<ContextType>;
+  AdvisorsRequest?: AdvisorsRequestResolvers<ContextType>;
+  AdvisorsRequestAssignment?: AdvisorsRequestAssignmentResolvers<ContextType>;
+  AdvisorsRequestCount?: AdvisorsRequestCountResolvers<ContextType>;
+  AdvisorsTag?: AdvisorsTagResolvers<ContextType>;
   BlogAcfFieldGroup?: BlogAcfFieldGroupResolvers<ContextType>;
   BlogAvatar?: BlogAvatarResolvers<ContextType>;
   BlogCategory?: BlogCategoryResolvers<ContextType>;
@@ -34549,6 +36685,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ClearAggregateTicket?: ClearAggregateTicketResolvers<ContextType>;
   ClearAggregateVenue?: ClearAggregateVenueResolvers<ContextType>;
   ClearAggregateWebhook?: ClearAggregateWebhookResolvers<ContextType>;
+  ClearCheckPromoCodeResult?: ClearCheckPromoCodeResultResolvers<ContextType>;
   ClearDateTime?: GraphQLScalarType;
   ClearEmailTemplate?: ClearEmailTemplateResolvers<ContextType>;
   ClearEmailTemplateCount?: ClearEmailTemplateCountResolvers<ContextType>;
@@ -34611,6 +36748,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ClearPromoCodeSumAggregate?: ClearPromoCodeSumAggregateResolvers<ContextType>;
   ClearPublicPerson?: ClearPublicPersonResolvers<ContextType>;
   ClearQuery?: ClearQueryResolvers<ContextType>;
+  ClearRegistrationResponse?: ClearRegistrationResponseResolvers<ContextType>;
+  ClearRegistrationResponseTicket?: ClearRegistrationResponseTicketResolvers<ContextType>;
   ClearScheduleItem?: ClearScheduleItemResolvers<ContextType>;
   ClearScheduleItemCountAggregate?: ClearScheduleItemCountAggregateResolvers<ContextType>;
   ClearScheduleItemGroupBy?: ClearScheduleItemGroupByResolvers<ContextType>;
@@ -34629,6 +36768,10 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ClearTicketCount?: ClearTicketCountResolvers<ContextType>;
   ClearTicketCountAggregate?: ClearTicketCountAggregateResolvers<ContextType>;
   ClearTicketGroupBy?: ClearTicketGroupByResolvers<ContextType>;
+  ClearTicketLookupResult?: ClearTicketLookupResultResolvers<ContextType>;
+  ClearTicketLookupResultGuardian?: ClearTicketLookupResultGuardianResolvers<ContextType>;
+  ClearTicketLookupResultPayment?: ClearTicketLookupResultPaymentResolvers<ContextType>;
+  ClearTicketLookupResultPromoCode?: ClearTicketLookupResultPromoCodeResolvers<ContextType>;
   ClearTicketMaxAggregate?: ClearTicketMaxAggregateResolvers<ContextType>;
   ClearTicketMinAggregate?: ClearTicketMinAggregateResolvers<ContextType>;
   ClearTicketSumAggregate?: ClearTicketSumAggregateResolvers<ContextType>;
@@ -34674,6 +36817,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsContentTypeStringRichValueAssets?: CmsContentTypeStringRichValueAssetsResolvers<ContextType>;
   CmsContentTypeStringRichValueEntries?: CmsContentTypeStringRichValueEntriesResolvers<ContextType>;
   CmsContentTypeStringRichValueLinks?: CmsContentTypeStringRichValueLinksResolvers<ContextType>;
+  CmsContentTypeStringRichValueResources?: CmsContentTypeStringRichValueResourcesResolvers<ContextType>;
   CmsContentTypeStringSubvalueCollection?: CmsContentTypeStringSubvalueCollectionResolvers<ContextType>;
   CmsContentfulMetadata?: CmsContentfulMetadataResolvers<ContextType>;
   CmsContentfulTag?: CmsContentfulTagResolvers<ContextType>;
@@ -34688,6 +36832,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsEventNoticeAssets?: CmsEventNoticeAssetsResolvers<ContextType>;
   CmsEventNoticeEntries?: CmsEventNoticeEntriesResolvers<ContextType>;
   CmsEventNoticeLinks?: CmsEventNoticeLinksResolvers<ContextType>;
+  CmsEventNoticeResources?: CmsEventNoticeResourcesResolvers<ContextType>;
   CmsEventRestriction?: CmsEventRestrictionResolvers<ContextType>;
   CmsEventRestrictionApplicableProgramsCollection?: CmsEventRestrictionApplicableProgramsCollectionResolvers<ContextType>;
   CmsEventRestrictionCollection?: CmsEventRestrictionCollectionResolvers<ContextType>;
@@ -34697,6 +36842,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsFaqAnswerAssets?: CmsFaqAnswerAssetsResolvers<ContextType>;
   CmsFaqAnswerEntries?: CmsFaqAnswerEntriesResolvers<ContextType>;
   CmsFaqAnswerLinks?: CmsFaqAnswerLinksResolvers<ContextType>;
+  CmsFaqAnswerResources?: CmsFaqAnswerResourcesResolvers<ContextType>;
   CmsFaqCollection?: CmsFaqCollectionResolvers<ContextType>;
   CmsFaqLinkingCollections?: CmsFaqLinkingCollectionsResolvers<ContextType>;
   CmsFaqRelatedAnswersCollection?: CmsFaqRelatedAnswersCollectionResolvers<ContextType>;
@@ -34706,11 +36852,13 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsFormDetailsAssets?: CmsFormDetailsAssetsResolvers<ContextType>;
   CmsFormDetailsEntries?: CmsFormDetailsEntriesResolvers<ContextType>;
   CmsFormDetailsLinks?: CmsFormDetailsLinksResolvers<ContextType>;
+  CmsFormDetailsResources?: CmsFormDetailsResourcesResolvers<ContextType>;
   CmsFormLinkingCollections?: CmsFormLinkingCollectionsResolvers<ContextType>;
   CmsFormSidebar?: CmsFormSidebarResolvers<ContextType>;
   CmsFormSidebarAssets?: CmsFormSidebarAssetsResolvers<ContextType>;
   CmsFormSidebarEntries?: CmsFormSidebarEntriesResolvers<ContextType>;
   CmsFormSidebarLinks?: CmsFormSidebarLinksResolvers<ContextType>;
+  CmsFormSidebarResources?: CmsFormSidebarResourcesResolvers<ContextType>;
   CmsGlobalSponsor?: CmsGlobalSponsorResolvers<ContextType>;
   CmsGlobalSponsorCollection?: CmsGlobalSponsorCollectionResolvers<ContextType>;
   CmsGlobalSponsorLinkingCollections?: CmsGlobalSponsorLinkingCollectionsResolvers<ContextType>;
@@ -34721,6 +36869,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsHiringCompanyDescriptionAssets?: CmsHiringCompanyDescriptionAssetsResolvers<ContextType>;
   CmsHiringCompanyDescriptionEntries?: CmsHiringCompanyDescriptionEntriesResolvers<ContextType>;
   CmsHiringCompanyDescriptionLinks?: CmsHiringCompanyDescriptionLinksResolvers<ContextType>;
+  CmsHiringCompanyDescriptionResources?: CmsHiringCompanyDescriptionResourcesResolvers<ContextType>;
   CmsHiringCompanyLinkingCollections?: CmsHiringCompanyLinkingCollectionsResolvers<ContextType>;
   CmsHiringPost?: CmsHiringPostResolvers<ContextType>;
   CmsHiringPostCollection?: CmsHiringPostCollectionResolvers<ContextType>;
@@ -34728,6 +36877,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsHiringPostDescriptionAssets?: CmsHiringPostDescriptionAssetsResolvers<ContextType>;
   CmsHiringPostDescriptionEntries?: CmsHiringPostDescriptionEntriesResolvers<ContextType>;
   CmsHiringPostDescriptionLinks?: CmsHiringPostDescriptionLinksResolvers<ContextType>;
+  CmsHiringPostDescriptionResources?: CmsHiringPostDescriptionResourcesResolvers<ContextType>;
   CmsHiringPostLinkingCollections?: CmsHiringPostLinkingCollectionsResolvers<ContextType>;
   CmsHiringPostRegionsCollection?: CmsHiringPostRegionsCollectionResolvers<ContextType>;
   CmsJSON?: GraphQLScalarType;
@@ -34751,26 +36901,32 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsProgramEducationDetailsAssets?: CmsProgramEducationDetailsAssetsResolvers<ContextType>;
   CmsProgramEducationDetailsEntries?: CmsProgramEducationDetailsEntriesResolvers<ContextType>;
   CmsProgramEducationDetailsLinks?: CmsProgramEducationDetailsLinksResolvers<ContextType>;
+  CmsProgramEducationDetailsResources?: CmsProgramEducationDetailsResourcesResolvers<ContextType>;
   CmsProgramEligibility?: CmsProgramEligibilityResolvers<ContextType>;
   CmsProgramEligibilityAssets?: CmsProgramEligibilityAssetsResolvers<ContextType>;
   CmsProgramEligibilityEntries?: CmsProgramEligibilityEntriesResolvers<ContextType>;
   CmsProgramEligibilityLinks?: CmsProgramEligibilityLinksResolvers<ContextType>;
+  CmsProgramEligibilityResources?: CmsProgramEligibilityResourcesResolvers<ContextType>;
   CmsProgramLinkingCollections?: CmsProgramLinkingCollectionsResolvers<ContextType>;
   CmsProgramPresentingSponsorsCollection?: CmsProgramPresentingSponsorsCollectionResolvers<ContextType>;
   CmsProgramVolunteerBlurb?: CmsProgramVolunteerBlurbResolvers<ContextType>;
   CmsProgramVolunteerBlurbAssets?: CmsProgramVolunteerBlurbAssetsResolvers<ContextType>;
   CmsProgramVolunteerBlurbEntries?: CmsProgramVolunteerBlurbEntriesResolvers<ContextType>;
   CmsProgramVolunteerBlurbLinks?: CmsProgramVolunteerBlurbLinksResolvers<ContextType>;
+  CmsProgramVolunteerBlurbResources?: CmsProgramVolunteerBlurbResourcesResolvers<ContextType>;
   CmsProgramVolunteerDetails?: CmsProgramVolunteerDetailsResolvers<ContextType>;
   CmsProgramVolunteerDetailsAssets?: CmsProgramVolunteerDetailsAssetsResolvers<ContextType>;
   CmsProgramVolunteerDetailsEntries?: CmsProgramVolunteerDetailsEntriesResolvers<ContextType>;
   CmsProgramVolunteerDetailsLinks?: CmsProgramVolunteerDetailsLinksResolvers<ContextType>;
+  CmsProgramVolunteerDetailsResources?: CmsProgramVolunteerDetailsResourcesResolvers<ContextType>;
   CmsQuality?: GraphQLScalarType;
   CmsQuery?: CmsQueryResolvers<ContextType>;
   CmsRectangle?: GraphQLScalarType;
   CmsRegion?: CmsRegionResolvers<ContextType>;
   CmsRegionCollection?: CmsRegionCollectionResolvers<ContextType>;
   CmsRegionLinkingCollections?: CmsRegionLinkingCollectionsResolvers<ContextType>;
+  CmsResourceLink?: CmsResourceLinkResolvers<ContextType>;
+  CmsResourceSys?: CmsResourceSysResolvers<ContextType>;
   CmsSite?: CmsSiteResolvers<ContextType>;
   CmsSiteCollection?: CmsSiteCollectionResolvers<ContextType>;
   CmsSiteLinkingCollections?: CmsSiteLinkingCollectionsResolvers<ContextType>;
@@ -34784,6 +36940,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CmsTestimonial?: CmsTestimonialResolvers<ContextType>;
   CmsTestimonialCollection?: CmsTestimonialCollectionResolvers<ContextType>;
   CmsTestimonialLinkingCollections?: CmsTestimonialLinkingCollectionsResolvers<ContextType>;
+  Cms_Node?: Cms_NodeResolvers<ContextType>;
   EmailJSONObject?: GraphQLScalarType;
   EmailMutation?: EmailMutationResolvers<ContextType>;
   EmailQuery?: EmailQueryResolvers<ContextType>;
@@ -34792,16 +36949,25 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   GithubContributor?: GithubContributorResolvers<ContextType>;
   GithubQuery?: GithubQueryResolvers<ContextType>;
   JSONObject?: GraphQLScalarType;
+  LabsArtifact?: LabsArtifactResolvers<ContextType>;
+  LabsArtifactType?: LabsArtifactTypeResolvers<ContextType>;
+  LabsAutocompleteResult?: LabsAutocompleteResultResolvers<ContextType>;
   LabsDateTime?: GraphQLScalarType;
+  LabsEmploymentRecord?: LabsEmploymentRecordResolvers<ContextType>;
   LabsEvent?: LabsEventResolvers<ContextType>;
   LabsJSON?: GraphQLScalarType;
   LabsJSONObject?: GraphQLScalarType;
   LabsMatch?: LabsMatchResolvers<ContextType>;
   LabsMentor?: LabsMentorResolvers<ContextType>;
   LabsMutation?: LabsMutationResolvers<ContextType>;
+  LabsNote?: LabsNoteResolvers<ContextType>;
+  LabsPartner?: LabsPartnerResolvers<ContextType>;
   LabsPreference?: LabsPreferenceResolvers<ContextType>;
   LabsProject?: LabsProjectResolvers<ContextType>;
   LabsQuery?: LabsQueryResolvers<ContextType>;
+  LabsRepository?: LabsRepositoryResolvers<ContextType>;
+  LabsResource?: LabsResourceResolvers<ContextType>;
+  LabsStandupRating?: LabsStandupRatingResolvers<ContextType>;
   LabsStat?: LabsStatResolvers<ContextType>;
   LabsStudent?: LabsStudentResolvers<ContextType>;
   LabsSurvey?: LabsSurveyResolvers<ContextType>;
@@ -34812,6 +36978,9 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LabsTrackRecommendation?: LabsTrackRecommendationResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  ShowYourWorkDateTime?: GraphQLScalarType;
+  ShowYourWorkDiscordMessage?: ShowYourWorkDiscordMessageResolvers<ContextType>;
+  ShowYourWorkQuery?: ShowYourWorkQueryResolvers<ContextType>;
   ShowcaseAward?: ShowcaseAwardResolvers<ContextType>;
   ShowcaseDateTime?: GraphQLScalarType;
   ShowcaseJudgement?: ShowcaseJudgementResolvers<ContextType>;
@@ -34830,9 +36999,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ShowcaseProject?: ShowcaseProjectResolvers<ContextType>;
   ShowcaseQuery?: ShowcaseQueryResolvers<ContextType>;
   ShowcaseReactionCount?: ShowcaseReactionCountResolvers<ContextType>;
-  ShowyourworkDateTime?: GraphQLScalarType;
-  ShowyourworkDiscordMessage?: ShowyourworkDiscordMessageResolvers<ContextType>;
-  ShowyourworkQuery?: ShowyourworkQueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   TwitchLiveStatus?: TwitchLiveStatusResolvers<ContextType>;
   TwitchQuery?: TwitchQueryResolvers<ContextType>;

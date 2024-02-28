@@ -111,5 +111,5 @@ const createResolvers: AccountSubschema['createResolvers'] = (schemas) => {
 
 export async function createAccountSubschema(httpEndpoint, wsEndpoint) {
   console.log(` * account(${httpEndpoint})`);
-  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs, prefix: 'account' });
+  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs, prefix: 'account', forwardHeaders: ['authorization', 'account-authorization'] });
 }

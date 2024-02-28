@@ -1,12 +1,10 @@
 import { SubschemaConfig } from '@graphql-tools/delegate';
 import { buildGraphQLWSExecutor } from '@graphql-tools/executor-graphql-ws';
 import { buildHTTPExecutor } from '@graphql-tools/executor-http';
-import { RenameTypes, WrapType, schemaFromExecutor } from '@graphql-tools/wrap';
+import { schemaFromExecutor } from '@graphql-tools/wrap';
 import { createClient } from 'graphql-ws';
 import WebSocket from 'ws';
-import { SubschemaInfo } from './schema.js';
-import { GraphQLSchema } from 'graphql';
-import { namespaceTransforms } from './schema.js';
+import { SubschemaInfo, namespaceTransforms } from './schema.js';
 
 interface RemoteSchemaEndpoint {
   httpEndpoint: string;
@@ -15,13 +13,24 @@ interface RemoteSchemaEndpoint {
 
 interface RemoteSubschemaExecutorConfig {
   headers?: Record<string, string>;
+  forwardHeaders?: string[];
 }
 
 function buildCombinedExecutor(endpoint: string | RemoteSchemaEndpoint, options: RemoteSubschemaExecutorConfig) {
   const httpEndpoint = typeof endpoint === 'string' ? endpoint : endpoint.httpEndpoint;
+  const { headers = {}, forwardHeaders = [], ...rest } = options;
   const httpExecutor = buildHTTPExecutor({
     endpoint: httpEndpoint,
-    ...(options || {}),
+    headers: (request) => {
+      // forward all user headers starting with 'x-' or listed in forwardHeaders
+      const userHeaders = request?.context?.headers || {};
+      const headersToForward = Object.fromEntries(
+        Object.entries(userHeaders).filter(([key]) => forwardHeaders.includes(key) || key.startsWith('x-')),
+      ) as RemoteSubschemaExecutorConfig['headers'];
+
+      return { ...headers, ...headersToForward };
+    },
+    ...(rest || {}),
   });
 
   if (typeof endpoint === 'string') return httpExecutor;
@@ -53,9 +62,9 @@ export class RemoteSubschema<Prefix extends string> {
   }
 
   async createSubschema() {
-    const { headers, createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = this.options;
+    const { headers, forwardHeaders, createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = this.options;
 
-    const executor = buildCombinedExecutor(this.endpoint, { headers });
+    const executor = buildCombinedExecutor(this.endpoint, { headers, forwardHeaders });
     return {
       subschema: {
         schema: await schemaFromExecutor(executor),
@@ -82,10 +91,11 @@ export async function createRemoteSubschema<Prefix extends string | '' = ''>(
     createTypeDefs = () => [],
     createResolvers = () => ({}),
     transforms = [],
+    forwardHeaders = [],
     ...rest
   } = options;
 
-  const executor = buildCombinedExecutor(endpoint, { headers });
+  const executor = buildCombinedExecutor(endpoint, { headers, forwardHeaders });
 
   const subschema = {
     schema: await schemaFromExecutor(executor),
