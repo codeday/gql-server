@@ -17,38 +17,37 @@ import { useServer } from 'graphql-ws/lib/use/ws';
 import { GRAPHQL_WS, SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
 import { GRAPHQL_TRANSPORT_WS_PROTOCOL } from 'graphql-ws';
-import { SchemaLoader } from './schema.js';
+import { createSchema, fetchSubschemaInfo } from './schema.js';
 import { LoggingPlugin } from './utils.js';
 
 interface Context {}
 
-const loader = new SchemaLoader();
-await loader.reload();
-loader.autoRefresh(1000 * 60 * 5);
+const subschemaInfo = await fetchSubschemaInfo();
+const schema = createSchema(subschemaInfo);
 
 const app = express();
 const httpServer = createServer(app);
 
 // graphql-ws
 const graphqlWs = new WebSocketServer({ noServer: true });
-useServer({ schema: loader.schema }, graphqlWs);
+useServer({ schema }, graphqlWs);
 
 // subscriptions-transport-ws
 const subTransWs = new WebSocketServer({ noServer: true });
 SubscriptionServer.create(
   {
-    schema: loader.schema,
+    schema,
     execute,
     subscribe,
   },
   subTransWs,
 );
 
-const graphQLWsServerCleanup = useServer({ schema: loader.schema }, graphqlWs);
-const subTransWsServerCleanup = useServer({ schema: loader.schema }, subTransWs);
+const graphQLWsServerCleanup = useServer({ schema }, graphqlWs);
+const subTransWsServerCleanup = useServer({ schema }, subTransWs);
 
 const server = new ApolloServer<Context>({
-  schema: loader.schema,
+  schema,
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
     {

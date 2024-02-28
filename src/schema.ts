@@ -125,34 +125,3 @@ export function createSchema(subschemasInfo: SubschemaInfo<any, any>[]) {
   });
 }
 
-export class SchemaLoader {
-  public schema: GraphQLSchema | null = null;
-
-  public loadedSubschemas: SubschemaInfo[] = [];
-
-  private intervalId: NodeJS.Timeout | null = null;
-
-  async reload() {
-    const subschemaInfo = await fetchSubschemaInfo();
-    this.loadedSubschemas = subschemaInfo;
-    this.schema = createSchema(subschemaInfo);
-    return this.schema;
-  }
-
-  autoRefresh(interval = 3000) {
-    this.stopAutoRefresh();
-    this.intervalId = setTimeout(async () => {
-      await this.reload();
-      console.log('refreshed schemas!');
-      this.intervalId = null;
-      this.autoRefresh(interval);
-    }, interval);
-  }
-
-  stopAutoRefresh() {
-    if (this.intervalId != null) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-  }
-}
