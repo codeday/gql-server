@@ -33,6 +33,10 @@ export async function createEmailSubschema(): Promise<SubschemaInfo> {
             fields: { ...args.fields, FirstName: args.firstName, LastName: args.lastName },
           }),
         });
+        if (!res.ok) {
+          console.error(await res.text());
+          return false;
+        }
         return true;
       },
     },
@@ -40,9 +44,4 @@ export async function createEmailSubschema(): Promise<SubschemaInfo> {
 
   const schema = addResolversToSchema({ schema: baseSchema, resolvers });
   return createLocalSubschema({ schema, prefix: 'email', createTypeDefs: () => [JSONObjectDefinition] });
-  // return {
-  //   subschema: { schema },
-  //   createTypeDefs: () => [JSONObjectDefinition],
-  //   prefix: 'email',
-  // };
 }

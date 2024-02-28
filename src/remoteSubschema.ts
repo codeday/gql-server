@@ -23,7 +23,7 @@ function buildCombinedExecutor(endpoint: string | RemoteSchemaEndpoint, options:
     endpoint: httpEndpoint,
     headers: (request) => {
       // forward all user headers starting with 'x-' or listed in forwardHeaders
-      const userHeaders = request?.context?.headers || {};
+      const userHeaders = request?.context?.req?.headers || {};
       const headersToForward = Object.fromEntries(
         Object.entries(userHeaders).filter(([key]) => forwardHeaders.includes(key) || key.startsWith('x-')),
       ) as RemoteSubschemaExecutorConfig['headers'];

@@ -90,7 +90,7 @@ app.use(
   cors<cors.CorsRequest>(),
   bodyParser.json(),
   expressMiddleware(server, {
-    context: async ({ req }) => ({ headers: req.headers }),
+    context: async ({ req }) => ({ req }),
   }),
 );
 
