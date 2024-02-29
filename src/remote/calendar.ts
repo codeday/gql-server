@@ -1,4 +1,4 @@
-import { SubschemaInfo } from '../schema.js';
+import type { SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
 
 export async function createCalendarSubschema(url) {

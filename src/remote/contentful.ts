@@ -1,7 +1,7 @@
 import { RenameObjectFields } from '@graphql-tools/wrap';
-import { delegateToSchema, SubschemaConfig } from '@graphql-tools/delegate';
+import { delegateToSchema } from '@graphql-tools/delegate';
 import { OperationTypeNode } from 'graphql';
-import { ResolversWithPrefix, SubschemaInfo } from '../schema.js';
+import type { ResolversWithPrefix, SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
 
 const createTypeDefs = (prefix) => `

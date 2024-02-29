@@ -7,7 +7,7 @@ import {
 import { delegateToSchema } from '@graphql-tools/delegate';
 import { OperationTypeNode } from 'graphql';
 import { createRemoteSubschema } from '../remoteSubschema.js';
-import { SubschemaInfo } from '../schema.js';
+import type { SubschemaInfo } from '../schema.js';
 
 function createTypeDefs(prefix) {
   return `

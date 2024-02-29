@@ -2,7 +2,7 @@ import { delegateToSchema } from '@graphql-tools/delegate';
 import { TransformQuery } from '@graphql-tools/wrap';
 import { batchDelegateToSchema } from '@graphql-tools/batch-delegate';
 import { Kind, OperationTypeNode } from 'graphql';
-import { SubschemaInfo } from '../schema.js';
+import type { SubschemaInfo } from '../schema.js';
 import { createRemoteSubschema } from '../remoteSubschema.js';
 import { addToSelectionSet } from '../utils/selectionsets.js';
 
@@ -111,5 +111,8 @@ const createResolvers: AccountSubschema['createResolvers'] = (schemas) => {
 
 export async function createAccountSubschema(httpEndpoint, wsEndpoint) {
   console.log(` * account(${httpEndpoint})`);
-  return createRemoteSubschema({ httpEndpoint, wsEndpoint }, { createResolvers, createTypeDefs, prefix: 'account', forwardHeaders: ['authorization', 'account-authorization'] });
+  return createRemoteSubschema(
+    { httpEndpoint, wsEndpoint },
+    { createResolvers, createTypeDefs, prefix: 'account', forwardHeaders: ['authorization', 'account-authorization'] },
+  );
 }

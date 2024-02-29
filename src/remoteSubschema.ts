@@ -50,33 +50,6 @@ function buildCombinedExecutor(endpoint: string | RemoteSchemaEndpoint, options:
   };
 }
 
-export class RemoteSubschema<Prefix extends string> {
-  constructor(
-    public endpoint: string | RemoteSchemaEndpoint,
-    public options: RemoteSubschemaExecutorConfig &
-      Omit<SubschemaConfig, 'schema' | 'executor'> &
-      Omit<Partial<SubschemaInfo<Prefix>>, 'schema'> = {},
-  ) {
-    this.endpoint = endpoint;
-    this.options = options;
-  }
-
-  async createSubschema() {
-    const { headers, forwardHeaders, createTypeDefs = () => [], createResolvers = () => ({}), ...rest } = this.options;
-
-    const executor = buildCombinedExecutor(this.endpoint, { headers, forwardHeaders });
-    return {
-      subschema: {
-        schema: await schemaFromExecutor(executor),
-        executor,
-        ...rest,
-      },
-      createResolvers,
-      createTypeDefs,
-    };
-  }
-}
-
 export async function createRemoteSubschema<Prefix extends string | '' = ''>(
   endpoint: string | RemoteSchemaEndpoint,
   options: RemoteSubschemaExecutorConfig &

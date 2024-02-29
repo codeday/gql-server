@@ -65,7 +65,7 @@ export function createLocalSubschema<Prefix extends string | '' = ''>(
     ...rest
   } = options;
   return {
-    subschema: { schema, transforms: [...namespaceTransforms(prefix, schema)], ...rest },
+    subschema: { schema, transforms: [...namespaceTransforms(prefix, schema), ...transforms], ...rest },
     createResolvers: createResolvers as SubschemaInfo<Prefix>['createResolvers'],
     createTypeDefs,
     prefix: prefix.toLowerCase() as Prefix,
@@ -100,7 +100,7 @@ export async function fetchSubschemaInfo() {
     await createGithubSubschema(process.env.GITHUB_TOKEN),
   ]);
 }
-export function createSchema(subschemasInfo: SubschemaInfo<any, any>[]) {
+export function createSchema(subschemasInfo: SubschemaInfo[]) {
   const subschemaInfo = [...subschemasInfo];
   const resolvers = [];
   const typeDefs = [];
@@ -124,4 +124,3 @@ export function createSchema(subschemasInfo: SubschemaInfo<any, any>[]) {
     mergeTypes: true,
   });
 }
-

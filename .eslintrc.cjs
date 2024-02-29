@@ -7,6 +7,7 @@ module.exports = {
   plugins: ['require-extensions'],
   rules: {
     'react-hooks/rules-of-hooks': 'off',
+    'no-console': 'off',
   },
   globals: {
     NodeJS: true,
