@@ -11,6 +11,9 @@ function getConnectionTypes(prefix) {
     extend type ${prefix}HiringCompany {
       alumniReferralAccounts: [AccountUser]
     }
+    extend type ${prefix}Publication {
+      contributors: [AccountUser]
+    }
     extend type ${prefix}Region {
       pastPhotos(where: ShowcasePhotosWhere, orderBy: ShowcasePhotoOrderByArg, take: Float, skip: Float): [ShowcasePhoto!]!
       clearEvents: [ClearEvent!]!
@@ -27,6 +30,29 @@ function getConnectionResolvers(prefix, schemas) {
           if (!parent.alumniReferrals || parent.alumniReferrals.length === 0) return [];
 
           const results = await Promise.all(parent.alumniReferrals.map((a) => delegateToSchema({
+            schema: schemas.account,
+            operation: 'query',
+            fieldName: 'searchUsers',
+            args: {
+              where: {
+                username: a,
+              },
+            },
+            context,
+            info,
+          })));
+          return results.reduce((accum, a) => [...accum, ...a], []);
+        },
+      },
+    },
+
+    [`${prefix}Publication`]: {
+      contributors: {
+        selectionSet: '{ contributorUsernames }',
+        async resolve(parent, _, context, info) {
+          if (!parent.contributorUsernames || parent.contributorUsernames.length === 0) return [];
+
+          const results = await Promise.all(parent.contributorUsernames.map((a) => delegateToSchema({
             schema: schemas.account,
             operation: 'query',
             fieldName: 'searchUsers',
