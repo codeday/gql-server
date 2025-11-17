@@ -127,7 +127,7 @@ export default async function createNotionSchema(token) {
       if (!fetchId) return null;
 
       const allowedPages = Object.values(parentCache).flat().map(p => p.id.replace(/-/g, ''));
-      if (!allowedPages.includes(fetchId)) {
+      if (!allowedPages.includes(fetchId.replace(/-/g, ''))) {
         return null;
       }
 
