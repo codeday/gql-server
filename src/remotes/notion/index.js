@@ -124,15 +124,16 @@ export default async function createNotionSchema(token) {
       }
 
       const fetchId = id || parentCache[parentSlug].find(p => p.slug === slug)?.id;
-      if (!fetchId) return null;
+      if (!fetchId) throw new Error('Page not found');
 
       const allowedPages = Object.values(parentCache).flat().map(p => p.id.replace(/-/g, ''));
       if (!allowedPages.includes(fetchId.replace(/-/g, ''))) {
-        return null;
+        throw new Error ('Not allowed to fetch page');
       }
 
       const title = (await notionClient.pages.retrieve({ page_id: fetchId }))
-        .properties?.Title?.title?.[0]?.plain_text;
+        .properties?.title?.title?.[0]?.plain_text || '';
+
       const content = n2m.toMarkdownString(await n2m.pageToMarkdown(fetchId)).parent;
       return {
         title,

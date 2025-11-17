@@ -1,5 +1,5 @@
 type Query {
-  page(id: String, parentSlug: String, slug: String): Page
+  page(id: String, parentSlug: String, slug: String): Page!
   pages(parentSlug: String!): [PageInfo!]!
   parentSlugs: [String]!
 }
