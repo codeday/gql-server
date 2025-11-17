@@ -1,0 +1,17 @@
+type Query {
+  page(id: String, parentSlug: String, slug: String): Page
+  pages(parentSlug: String!): [PageInfo!]!
+  parentSlugs: [String]!
+}
+
+type PageInfo {
+  title: String!
+  slug: String!
+}
+
+type Page {
+  title: String!
+  slug: String!
+  content: String!
+}
+

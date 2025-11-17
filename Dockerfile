@@ -5,7 +5,7 @@ WORKDIR /build
 
 COPY package.json /build
 COPY yarn.lock /build
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --ignore-engines
 
 # RUN rm /app/node_modules/@graphql-tools/delegate/index.cjs.js
 # COPY index.cjs.js /app/node_modules/@graphql-tools/delegate/index.cjs.js

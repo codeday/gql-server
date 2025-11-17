@@ -18,6 +18,8 @@ import createEmailSchema from './remotes/email';
 import createGeoSchema from './remotes/geo';
 import createClearSchema from "./remotes/clear";
 import createAccountSchema from './remotes/account';
+import createNotionSchema from './remotes/notion';
+import createTermageddonSchema from './remotes/termageddon';
 import { weave } from './schema';
 import log from './plugins/log';
 
@@ -25,7 +27,23 @@ const port = process.env.PORT || 4000;
 
 async function buildSchema() {
   console.log('Fetching sub-schemas...');
-  const [blog, showYourWork, showcase, calendar, labs, advisors, clear, cms, account, geo, email, twitch, github] =
+  const [
+    blog,
+    showYourWork,
+    showcase,
+    calendar,
+    labs,
+    advisors,
+    clear,
+    cms,
+    account,
+    geo,
+    email,
+    twitch,
+    github,
+    notion,
+    termageddon,
+  ] =
     await Promise.all([
       await createWordpressSchema(process.env.WORDPRESS_URL || 'https://wp.codeday.org/graphql'),
       await createDiscordPostsSchema(process.env.SHOWYOURWORK_URL || 'http://discord-posts.codeday.cloud'),
@@ -52,6 +70,10 @@ async function buildSchema() {
       await createGithubSchema(
         process.env.GITHUB_TOKEN,
       ),
+      await createNotionSchema(
+        process.env.NOTION_TOKEN,
+      ),
+      await (createTermageddonSchema()),
     ]);
   console.log('...sub-schemas fetched.');
 
@@ -69,6 +91,8 @@ async function buildSchema() {
     geo,
     clear,
     github,
+    notion,
+    termageddon,
   });
 }
 

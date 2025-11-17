@@ -1,0 +1,11 @@
+type Query {
+  terms(locale: String!): Terms!
+}
+
+type Terms {
+  privacyPolicy: String!
+  tos: String!
+  disclaimer: String!
+  cookiePolicy: String!
+}
+
