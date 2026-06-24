@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "GraphQL interface to SRND services.",
   "devDependencies": {
-    "@babel/core": "^7.3.3",
+    "@babel/core": "^7.29.6",
     "@babel/polyfill": "^7.4.3",
     "@codeday/eslint-config": "^1.3.0",
     "eslint": "^7.3.1",
