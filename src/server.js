@@ -17,6 +17,7 @@ import createTwitchSchema from './remotes/twitch';
 import createEmailSchema from './remotes/email';
 import createGeoSchema from './remotes/geo';
 import createClearSchema from "./remotes/clear";
+import createImpactSchema from './remotes/impact';
 import createAccountSchema from './remotes/account';
 import createNotionSchema from './remotes/notion';
 import createTermageddonSchema from './remotes/termageddon';
@@ -43,6 +44,7 @@ async function buildSchema() {
     github,
     notion,
     termageddon,
+    impact,
   ] =
     await Promise.all([
       await createWordpressSchema(process.env.WORDPRESS_URL || 'https://wp.codeday.org/graphql'),
@@ -74,6 +76,7 @@ async function buildSchema() {
         process.env.NOTION_TOKEN,
       ),
       await (createTermageddonSchema()),
+      await createImpactSchema(),
     ]);
   console.log('...sub-schemas fetched.');
 
@@ -93,6 +96,7 @@ async function buildSchema() {
     github,
     notion,
     termageddon,
+    impact,
   });
 }
 

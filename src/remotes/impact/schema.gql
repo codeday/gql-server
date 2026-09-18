@@ -1,0 +1,16 @@
+type Query {
+  studentCount: Int!
+  studentLowIncomeCount: Int!
+  volunteerCount: Int!
+  projectCount: Int!
+  prCount: Int!
+  studentHours: Int!
+  volunteerHours: Int!
+  hours: Int!
+  eventCount: Int!
+  # Dollar amounts, always whole numbers, but too large for a 32-bit GraphQL Int.
+  economicToDate: Float!
+  economicToDateCompare: Float!
+  economicEstimated: Float!
+  economicEstimatedCompare: Float!
+}
