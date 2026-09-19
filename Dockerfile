@@ -10,8 +10,10 @@ RUN yarn install --frozen-lockfile --ignore-engines
 # RUN rm /app/node_modules/@graphql-tools/delegate/index.cjs.js
 # COPY index.cjs.js /app/node_modules/@graphql-tools/delegate/index.cjs.js
 
+COPY .swcrc /build
+COPY .babelrc /build
+COPY src/ /build/src
 RUN yarn run build
-COPY dist/ /build/dist
 
 FROM node:16-alpine
 RUN mkdir /app

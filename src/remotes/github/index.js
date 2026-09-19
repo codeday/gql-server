@@ -87,7 +87,8 @@ export default function createGithubSchema(token) {
         const resp = await result.json();
 
         const allContributors = resp?.data?.repository?.object?.history?.nodes
-          ?.map((n) => n.author?.user?.login );
+          ?.map((n) => n.author?.user?.login)
+          ?.filter((username) => !!username);
 
         lru.set(cacheKey, [...new Set(allContributors)]);
       }

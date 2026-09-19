@@ -1,13 +1,14 @@
 import Express from 'express';
 import http from 'http';
+import { json } from 'body-parser';
 import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
+import { flattenDuplicateFieldSelections } from './queryFlatten';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import WebSocket from 'ws';
 import { execute, subscribe } from 'graphql';
 import createWordpressSchema from './remotes/wordpress';
 import createContentfulSchema from './remotes/contentful';
-import createDiscordPostsSchema from './remotes/discordPosts';
 import createGithubSchema from './remotes/github';
 import createShowcaseSchema from './remotes/showcase';
 import createCalendarSchema from './remotes/calendar';
@@ -30,7 +31,6 @@ async function buildSchema() {
   console.log('Fetching sub-schemas...');
   const [
     blog,
-    showYourWork,
     showcase,
     calendar,
     labs,
@@ -48,7 +48,6 @@ async function buildSchema() {
   ] =
     await Promise.all([
       await createWordpressSchema(process.env.WORDPRESS_URL || 'https://wp.codeday.org/graphql'),
-      await createDiscordPostsSchema(process.env.SHOWYOURWORK_URL || 'http://discord-posts.codeday.cloud'),
       await createShowcaseSchema(
         process.env.SHOWCASE_URL || 'http://showcase-gql.codeday.cloud/graphql',
         process.env.SHOWCASE_WS || 'ws://showcase-gql.codeday.cloud/graphql'
@@ -84,7 +83,6 @@ async function buildSchema() {
     account,
     blog,
     cms,
-    showYourWork,
     showcase,
     calendar,
     email,
@@ -122,6 +120,17 @@ export default async () => {
 
   const app = Express();
   app.use(graphqlUploadExpress({ maxFileSize: 250 * 1024 * 1024, maxFiles: 3 }));
+  // Parses JSON GraphQL request bodies so we can flatten duplicate fragment field
+  // selections (see queryFlatten.js) before they reach the stitched schema. Apollo's own
+  // internal body-parser (the same `body-parser` package) sees req._body is already set
+  // and skips re-parsing, so this doesn't double-consume the request stream.
+  app.use(json());
+  app.use((req, res, next) => {
+    if (req.body && typeof req.body.query === 'string') {
+      req.body.query = flattenDuplicateFieldSelections(req.body.query);
+    }
+    next();
+  });
   apollo.applyMiddleware({ app, path: '/' });
 
   app.timeout = 5 * 60 * 1000;
